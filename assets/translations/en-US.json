@@ -1,0 +1,13 @@
+{
+  "info": "Information",
+  "error": "Opss...",
+  "confirm": "Confirmation",
+  "retry": "Retry",
+  "check_username_password": "Input Username and Password",
+  "check_username": "Input Username",
+  "check_password": "Input Password",
+  "check_fullname": "Input Full Name",
+  "check_phone": "Input WhatsApp Number",
+  "another-login-device": "You just logged in on another [%s] device.",
+  "do-you-want-re-login": "Do you want to re-login ?"
+}

@@ -1,0 +1,13 @@
+{
+  "info": "Informasi",
+  "error": "Opss...",
+  "confirm": "Konfirmasi",
+  "retry": "Coba lagi",
+  "check_username_password": "Masukkan Username dan Password",
+  "check_username": "Masukkan Username",
+  "check_password": "Masukkan Password",
+  "check_fullname": "Masukkan Nama Lengkap",
+  "check_phone": "Masukkan No WhatsApp",
+  "another-login-device": "Kamu baru saja login di perangkat [%s] yang lain.",
+  "do-you-want-re-login": "Apakah kamu ingin login ulang ?"
+}

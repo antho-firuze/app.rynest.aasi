@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "35096208689",
+    "project_id": "aasi-apps",
+    "storage_bucket": "aasi-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35096208689:android:f1cb5f6320b094dcbabc10",
+        "android_client_info": {
+          "package_name": "com.rynest.aasi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35096208689-5lhglc14hbsbs9isfenpiuu7o5lgb641.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH5X41RlqoMqY2QsfRfnzQwLUNpmQKirg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35096208689-5lhglc14hbsbs9isfenpiuu7o5lgb641.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
