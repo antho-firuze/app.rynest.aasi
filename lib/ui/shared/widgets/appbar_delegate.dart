@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/ui/shared/colors.dart';
 import 'package:flutter/material.dart';
 

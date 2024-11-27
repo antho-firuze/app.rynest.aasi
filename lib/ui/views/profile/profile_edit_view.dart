@@ -7,7 +7,6 @@ import 'package:app.rynest.aasi/helpers/extensions.dart';
 
 import '../../shared/appbar_mee.dart';
 import '../../shared/colors.dart';
-import '../../shared/widgets/logos.dart';
 
 class ProfileEditView extends StatelessWidget {
   const ProfileEditView({super.key});
@@ -53,7 +52,7 @@ class Body extends StatelessWidget {
     return SafeArea(
       child: ListView(
         children: [
-          const LogoSignature(),
+          // const LogoSignature(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(

@@ -1,4 +1,5 @@
 import 'package:app.rynest.aasi/app/app.locator.dart';
+import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/ui/shared/ui_helper.dart';
 import 'package:app.rynest.aasi/ui/shared/widgets/card_mee.dart';
 import 'package:app.rynest.aasi/ui/views/certificate/certificate_view.dart';

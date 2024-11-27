@@ -6,7 +6,6 @@ import 'package:stacked/stacked.dart';
 
 import '../../shared/appbar_mee.dart';
 import '../../shared/colors.dart';
-import '../../shared/widgets/logos.dart';
 import 'widgets/image_card.dart';
 
 class PhotoCardView extends StatelessWidget {
@@ -52,7 +51,7 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        const LogoSignature(),
+        // const LogoSignature(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SizedBox(

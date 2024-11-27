@@ -10,10 +10,12 @@ class ListMenu extends StatelessWidget {
     this.onPressed,
     this.backgroundColor,
     this.textColor,
+    this.iconColor,
   });
 
   final String text;
   final IconData? iconData;
+  final Color? iconColor;
   final Function()? onPressed;
   final Color? backgroundColor;
   final Color? textColor;
@@ -21,8 +23,7 @@ class ListMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: 15, vertical: screenProp(context, s: 5, m: 5, l: 15)),
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: screenProp(context, s: 5, m: 5, l: 15)),
       decoration: BoxDecoration(
         color: backgroundColor ?? Colors.white,
         borderRadius: BorderRadius.circular(25),
@@ -43,7 +44,7 @@ class ListMenu extends StatelessWidget {
                 : Icon(
                     iconData,
                     size: 30,
-                    color: kcSecondaryColor,
+                    color: iconColor ?? kcSecondaryColor,
                   ),
             hSpaceXSmall,
             Expanded(
@@ -54,9 +55,9 @@ class ListMenu extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward,
-              color: kcSecondaryColor,
+              color: iconColor ?? kcSecondaryColor,
             ),
           ],
         ),

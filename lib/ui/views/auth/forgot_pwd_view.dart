@@ -1,7 +1,6 @@
 import 'package:app.rynest.aasi/ui/shared/ui_helper.dart';
 import 'package:app.rynest.aasi/ui/shared/widgets/button_mee.dart';
 import 'package:app.rynest.aasi/ui/shared/widgets/input_field.dart';
-import 'package:app.rynest.aasi/ui/shared/widgets/logos.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -49,7 +48,7 @@ class Body extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const LogoSignature(),
+            // const LogoSignature(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(

@@ -1,3 +1,5 @@
+import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
+import 'package:app.rynest.aasi/common/widgets/logo/logo_initial.dart';
 import 'package:app.rynest.aasi/ui/shared/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -6,24 +8,6 @@ import '../../views/about/about_view.dart';
 import '../ui_helper.dart';
 import 'circle_button.dart';
 import 'image_mee.dart';
-
-class LogoApp extends StatelessWidget {
-  const LogoApp({super.key, this.width, this.height, this.color});
-
-  final double? width;
-  final double? height;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/logo_aasi.png',
-      width: width,
-      height: height,
-      color: color,
-    );
-  }
-}
 
 class LogoAppWhite extends StatelessWidget {
   const LogoAppWhite({super.key, this.width, this.height, this.color});
@@ -109,39 +93,6 @@ class LogoAbout extends StatelessWidget {
   }
 }
 
-class LogoInitial extends StatelessWidget {
-  const LogoInitial({
-    super.key,
-    required this.initial,
-  });
-
-  final String initial;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.green.shade400,
-        shape: BoxShape.rectangle,
-      ),
-      child: FittedBox(
-        fit: BoxFit.fitWidth,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(2, 1, 2, 2),
-          child: Text(
-            initial,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            style: bodyStyle(context).copyWith(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class LogoYoutube extends StatelessWidget {
   const LogoYoutube({super.key, this.width, this.height, this.color, this.onTap});
 
@@ -223,52 +174,6 @@ class LogoApp2 extends StatelessWidget {
     return SizedBox(
       width: width ?? screenProp(context, s: 150, m: 150, l: 250),
       child: Image.asset('assets/images/logo_aasi_2.png'),
-    );
-  }
-}
-
-class LogoArtWork extends StatelessWidget {
-  const LogoArtWork({
-    super.key,
-    this.width,
-    this.color,
-  });
-
-  final Color? color;
-  final double? width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/artwork.png',
-      fit: BoxFit.fill,
-      color: color ?? Colors.white,
-      width: width ?? screenProp(context, s: 150, m: 150, l: 250),
-    );
-  }
-}
-
-class LogoSignature extends StatelessWidget {
-  const LogoSignature({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        LogoArtWork(
-          width: screenWidth(context),
-          color: kcPrimaryColor,
-        ),
-        Positioned.fill(
-          child: Center(
-            child: LogoApp(
-              width: screenWidthPercentage(context, percentage: 0.55),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

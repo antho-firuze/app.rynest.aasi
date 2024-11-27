@@ -2,7 +2,6 @@ import 'package:app.rynest.aasi/helpers/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/ui_helper.dart';
-import '../../../shared/widgets/logos.dart';
 import '../../../shared/widgets/text_field_mee.dart';
 import '../home_viewmodel.dart';
 
@@ -79,7 +78,7 @@ class BuildSchedule extends StatelessWidget {
             ],
           ),
         ),
-        const LogoSignature(),
+        // const LogoSignature(),
         vSpaceSmall,
       ],
     );

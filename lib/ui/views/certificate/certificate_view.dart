@@ -5,7 +5,6 @@ import 'package:stacked/stacked.dart';
 
 import '../../shared/appbar_mee.dart';
 import '../../shared/colors.dart';
-import '../../shared/widgets/logos.dart';
 import 'certificate_viewmodel.dart';
 
 class CertificateView extends StatelessWidget {
@@ -58,7 +57,7 @@ class Body extends StatelessWidget {
     return ListView(
       children: [
         vSpaceXSmall,
-        const LogoSignature(),
+        // const LogoSignature(),
         vSpaceXSmall,
         Align(
           alignment: Alignment.topCenter,

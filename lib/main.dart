@@ -1,27 +1,20 @@
 import 'dart:io';
 
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:app.rynest.aasi/app/app.router.dart';
+import 'package:app.rynest.aasi/core/app_theme.dart';
+import 'package:app.rynest.aasi/utils/router.dart';
+import 'package:app.rynest.aasi/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'app/app.locator.dart';
-// import 'firebase_options.dart';
 import 'helpers/notification_helper.dart';
-import 'helpers/translation.dart';
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupFlutterNotifications();
-  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // await setupLocator();
   HttpOverrides.global = MyHttpOverrides();
 
   final pref = await SharedPreferences.getInstance();
@@ -36,13 +29,21 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      ho
+  Widget build(BuildContext context, WidgetRef ref) {
+    final goRouter = ref.watch(goRouterProvider);
+    final themeMode = ref.watch(themeModeProvider);
+
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightThemeData,
+      darkTheme: AppTheme.darkThemeData,
+      themeMode: themeMode,
+      routerConfig: goRouter,
+      scaffoldMessengerKey: scaffoldKey,
     );
   }
 }

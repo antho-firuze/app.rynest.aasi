@@ -6,7 +6,6 @@ import 'package:stacked/stacked.dart';
 
 import '../../shared/appbar_mee.dart';
 import '../../shared/colors.dart';
-import '../../shared/widgets/logos.dart';
 import 'widgets/image_card.dart';
 
 class PhotoExamView extends StatelessWidget {
@@ -55,7 +54,7 @@ class Body extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const LogoSignature(),
+            // const LogoSignature(),
             Row(
               children: [
                 Expanded(

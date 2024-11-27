@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/ui/views/startup/widgets/logo_aasi.dart';
 import 'package:flutter/material.dart';
 

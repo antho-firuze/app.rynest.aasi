@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/widgets/logo/logo_initial.dart';
 import 'package:flutter/material.dart';
 
 import '../colors.dart';
@@ -48,13 +49,13 @@ class AvatarMee extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: image == null && initial == null
-                      ? const ImageMee(image: 'assets/icons/profile-01.png')
+                      ? const ImageMee(image: 'assets/images/avatar.png')
                       : image != null
                           ? ImageMee(image: image)
                           : LogoInitial(initial: initial!),
                 ),
               ),
-              if (showButtonCamera)
+              if (onTapCamera != null)
                 Positioned(
                   bottom: -9,
                   right: -9,

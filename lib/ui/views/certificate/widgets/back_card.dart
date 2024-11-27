@@ -17,7 +17,6 @@ class BackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var type = 20;
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(

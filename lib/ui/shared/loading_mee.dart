@@ -5,7 +5,6 @@ import 'package:app.rynest.aasi/ui/shared/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LoadingMee {
   static void show([List<String>? messages]) {
@@ -105,10 +104,10 @@ class _UILoadingState extends State<UILoading> {
               vSpaceXSmall,
               Text(
                 message,
-                style: GoogleFonts.roboto(
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
+                // style: GoogleFonts.roboto(
+                //   fontSize: 12,
+                //   color: Colors.white,
+                // ),
               ),
             ],
           ),

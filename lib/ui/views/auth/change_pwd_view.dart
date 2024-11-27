@@ -6,7 +6,6 @@ import '../../shared/appbar_mee.dart';
 import '../../shared/colors.dart';
 import '../../shared/widgets/button_mee.dart';
 import '../../shared/widgets/input_field.dart';
-import '../../shared/widgets/logos.dart';
 import 'change_pwd_viewmodel.dart';
 
 class ChangePwdView extends StatelessWidget {
@@ -49,7 +48,7 @@ class Body extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const LogoSignature(),
+            // const LogoSignature(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
