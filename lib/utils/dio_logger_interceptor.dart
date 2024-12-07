@@ -11,16 +11,20 @@ class DioLoggerInterceptor implements Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     final url = '${options.baseUrl}${options.path}';
     stopwatches[url] = Stopwatch()..start();
-    log('🌍 Making request: $url');
+    log('🌍 Making request: $url', name: 'DIO');
     if (options.data != null) {
-      final obj = const JsonEncoder.withIndent('  ').convert(options.data);
-      log('🌍 Data:');
-      log(obj);
+      log('🌍 Data request:', name: 'DIO');
+      if (options.data is FormData) {
+        log(options.data.toString(), name: 'DIO');
+      } else {
+        final obj = const JsonEncoder.withIndent('  ').convert(options.data);
+        log(obj, name: 'DIO');
+      }
     }
     if (options.queryParameters.isNotEmpty) {
       final params = const JsonEncoder.withIndent(' ').convert(options.queryParameters);
-      log('🌍 Params:');
-      log(params);
+      log('🌍 Params request:', name: 'DIO');
+      log(params, name: 'DIO');
     }
     return handler.next(options);
   }
@@ -29,9 +33,9 @@ class DioLoggerInterceptor implements Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final url = '${err.requestOptions.uri}';
     _logMessageAndClearStopwatch(null, url, '❌ Received error');
-    log('❌ ${err.stackTrace}');
+    log('❌ ${err.stackTrace}', name: 'DIO');
     if (err.response?.data != null) {
-      log('❌ Response Error: ${err.response?.data}');
+      log('❌ Response Error: ${err.response?.data}', name: 'DIO');
     }
     return handler.next(err);
   }
@@ -40,8 +44,12 @@ class DioLoggerInterceptor implements Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     final url = '${response.requestOptions.baseUrl}${response.requestOptions.path}';
     _logMessageAndClearStopwatch(response.statusCode, url, '⬅️ Received response');
-    log("${response.data}");
-    log('-------------------------');
+    if (response.data != null) {
+      final obj = const JsonEncoder.withIndent('  ').convert(response.data);
+      log('🌍 Data response:\n $obj', name: 'DIO');
+      // log(obj, name: 'DIO');
+    }
+    log('-------------------------', name: 'DIO');
     return handler.next(response);
   }
 
@@ -51,23 +59,23 @@ class DioLoggerInterceptor implements Interceptor {
       stopwatch.stop();
       _logResponse(statusCode, stopwatch.elapsedMilliseconds, url, message);
       if (stopwatch.elapsed > const Duration(seconds: 7)) {
-        log('❌ Connection Timed Out');
+        log('❌ Connection Timed Out', name: 'DIO');
         SnackBarService.show(message: '❌ Seems that the server is busy, please try again later !');
       }
       stopwatches.remove(url);
     } else {
-      log(message);
+      log(message, name: 'DIO');
     }
   }
 
   void _logResponse(int? statusCode, int milliseconds, String url, String message) {
     final emoji =
         switch (statusCode) { != null && >= 200 && < 300 => '✅', != null && >= 300 && < 400 => '🟠', _ => '❌' };
-    log(message);
+    log(message, name: 'DIO');
     if (statusCode != null) {
-      log('$emoji $statusCode $emoji | ${milliseconds}ms | $url');
+      log('$emoji $statusCode $emoji | ${milliseconds}ms | $url', name: 'DIO');
     } else {
-      log('$emoji | ${milliseconds}ms | $url');
+      log('$emoji | ${milliseconds}ms | $url', name: 'DIO');
     }
   }
 }

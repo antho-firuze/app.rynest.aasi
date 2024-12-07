@@ -6,6 +6,7 @@ import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:app.rynest.aasi/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers/notification_helper.dart';
@@ -15,6 +16,7 @@ final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupFlutterNotifications();
+  await initializeDateFormatting('id');
   HttpOverrides.global = MyHttpOverrides();
 
   final pref = await SharedPreferences.getInstance();
@@ -107,7 +109,6 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

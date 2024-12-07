@@ -38,6 +38,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
   Widget build(BuildContext context) {
     return MyUI(
       enabledSafeArea: false,
+      showConnectivityInfo: false,
       child: Scaffold(
         body: SizedBox(
           width: double.infinity,

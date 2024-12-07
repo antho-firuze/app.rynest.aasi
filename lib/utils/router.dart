@@ -1,8 +1,8 @@
 import 'package:app.rynest.aasi/common/views/dashboard_view.dart';
 import 'package:app.rynest.aasi/common/views/splash_view.dart';
 import 'package:app.rynest.aasi/common/views/walkthrough_view.dart';
-import 'package:app.rynest.aasi/features/user/views/home/home_view.dart';
-import 'package:app.rynest.aasi/features/user/views/profile/profile_view.dart';
+import 'package:app.rynest.aasi/features/user/views/home_view.dart';
+import 'package:app.rynest.aasi/features/user/views/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -6,18 +6,19 @@ class CustomCheckBox extends StatelessWidget {
   const CustomCheckBox({
     super.key,
     required this.value,
-    required this.onChanged,
+    this.onChanged,
     this.caption,
   });
 
   final bool value;
   final Widget? caption;
-  final Function(bool)? onChanged;
+  final Function(bool?)? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           height: 20,
@@ -35,9 +36,10 @@ class CustomCheckBox extends StatelessWidget {
           child: Checkbox(
             value: value,
             // activeColor: Colors.transparent,
-            onChanged: (value) {
-              onChanged!(value!);
-            },
+            onChanged: onChanged,
+            // onChanged:  (value) {
+            //   onChanged!(value!);
+            // },
             // side: const BorderSide(
             //   color: Colors.transparent,
             // ),
@@ -45,15 +47,14 @@ class CustomCheckBox extends StatelessWidget {
           ),
         ),
         10.width,
-        Expanded(
-          child: InkWell(
-            onTap: () => onChanged!(!value),
+        if (caption != null)
+          InkWell(
+            onTap: onChanged == null ? null : () => onChanged!(!value),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: caption ?? const Text(''),
+              child: caption,
             ),
           ),
-        ),
       ],
     );
   }

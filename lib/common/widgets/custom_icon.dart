@@ -11,11 +11,12 @@ class CustomIcon extends StatelessWidget {
     this.size = 32,
     this.padding,
     this.busy = false,
-    this.enabled = true,
+    this.enabled = true, this.tooltip,
   });
 
   final bool busy;
   final bool enabled;
+  final String? tooltip;
   final IconData? iconData;
   final Color? backgroundColor;
   final Color? foregroundColor;
@@ -25,10 +26,13 @@ class CustomIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: onPressed == null ? onlyIcon() : iconButton(),
+    return Tooltip(
+      message: tooltip ?? '',
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: onPressed == null ? onlyIcon() : iconButton(),
+      ),
     );
   }
 

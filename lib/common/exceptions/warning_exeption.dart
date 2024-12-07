@@ -1,5 +1,8 @@
+import 'package:app.rynest.aasi/common/widgets/custom_icon.dart';
+import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:super_icons/super_icons.dart';
 
 class WarningException extends StatelessWidget {
   const WarningException({super.key, this.title, this.child, this.subTitle});
@@ -12,33 +15,24 @@ class WarningException extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: context.screenWidthRatio(.15, 0),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/im-warning.png',
-                  width: context.screenWidthRatio(.5, .25),
-                ),
-                20.whenLandscape(0)!.height,
-                Text(title ?? '').tsTitleL().center(),
-                if (subTitle != null) ...[
-                  10.height,
-                  Text(subTitle ?? '').tsTitleS().center(),
-                ],
-                20.height,
-                child ?? Container(),
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const CustomIcon(size: 60, SuperIcons.is_warning_2_outline),
+              20.whenLandscape(0)!.height,
+              Text(title ?? '').tsTitleL().center().clr(oGrey70),
+              if (subTitle != null) ...[
+                10.height,
+                Text(subTitle ?? '').tsTitleS().center().clr(oGrey70),
               ],
-            ),
+              20.height,
+              child ?? Container(),
+            ],
           ),
         ),
       ],
     );
-    // return Image.asset('assets/images/im-warning.png');
   }
 }

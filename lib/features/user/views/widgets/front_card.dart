@@ -17,17 +17,18 @@ class FrontCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+    final certificate = ref.watch(certificateProvider);
 
     double width = context.screenWidthRatio(.9, .65);
     bool isLandscape = context.isLandscape();
 
-    String certNo = profile!.certificate?.certNo ?? '3321 0120 3938 3120';
+    String certNo = certificate?.certNo ?? '3321 0120 3938 3120';
     // String fullName = 'YUSWANTINI SPECIAL PAKE TELOR SEPULUH';
-    String fullName = profile.fullName;
+    String fullName = profile!.fullName ?? '';
     String companyName = profile.company?.name ?? 'PT. Amanah Asuransi';
-    String releaseDate = profile.certificate?.releaseDate!.asStringShort() ?? '07 Jun 2021';
-    String expiredDate = profile.certificate?.expiredDate!.asStringShort() ?? '07 Jun 2022';
-    String checkUrl = 'https://lsp-ps.id/check_sertifikat/validate/${profile.certificate?.certNo}';
+    String releaseDate = certificate?.releaseDate!.asStringShort() ?? '07 Jun 2021';
+    String expiredDate = certificate?.expiredDate!.asStringShort() ?? '07 Jun 2022';
+    String checkUrl = 'https://lsp-ps.id/check_sertifikat/validate/${certificate?.certNo}';
 
     return Card(
       elevation: 8,

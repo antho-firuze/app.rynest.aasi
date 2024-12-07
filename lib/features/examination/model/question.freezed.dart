@@ -20,7 +20,11 @@ Question _$QuestionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Question {
+  @JsonIntConverter()
   int? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'question_id')
+  String? get questionId => throw _privateConstructorUsedError;
+  String? get shuffle => throw _privateConstructorUsedError;
   String? get question => throw _privateConstructorUsedError;
   @JsonKey(name: 'answer_option_a')
   String? get answerOptionA => throw _privateConstructorUsedError;
@@ -30,12 +34,10 @@ mixin _$Question {
   String? get answerOptionC => throw _privateConstructorUsedError;
   @JsonKey(name: 'answer_option_d')
   String? get answerOptionD => throw _privateConstructorUsedError;
-  @JsonKey(name: 'answer_option_e')
-  String? get answerOptionE => throw _privateConstructorUsedError;
+  @JsonKey(name: 'answer_key')
   String? get answerKey => throw _privateConstructorUsedError;
   @JsonKey(name: 'answered_key')
   String? get answeredKey => throw _privateConstructorUsedError;
-  List<QuestionOption>? get options => throw _privateConstructorUsedError;
 
   /// Serializes this Question to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,16 +55,16 @@ abstract class $QuestionCopyWith<$Res> {
       _$QuestionCopyWithImpl<$Res, Question>;
   @useResult
   $Res call(
-      {int? id,
+      {@JsonIntConverter() int? id,
+      @JsonKey(name: 'question_id') String? questionId,
+      String? shuffle,
       String? question,
       @JsonKey(name: 'answer_option_a') String? answerOptionA,
       @JsonKey(name: 'answer_option_b') String? answerOptionB,
       @JsonKey(name: 'answer_option_c') String? answerOptionC,
       @JsonKey(name: 'answer_option_d') String? answerOptionD,
-      @JsonKey(name: 'answer_option_e') String? answerOptionE,
-      String? answerKey,
-      @JsonKey(name: 'answered_key') String? answeredKey,
-      List<QuestionOption>? options});
+      @JsonKey(name: 'answer_key') String? answerKey,
+      @JsonKey(name: 'answered_key') String? answeredKey});
 }
 
 /// @nodoc
@@ -81,21 +83,29 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
   @override
   $Res call({
     Object? id = freezed,
+    Object? questionId = freezed,
+    Object? shuffle = freezed,
     Object? question = freezed,
     Object? answerOptionA = freezed,
     Object? answerOptionB = freezed,
     Object? answerOptionC = freezed,
     Object? answerOptionD = freezed,
-    Object? answerOptionE = freezed,
     Object? answerKey = freezed,
     Object? answeredKey = freezed,
-    Object? options = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      questionId: freezed == questionId
+          ? _value.questionId
+          : questionId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffle: freezed == shuffle
+          ? _value.shuffle
+          : shuffle // ignore: cast_nullable_to_non_nullable
+              as String?,
       question: freezed == question
           ? _value.question
           : question // ignore: cast_nullable_to_non_nullable
@@ -116,10 +126,6 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
           ? _value.answerOptionD
           : answerOptionD // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionE: freezed == answerOptionE
-          ? _value.answerOptionE
-          : answerOptionE // ignore: cast_nullable_to_non_nullable
-              as String?,
       answerKey: freezed == answerKey
           ? _value.answerKey
           : answerKey // ignore: cast_nullable_to_non_nullable
@@ -128,10 +134,6 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
           ? _value.answeredKey
           : answeredKey // ignore: cast_nullable_to_non_nullable
               as String?,
-      options: freezed == options
-          ? _value.options
-          : options // ignore: cast_nullable_to_non_nullable
-              as List<QuestionOption>?,
     ) as $Val);
   }
 }
@@ -145,16 +147,16 @@ abstract class _$$QuestionImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? id,
+      {@JsonIntConverter() int? id,
+      @JsonKey(name: 'question_id') String? questionId,
+      String? shuffle,
       String? question,
       @JsonKey(name: 'answer_option_a') String? answerOptionA,
       @JsonKey(name: 'answer_option_b') String? answerOptionB,
       @JsonKey(name: 'answer_option_c') String? answerOptionC,
       @JsonKey(name: 'answer_option_d') String? answerOptionD,
-      @JsonKey(name: 'answer_option_e') String? answerOptionE,
-      String? answerKey,
-      @JsonKey(name: 'answered_key') String? answeredKey,
-      List<QuestionOption>? options});
+      @JsonKey(name: 'answer_key') String? answerKey,
+      @JsonKey(name: 'answered_key') String? answeredKey});
 }
 
 /// @nodoc
@@ -171,21 +173,29 @@ class __$$QuestionImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? questionId = freezed,
+    Object? shuffle = freezed,
     Object? question = freezed,
     Object? answerOptionA = freezed,
     Object? answerOptionB = freezed,
     Object? answerOptionC = freezed,
     Object? answerOptionD = freezed,
-    Object? answerOptionE = freezed,
     Object? answerKey = freezed,
     Object? answeredKey = freezed,
-    Object? options = freezed,
   }) {
     return _then(_$QuestionImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      questionId: freezed == questionId
+          ? _value.questionId
+          : questionId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffle: freezed == shuffle
+          ? _value.shuffle
+          : shuffle // ignore: cast_nullable_to_non_nullable
+              as String?,
       question: freezed == question
           ? _value.question
           : question // ignore: cast_nullable_to_non_nullable
@@ -206,10 +216,6 @@ class __$$QuestionImplCopyWithImpl<$Res>
           ? _value.answerOptionD
           : answerOptionD // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionE: freezed == answerOptionE
-          ? _value.answerOptionE
-          : answerOptionE // ignore: cast_nullable_to_non_nullable
-              as String?,
       answerKey: freezed == answerKey
           ? _value.answerKey
           : answerKey // ignore: cast_nullable_to_non_nullable
@@ -218,10 +224,6 @@ class __$$QuestionImplCopyWithImpl<$Res>
           ? _value.answeredKey
           : answeredKey // ignore: cast_nullable_to_non_nullable
               as String?,
-      options: freezed == options
-          ? _value._options
-          : options // ignore: cast_nullable_to_non_nullable
-              as List<QuestionOption>?,
     ));
   }
 }
@@ -230,23 +232,28 @@ class __$$QuestionImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$QuestionImpl implements _Question {
   _$QuestionImpl(
-      {this.id,
+      {@JsonIntConverter() this.id,
+      @JsonKey(name: 'question_id') this.questionId,
+      this.shuffle,
       this.question,
       @JsonKey(name: 'answer_option_a') this.answerOptionA,
       @JsonKey(name: 'answer_option_b') this.answerOptionB,
       @JsonKey(name: 'answer_option_c') this.answerOptionC,
       @JsonKey(name: 'answer_option_d') this.answerOptionD,
-      @JsonKey(name: 'answer_option_e') this.answerOptionE,
-      this.answerKey,
-      @JsonKey(name: 'answered_key') this.answeredKey,
-      final List<QuestionOption>? options})
-      : _options = options;
+      @JsonKey(name: 'answer_key') this.answerKey,
+      @JsonKey(name: 'answered_key') this.answeredKey});
 
   factory _$QuestionImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuestionImplFromJson(json);
 
   @override
+  @JsonIntConverter()
   final int? id;
+  @override
+  @JsonKey(name: 'question_id')
+  final String? questionId;
+  @override
+  final String? shuffle;
   @override
   final String? question;
   @override
@@ -262,26 +269,15 @@ class _$QuestionImpl implements _Question {
   @JsonKey(name: 'answer_option_d')
   final String? answerOptionD;
   @override
-  @JsonKey(name: 'answer_option_e')
-  final String? answerOptionE;
-  @override
+  @JsonKey(name: 'answer_key')
   final String? answerKey;
   @override
   @JsonKey(name: 'answered_key')
   final String? answeredKey;
-  final List<QuestionOption>? _options;
-  @override
-  List<QuestionOption>? get options {
-    final value = _options;
-    if (value == null) return null;
-    if (_options is EqualUnmodifiableListView) return _options;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
 
   @override
   String toString() {
-    return 'Question(id: $id, question: $question, answerOptionA: $answerOptionA, answerOptionB: $answerOptionB, answerOptionC: $answerOptionC, answerOptionD: $answerOptionD, answerOptionE: $answerOptionE, answerKey: $answerKey, answeredKey: $answeredKey, options: $options)';
+    return 'Question(id: $id, questionId: $questionId, shuffle: $shuffle, question: $question, answerOptionA: $answerOptionA, answerOptionB: $answerOptionB, answerOptionC: $answerOptionC, answerOptionD: $answerOptionD, answerKey: $answerKey, answeredKey: $answeredKey)';
   }
 
   @override
@@ -290,6 +286,9 @@ class _$QuestionImpl implements _Question {
         (other.runtimeType == runtimeType &&
             other is _$QuestionImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.questionId, questionId) ||
+                other.questionId == questionId) &&
+            (identical(other.shuffle, shuffle) || other.shuffle == shuffle) &&
             (identical(other.question, question) ||
                 other.question == question) &&
             (identical(other.answerOptionA, answerOptionA) ||
@@ -300,13 +299,10 @@ class _$QuestionImpl implements _Question {
                 other.answerOptionC == answerOptionC) &&
             (identical(other.answerOptionD, answerOptionD) ||
                 other.answerOptionD == answerOptionD) &&
-            (identical(other.answerOptionE, answerOptionE) ||
-                other.answerOptionE == answerOptionE) &&
             (identical(other.answerKey, answerKey) ||
                 other.answerKey == answerKey) &&
             (identical(other.answeredKey, answeredKey) ||
-                other.answeredKey == answeredKey) &&
-            const DeepCollectionEquality().equals(other._options, _options));
+                other.answeredKey == answeredKey));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -314,15 +310,15 @@ class _$QuestionImpl implements _Question {
   int get hashCode => Object.hash(
       runtimeType,
       id,
+      questionId,
+      shuffle,
       question,
       answerOptionA,
       answerOptionB,
       answerOptionC,
       answerOptionD,
-      answerOptionE,
       answerKey,
-      answeredKey,
-      const DeepCollectionEquality().hash(_options));
+      answeredKey);
 
   /// Create a copy of Question
   /// with the given fields replaced by the non-null parameter values.
@@ -342,22 +338,29 @@ class _$QuestionImpl implements _Question {
 
 abstract class _Question implements Question {
   factory _Question(
-      {final int? id,
-      final String? question,
-      @JsonKey(name: 'answer_option_a') final String? answerOptionA,
-      @JsonKey(name: 'answer_option_b') final String? answerOptionB,
-      @JsonKey(name: 'answer_option_c') final String? answerOptionC,
-      @JsonKey(name: 'answer_option_d') final String? answerOptionD,
-      @JsonKey(name: 'answer_option_e') final String? answerOptionE,
-      final String? answerKey,
-      @JsonKey(name: 'answered_key') final String? answeredKey,
-      final List<QuestionOption>? options}) = _$QuestionImpl;
+          {@JsonIntConverter() final int? id,
+          @JsonKey(name: 'question_id') final String? questionId,
+          final String? shuffle,
+          final String? question,
+          @JsonKey(name: 'answer_option_a') final String? answerOptionA,
+          @JsonKey(name: 'answer_option_b') final String? answerOptionB,
+          @JsonKey(name: 'answer_option_c') final String? answerOptionC,
+          @JsonKey(name: 'answer_option_d') final String? answerOptionD,
+          @JsonKey(name: 'answer_key') final String? answerKey,
+          @JsonKey(name: 'answered_key') final String? answeredKey}) =
+      _$QuestionImpl;
 
   factory _Question.fromJson(Map<String, dynamic> json) =
       _$QuestionImpl.fromJson;
 
   @override
+  @JsonIntConverter()
   int? get id;
+  @override
+  @JsonKey(name: 'question_id')
+  String? get questionId;
+  @override
+  String? get shuffle;
   @override
   String? get question;
   @override
@@ -373,260 +376,16 @@ abstract class _Question implements Question {
   @JsonKey(name: 'answer_option_d')
   String? get answerOptionD;
   @override
-  @JsonKey(name: 'answer_option_e')
-  String? get answerOptionE;
-  @override
+  @JsonKey(name: 'answer_key')
   String? get answerKey;
   @override
   @JsonKey(name: 'answered_key')
   String? get answeredKey;
-  @override
-  List<QuestionOption>? get options;
 
   /// Create a copy of Question
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$QuestionImplCopyWith<_$QuestionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-QuestionOption _$QuestionOptionFromJson(Map<String, dynamic> json) {
-  return _QuestionOption.fromJson(json);
-}
-
-/// @nodoc
-mixin _$QuestionOption {
-  int? get questionId => throw _privateConstructorUsedError;
-  String? get optionKey => throw _privateConstructorUsedError;
-  String? get answerKey => throw _privateConstructorUsedError;
-  String? get answeredKey => throw _privateConstructorUsedError;
-  String? get textOption => throw _privateConstructorUsedError;
-
-  /// Serializes this QuestionOption to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of QuestionOption
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $QuestionOptionCopyWith<QuestionOption> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $QuestionOptionCopyWith<$Res> {
-  factory $QuestionOptionCopyWith(
-          QuestionOption value, $Res Function(QuestionOption) then) =
-      _$QuestionOptionCopyWithImpl<$Res, QuestionOption>;
-  @useResult
-  $Res call(
-      {int? questionId,
-      String? optionKey,
-      String? answerKey,
-      String? answeredKey,
-      String? textOption});
-}
-
-/// @nodoc
-class _$QuestionOptionCopyWithImpl<$Res, $Val extends QuestionOption>
-    implements $QuestionOptionCopyWith<$Res> {
-  _$QuestionOptionCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of QuestionOption
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? questionId = freezed,
-    Object? optionKey = freezed,
-    Object? answerKey = freezed,
-    Object? answeredKey = freezed,
-    Object? textOption = freezed,
-  }) {
-    return _then(_value.copyWith(
-      questionId: freezed == questionId
-          ? _value.questionId
-          : questionId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      optionKey: freezed == optionKey
-          ? _value.optionKey
-          : optionKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      answerKey: freezed == answerKey
-          ? _value.answerKey
-          : answerKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      answeredKey: freezed == answeredKey
-          ? _value.answeredKey
-          : answeredKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      textOption: freezed == textOption
-          ? _value.textOption
-          : textOption // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$QuestionOptionImplCopyWith<$Res>
-    implements $QuestionOptionCopyWith<$Res> {
-  factory _$$QuestionOptionImplCopyWith(_$QuestionOptionImpl value,
-          $Res Function(_$QuestionOptionImpl) then) =
-      __$$QuestionOptionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int? questionId,
-      String? optionKey,
-      String? answerKey,
-      String? answeredKey,
-      String? textOption});
-}
-
-/// @nodoc
-class __$$QuestionOptionImplCopyWithImpl<$Res>
-    extends _$QuestionOptionCopyWithImpl<$Res, _$QuestionOptionImpl>
-    implements _$$QuestionOptionImplCopyWith<$Res> {
-  __$$QuestionOptionImplCopyWithImpl(
-      _$QuestionOptionImpl _value, $Res Function(_$QuestionOptionImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of QuestionOption
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? questionId = freezed,
-    Object? optionKey = freezed,
-    Object? answerKey = freezed,
-    Object? answeredKey = freezed,
-    Object? textOption = freezed,
-  }) {
-    return _then(_$QuestionOptionImpl(
-      questionId: freezed == questionId
-          ? _value.questionId
-          : questionId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      optionKey: freezed == optionKey
-          ? _value.optionKey
-          : optionKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      answerKey: freezed == answerKey
-          ? _value.answerKey
-          : answerKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      answeredKey: freezed == answeredKey
-          ? _value.answeredKey
-          : answeredKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      textOption: freezed == textOption
-          ? _value.textOption
-          : textOption // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$QuestionOptionImpl implements _QuestionOption {
-  _$QuestionOptionImpl(
-      {this.questionId,
-      this.optionKey,
-      this.answerKey,
-      this.answeredKey,
-      this.textOption});
-
-  factory _$QuestionOptionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$QuestionOptionImplFromJson(json);
-
-  @override
-  final int? questionId;
-  @override
-  final String? optionKey;
-  @override
-  final String? answerKey;
-  @override
-  final String? answeredKey;
-  @override
-  final String? textOption;
-
-  @override
-  String toString() {
-    return 'QuestionOption(questionId: $questionId, optionKey: $optionKey, answerKey: $answerKey, answeredKey: $answeredKey, textOption: $textOption)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$QuestionOptionImpl &&
-            (identical(other.questionId, questionId) ||
-                other.questionId == questionId) &&
-            (identical(other.optionKey, optionKey) ||
-                other.optionKey == optionKey) &&
-            (identical(other.answerKey, answerKey) ||
-                other.answerKey == answerKey) &&
-            (identical(other.answeredKey, answeredKey) ||
-                other.answeredKey == answeredKey) &&
-            (identical(other.textOption, textOption) ||
-                other.textOption == textOption));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, questionId, optionKey, answerKey, answeredKey, textOption);
-
-  /// Create a copy of QuestionOption
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$QuestionOptionImplCopyWith<_$QuestionOptionImpl> get copyWith =>
-      __$$QuestionOptionImplCopyWithImpl<_$QuestionOptionImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$QuestionOptionImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _QuestionOption implements QuestionOption {
-  factory _QuestionOption(
-      {final int? questionId,
-      final String? optionKey,
-      final String? answerKey,
-      final String? answeredKey,
-      final String? textOption}) = _$QuestionOptionImpl;
-
-  factory _QuestionOption.fromJson(Map<String, dynamic> json) =
-      _$QuestionOptionImpl.fromJson;
-
-  @override
-  int? get questionId;
-  @override
-  String? get optionKey;
-  @override
-  String? get answerKey;
-  @override
-  String? get answeredKey;
-  @override
-  String? get textOption;
-
-  /// Create a copy of QuestionOption
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$QuestionOptionImplCopyWith<_$QuestionOptionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

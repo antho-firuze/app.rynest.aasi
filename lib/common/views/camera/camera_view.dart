@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:app.rynest.aasi/common/services/loading_service.dart';
 import 'package:app.rynest.aasi/common/views/camera/widgets/camera_button.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
-import 'package:app.rynest.aasi/ui/shared/loading_mee.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -89,9 +89,7 @@ class _CameraViewState extends State<CameraView> {
 
     return MyUI(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Kamera'),
-        ),
+        // appBar: AppBar(title: const Text('Kamera')),
         body: _liveFeedBody(),
       ),
     );
@@ -229,51 +227,54 @@ class _CameraViewState extends State<CameraView> {
       );
 
   Future _captureImage() async {
-    LoadingMee.show();
+    LoadingService.show();
+    setState(() {});
 
     XFile xFile = await _controller!.takePicture();
     _file = File(xFile.path);
-    _file = await _flipImage(_file!);
+
+    log('original size => ${_file?.lengthSync()}', name: "CAMERA");
+
+    _file = await _flipImage(_file);
     _file = await _compressImage(_file!);
 
-    log("filepath : ${_file!.path}", name: "CAMERA");
-
-    LoadingMee.dismiss();
+    LoadingService.dissmiss();
     setState(() {});
   }
 
-  Future<File> _flipImage(File file) async {
+  Future<File?> _flipImage(File? file) async {
     // If camera direction front (1), then flip image
-    if (_cameraIndex == 1) {
+    if (file != null && _cameraIndex == 1) {
       // FLIP IMAGE TO HORIZONTAL
       Uint8List imageBytes = await file.readAsBytes();
       img.Image? originalImage = img.decodeImage(imageBytes);
       img.Image fixedImage = img.flipHorizontal(originalImage!);
-      log('size => ${fixedImage.lengthInBytes}');
+      log('flip image size => ${fixedImage.lengthInBytes}', name: "CAMERA");
 
       return await file.writeAsBytes(img.encodeJpg(fixedImage), flush: true);
     }
-
-    log('original size => ${file.lengthSync()}');
     return file;
   }
 
-  Future<File> _compressImage(File file) async {
-    final lastIndex = file.absolute.path.lastIndexOf(RegExp(r'.jp'));
-    final splitted = file.absolute.path.substring(0, (lastIndex));
-    final outPath = "${splitted}_out${file.absolute.path.substring(lastIndex)}";
+  Future<File?> _compressImage(File? file) async {
+    if (file != null) {
+      final lastIndex = file.absolute.path.lastIndexOf(RegExp(r'.jp'));
+      final splitted = file.absolute.path.substring(0, (lastIndex));
+      final outPath = "${splitted}_out${file.absolute.path.substring(lastIndex)}";
 
-    var compressedFile = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      outPath,
-      quality: 100,
-    );
-    File fille = File(compressedFile!.path);
+      var compressedFile = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path,
+        outPath,
+        quality: 100,
+      );
+      File fille = File(compressedFile!.path);
 
-    log('original size => ${file.lengthSync()}');
-    log('compressed size => ${fille.lengthSync()}');
+      log('compressed size => ${fille.lengthSync()}', name: "CAMERA");
 
-    return fille;
+      return fille;
+    }
+
+    return file;
   }
 
   Future _startLiveFeed() async {
@@ -410,8 +411,11 @@ class _CameraViewState extends State<CameraView> {
                       icon: const Icon(Icons.save, color: Colors.white54),
                       color: Colors.black54,
                       onPressed: () async {
-                        // return F.back(result: _file!.path);
-                        widget.onTakeShoot!(_file!);
+                        log("filepath : ${_file!.path}", name: "CAMERA");
+                        if (widget.onTakeShoot != null) {
+                          widget.onTakeShoot!(_file!);
+                        }
+                        if (mounted) Navigator.of(context).pop();
                       },
                     ),
                     CameraButton(

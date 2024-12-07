@@ -20,14 +20,13 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$User {
+  @JsonIntConverter()
   int? get id => throw _privateConstructorUsedError;
-  String? get name => throw _privateConstructorUsedError;
-  String? get username => throw _privateConstructorUsedError;
-  String? get email => throw _privateConstructorUsedError;
-  @JsonKey(name: 'fullname')
-  String? get fullName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'userrole')
-  String? get userRole => throw _privateConstructorUsedError;
+  @JsonKey(name: 'role_id')
+  @JsonIntConverter()
+  int? get roleId => throw _privateConstructorUsedError;
+  String get username => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -44,12 +43,10 @@ abstract class $UserCopyWith<$Res> {
       _$UserCopyWithImpl<$Res, User>;
   @useResult
   $Res call(
-      {int? id,
-      String? name,
-      String? username,
-      String? email,
-      @JsonKey(name: 'fullname') String? fullName,
-      @JsonKey(name: 'userrole') String? userRole});
+      {@JsonIntConverter() int? id,
+      @JsonKey(name: 'role_id') @JsonIntConverter() int? roleId,
+      String username,
+      String email});
 }
 
 /// @nodoc
@@ -68,37 +65,27 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @override
   $Res call({
     Object? id = freezed,
-    Object? name = freezed,
-    Object? username = freezed,
-    Object? email = freezed,
-    Object? fullName = freezed,
-    Object? userRole = freezed,
+    Object? roleId = freezed,
+    Object? username = null,
+    Object? email = null,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      username: freezed == username
+      roleId: freezed == roleId
+          ? _value.roleId
+          : roleId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
-              as String?,
-      email: freezed == email
+              as String,
+      email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String?,
-      fullName: freezed == fullName
-          ? _value.fullName
-          : fullName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      userRole: freezed == userRole
-          ? _value.userRole
-          : userRole // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ) as $Val);
   }
 }
@@ -111,12 +98,10 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {int? id,
-      String? name,
-      String? username,
-      String? email,
-      @JsonKey(name: 'fullname') String? fullName,
-      @JsonKey(name: 'userrole') String? userRole});
+      {@JsonIntConverter() int? id,
+      @JsonKey(name: 'role_id') @JsonIntConverter() int? roleId,
+      String username,
+      String email});
 }
 
 /// @nodoc
@@ -132,37 +117,27 @@ class __$$UserImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? name = freezed,
-    Object? username = freezed,
-    Object? email = freezed,
-    Object? fullName = freezed,
-    Object? userRole = freezed,
+    Object? roleId = freezed,
+    Object? username = null,
+    Object? email = null,
   }) {
     return _then(_$UserImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      username: freezed == username
+      roleId: freezed == roleId
+          ? _value.roleId
+          : roleId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
-              as String?,
-      email: freezed == email
+              as String,
+      email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
-              as String?,
-      fullName: freezed == fullName
-          ? _value.fullName
-          : fullName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      userRole: freezed == userRole
-          ? _value.userRole
-          : userRole // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ));
   }
 }
@@ -171,34 +146,31 @@ class __$$UserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserImpl implements _User {
   _$UserImpl(
-      {this.id,
-      this.name,
-      this.username,
-      this.email,
-      @JsonKey(name: 'fullname') this.fullName,
-      @JsonKey(name: 'userrole') this.userRole});
+      {@JsonIntConverter() this.id,
+      @JsonKey(name: 'role_id') @JsonIntConverter() this.roleId,
+      this.username = '',
+      this.email = ''});
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
 
   @override
+  @JsonIntConverter()
   final int? id;
   @override
-  final String? name;
+  @JsonKey(name: 'role_id')
+  @JsonIntConverter()
+  final int? roleId;
   @override
-  final String? username;
+  @JsonKey()
+  final String username;
   @override
-  final String? email;
-  @override
-  @JsonKey(name: 'fullname')
-  final String? fullName;
-  @override
-  @JsonKey(name: 'userrole')
-  final String? userRole;
+  @JsonKey()
+  final String email;
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, username: $username, email: $email, fullName: $fullName, userRole: $userRole)';
+    return 'User(id: $id, roleId: $roleId, username: $username, email: $email)';
   }
 
   @override
@@ -207,20 +179,15 @@ class _$UserImpl implements _User {
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.roleId, roleId) || other.roleId == roleId) &&
             (identical(other.username, username) ||
                 other.username == username) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.fullName, fullName) ||
-                other.fullName == fullName) &&
-            (identical(other.userRole, userRole) ||
-                other.userRole == userRole));
+            (identical(other.email, email) || other.email == email));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, username, email, fullName, userRole);
+  int get hashCode => Object.hash(runtimeType, id, roleId, username, email);
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -240,29 +207,24 @@ class _$UserImpl implements _User {
 
 abstract class _User implements User {
   factory _User(
-      {final int? id,
-      final String? name,
-      final String? username,
-      final String? email,
-      @JsonKey(name: 'fullname') final String? fullName,
-      @JsonKey(name: 'userrole') final String? userRole}) = _$UserImpl;
+      {@JsonIntConverter() final int? id,
+      @JsonKey(name: 'role_id') @JsonIntConverter() final int? roleId,
+      final String username,
+      final String email}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
+  @JsonIntConverter()
   int? get id;
   @override
-  String? get name;
+  @JsonKey(name: 'role_id')
+  @JsonIntConverter()
+  int? get roleId;
   @override
-  String? get username;
+  String get username;
   @override
-  String? get email;
-  @override
-  @JsonKey(name: 'fullname')
-  String? get fullName;
-  @override
-  @JsonKey(name: 'userrole')
-  String? get userRole;
+  String get email;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.

@@ -57,19 +57,21 @@ class PwdResetView extends ConsumerWidget {
                       prefixIcon: const Icon(Icons.lock_outline),
                     ),
                     40.height,
-                    CustomButton(
-                      // busy: state.isLoading,
-                      width: double.infinity,
-                      child: Text('Simpan'.hardcoded),
-                      onPressed: () {
-                        if (formStateKey.currentState!.validate() == false) {
-                          return;
-                        }
-                        // Submit
-                        ref.read(authCtrlProvider).resetPwd();
-                      },
+                    Center(
+                      child: CustomButton(
+                        // busy: state.isLoading,
+                        width: double.infinity,
+                        child: Text('Simpan'.hardcoded),
+                        onPressed: () {
+                          if (formStateKey.currentState!.validate() == false) {
+                            return;
+                          }
+                          // Submit
+                          ref.read(authCtrlProvider).resetPwd();
+                        },
+                      ),
                     ),
-                    20.height,
+                    60.height,
                   ],
                 ),
               ),

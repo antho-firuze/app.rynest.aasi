@@ -8,7 +8,7 @@ class Resp with _$Resp {
   factory Resp({
     bool? status,
     String? message,
-    Map<String, dynamic>? result,
+    dynamic result,
     Err? error,
   }) = _Resp;
 

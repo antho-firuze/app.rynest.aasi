@@ -65,8 +65,8 @@ class AlertService {
     VoidCallback? onOk,
     VoidCallback? onYes,
     bool showNo = true,
-    bool showOk = true,
-    bool showYes = false,
+    bool showOk = false,
+    bool showYes = true,
   }) async {
     await AlertService.show(
       title: title,

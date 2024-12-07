@@ -22,7 +22,7 @@ Resp _$RespFromJson(Map<String, dynamic> json) {
 mixin _$Resp {
   bool? get status => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
-  Map<String, dynamic>? get result => throw _privateConstructorUsedError;
+  dynamic get result => throw _privateConstructorUsedError;
   Err? get error => throw _privateConstructorUsedError;
 
   /// Serializes this Resp to a JSON map.
@@ -39,11 +39,7 @@ abstract class $RespCopyWith<$Res> {
   factory $RespCopyWith(Resp value, $Res Function(Resp) then) =
       _$RespCopyWithImpl<$Res, Resp>;
   @useResult
-  $Res call(
-      {bool? status,
-      String? message,
-      Map<String, dynamic>? result,
-      Err? error});
+  $Res call({bool? status, String? message, dynamic result, Err? error});
 
   $ErrCopyWith<$Res>? get error;
 }
@@ -80,7 +76,7 @@ class _$RespCopyWithImpl<$Res, $Val extends Resp>
       result: freezed == result
           ? _value.result
           : result // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
+              as dynamic,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -110,11 +106,7 @@ abstract class _$$RespImplCopyWith<$Res> implements $RespCopyWith<$Res> {
       __$$RespImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool? status,
-      String? message,
-      Map<String, dynamic>? result,
-      Err? error});
+  $Res call({bool? status, String? message, dynamic result, Err? error});
 
   @override
   $ErrCopyWith<$Res>? get error;
@@ -147,9 +139,9 @@ class __$$RespImplCopyWithImpl<$Res>
           : message // ignore: cast_nullable_to_non_nullable
               as String?,
       result: freezed == result
-          ? _value._result
+          ? _value.result
           : result // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
+              as dynamic,
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -161,12 +153,7 @@ class __$$RespImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$RespImpl implements _Resp {
-  _$RespImpl(
-      {this.status,
-      this.message,
-      final Map<String, dynamic>? result,
-      this.error})
-      : _result = result;
+  _$RespImpl({this.status, this.message, this.result, this.error});
 
   factory _$RespImpl.fromJson(Map<String, dynamic> json) =>
       _$$RespImplFromJson(json);
@@ -175,16 +162,8 @@ class _$RespImpl implements _Resp {
   final bool? status;
   @override
   final String? message;
-  final Map<String, dynamic>? _result;
   @override
-  Map<String, dynamic>? get result {
-    final value = _result;
-    if (value == null) return null;
-    if (_result is EqualUnmodifiableMapView) return _result;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
+  final dynamic result;
   @override
   final Err? error;
 
@@ -200,14 +179,14 @@ class _$RespImpl implements _Resp {
             other is _$RespImpl &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.message, message) || other.message == message) &&
-            const DeepCollectionEquality().equals(other._result, _result) &&
+            const DeepCollectionEquality().equals(other.result, result) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, status, message,
-      const DeepCollectionEquality().hash(_result), error);
+      const DeepCollectionEquality().hash(result), error);
 
   /// Create a copy of Resp
   /// with the given fields replaced by the non-null parameter values.
@@ -229,7 +208,7 @@ abstract class _Resp implements Resp {
   factory _Resp(
       {final bool? status,
       final String? message,
-      final Map<String, dynamic>? result,
+      final dynamic result,
       final Err? error}) = _$RespImpl;
 
   factory _Resp.fromJson(Map<String, dynamic> json) = _$RespImpl.fromJson;
@@ -239,7 +218,7 @@ abstract class _Resp implements Resp {
   @override
   String? get message;
   @override
-  Map<String, dynamic>? get result;
+  dynamic get result;
   @override
   Err? get error;
 

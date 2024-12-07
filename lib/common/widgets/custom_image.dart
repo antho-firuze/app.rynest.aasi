@@ -25,28 +25,41 @@ class CustomImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return src == null
-        ? ImageFailed(title: errorTitle)
-        : (src is String)
-            ? (src.substring(0, 4).toLowerCase() == 'http')
-                ? imageNetwork()
-                : (src.substring(0, 6).toLowerCase() == 'assets')
-                    ? imageAsset()
-                    : imageEncoder()
-            : imageFile();
+    if (src == null) {
+      return ImageFailed(title: errorTitle);
+    }
+
+    if (src is String) {
+      
+      var type = src.substring(0, 4).toLowerCase();
+      if (type == 'http') {
+        return imageNetwork();
+      } else {
+        type = src.substring(0, 6).toLowerCase();
+        if (type == 'assets') {
+          return imageAsset();
+        }
+
+        return imageEncoder();
+      }
+    }
+
+    return imageFile();
   }
 
-  Widget imageNetwork() => GestureDetector(
-        onTap: onTap,
-        child: Image.network(
-          src,
-          color: color,
-          fit: fit ?? BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => ImageFailed(
-            title: errorTitle,
-          ),
+  Widget imageNetwork() {
+    return GestureDetector(
+      onTap: onTap,
+      child: Image.network(
+        src,
+        color: color,
+        fit: fit ?? BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => ImageFailed(
+          title: errorTitle,
         ),
-      );
+      ),
+    );
+  }
 
   Widget imageFile() => GestureDetector(
         onTap: onTap,
@@ -92,7 +105,7 @@ class ImageFailed extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const CustomIcon(SuperIcons.is_warning_2_outline, size: 50),
-        Text(title).clr(oGrey70),
+        Text(title).clr(oGrey70).center(),
       ],
     );
   }

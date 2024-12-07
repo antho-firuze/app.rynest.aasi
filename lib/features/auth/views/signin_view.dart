@@ -1,11 +1,9 @@
-import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_checkbox.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_input.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_rich_text.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/auth/views/pwd_forgot_view.dart';
-import 'package:app.rynest.aasi/features/auth/views/signup_view.dart';
 import 'package:app.rynest.aasi/localization/string_hardcoded.dart';
 import 'package:app.rynest.aasi/ui/shared/widgets/logos.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
@@ -218,7 +216,7 @@ class SignInView extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              40.height,
+                              60.height,
                             ],
                           ),
                         ),

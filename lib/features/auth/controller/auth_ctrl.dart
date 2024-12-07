@@ -142,7 +142,8 @@ class AuthCtrl {
     if (state.hasError) return false;
 
     setToken(state.value?.result?['token']);
-    // setUser(user);
+
+    setUser(state.value?.result?['user'] == null ? null : User.fromJson(state.value?.result?['user']));
     setRemember(ref.read(isRememberProvider));
 
     return true;

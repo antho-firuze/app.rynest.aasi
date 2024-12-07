@@ -1,41 +1,75 @@
 import 'package:json_annotation/json_annotation.dart';
 
-class StringToIntConverter implements JsonConverter<int, String?> {
-  const StringToIntConverter();
+class JsonIntConverter implements JsonConverter<int, dynamic> {
+  const JsonIntConverter();
 
   @override
-  int fromJson(String? json) => json == null ? 0 : (int.tryParse(json) ?? 0);
+  int fromJson(dynamic json) => json == null
+      ? 0
+      : json is String
+          ? (int.tryParse(json) ?? 0)
+          : json is double
+              ? json.toInt()
+              : json;
 
   @override
-  String? toJson(int? object) => object?.toString();
+  int toJson(int object) => object;
 }
 
-class IntToBoolConverter implements JsonConverter<bool, int> {
-  const IntToBoolConverter();
+class JsonDoubleConverter implements JsonConverter<double, dynamic> {
+  const JsonDoubleConverter();
 
   @override
-  bool fromJson(int json) => json == 1;
+  double fromJson(dynamic json) => json == null
+      ? 0.0
+      : json is String
+          ? (double.tryParse(json) ?? 0.0)
+          : json is int
+              ? json.toDouble()
+              : json;
 
   @override
-  int toJson(bool object) => object ? 1 : 0;
+  double toJson(double object) => object;
 }
 
-class StringToDateConverter implements JsonConverter<DateTime?, String?> {
-  const StringToDateConverter();
+class JsonBoolConverter implements JsonConverter<bool, dynamic> {
+  const JsonBoolConverter();
 
   @override
-  DateTime? fromJson(String? json) => json == null
+  bool fromJson(dynamic json) => json == null
+      ? false
+      : json is String
+          ? json == 'true' || json == '1'
+              ? true
+              : false
+          : json is int
+              ? json == 1
+                  ? true
+                  : false
+              : json;
+
+  @override
+  bool toJson(bool object) => object;
+}
+
+class JsonDateTimeConverter implements JsonConverter<DateTime?, dynamic> {
+  const JsonDateTimeConverter();
+
+  @override
+  DateTime? fromJson(dynamic json) => json == null
       ? null
-      : json.isEmpty
-          ? null
-          : DateTime.parse(json);
+      : json is String
+          ? json.isEmpty
+              ? null
+              : DateTime.parse(json)
+          : json;
 
   @override
   String? toJson(DateTime? object) => object?.toString();
 }
 
-class StringToGenderConverter implements JsonConverter<String, String?> {
-  const StringToGenderConverter();
+class JsonGenderConverter implements JsonConverter<String, String?> {
+  const JsonGenderConverter();
 
   @override
   String fromJson(String? json) => json == null

@@ -1,7 +1,9 @@
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/features/examination/views/exam_result_view.dart';
+import 'package:app.rynest.aasi/features/examination/views/exam_view.dart';
+import 'package:app.rynest.aasi/features/examination/views/exam_schedule_view.dart';
 import 'package:app.rynest.aasi/features/user/model/app_menu.dart';
 import 'package:app.rynest.aasi/features/user/service/menu_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MenuCtrl {
@@ -73,9 +75,9 @@ class MenuCtrl {
 
   Future goto(String code) async {
     return switch (code) {
-      "exam-01.png" => await ref.read(authCtrlProvider).signInGoto(page: Container()),
-      "exam-result-01.png" => await ref.read(authCtrlProvider).signInGoto(page: Container()),
-      "exam-schedule-01.png" => await ref.read(authCtrlProvider).signInGoto(page: Container()),
+      "exam-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamView()),
+      "exam-result-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamResultView()),
+      "exam-schedule-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamScheduleView()),
       String() => '',
     };
   }

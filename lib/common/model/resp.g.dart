@@ -9,7 +9,7 @@ part of 'resp.dart';
 _$RespImpl _$$RespImplFromJson(Map<String, dynamic> json) => _$RespImpl(
       status: json['status'] as bool?,
       message: json['message'] as String?,
-      result: json['result'] as Map<String, dynamic>?,
+      result: json['result'],
       error: json['error'] == null
           ? null
           : Err.fromJson(json['error'] as Map<String, dynamic>),

@@ -7,20 +7,24 @@ part of 'user.dart';
 // **************************************************************************
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      id: (json['id'] as num?)?.toInt(),
-      name: json['name'] as String?,
-      username: json['username'] as String?,
-      email: json['email'] as String?,
-      fullName: json['fullname'] as String?,
-      userRole: json['userrole'] as String?,
+      id: const JsonIntConverter().fromJson(json['id']),
+      roleId: const JsonIntConverter().fromJson(json['role_id']),
+      username: json['username'] as String? ?? '',
+      email: json['email'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
+      'id': _$JsonConverterToJson<dynamic, int>(
+          instance.id, const JsonIntConverter().toJson),
+      'role_id': _$JsonConverterToJson<dynamic, int>(
+          instance.roleId, const JsonIntConverter().toJson),
       'username': instance.username,
       'email': instance.email,
-      'fullname': instance.fullName,
-      'userrole': instance.userRole,
     };
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);

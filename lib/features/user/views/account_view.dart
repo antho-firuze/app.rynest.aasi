@@ -9,6 +9,7 @@ import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
+import 'package:app.rynest.aasi/features/user/views/camera_selfie_view.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/string_utils.dart';
@@ -36,13 +37,11 @@ class AccountView extends ConsumerWidget {
               LogoArtWork(
                 child: CustomAvatar(
                   image: profile?.photo,
-                  initial: profile?.fullName.toInitial(),
+                  initial: profile?.fullName?.toInitial(),
                   width: 115,
                   height: 115,
                   onTap: () => context.goto(page: CustomInteractiveViewer(child: CustomImage(src: profile?.photo))),
-                  onTapUpdate: () async {
-                    log("$profile");
-                  },
+                  onTapUpdate: () async => await context.goto(page: const CameraSelfieView()),
                 ),
               ),
               15.height,
@@ -68,7 +67,7 @@ class AccountView extends ConsumerWidget {
                       readOnly: true,
                       hintText: 'Nama Lengkap',
                       prefixIcon: const Icon(SuperIcons.is_user_octagon_outline),
-                      initialValue: profile?.fullName.toUpperCase(),
+                      initialValue: profile?.fullName?.toUpperCase(),
                     ),
                     15.height,
                     CustomInput(
@@ -82,7 +81,7 @@ class AccountView extends ConsumerWidget {
                       readOnly: true,
                       hintText: 'Email',
                       prefixIcon: const Icon(SuperIcons.is_card_send_outline),
-                      initialValue: profile?.email.toLowerCase(),
+                      initialValue: profile?.email?.toLowerCase(),
                     ),
                     15.height,
                     CustomInput(
@@ -109,8 +108,7 @@ class AccountView extends ConsumerWidget {
                 ),
               ),
               30.height,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+              Center(
                 child: CustomButton(
                   color: oRed,
                   child: const Text('Hapus Akun'),

@@ -21,25 +21,38 @@ Exam _$ExamFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Exam {
   @JsonKey(name: 'exam_start')
+  @JsonDateTimeConverter()
   DateTime? get examStart => throw _privateConstructorUsedError;
   @JsonKey(name: 'exam_end')
+  @JsonDateTimeConverter()
   DateTime? get examEnd => throw _privateConstructorUsedError;
+  @JsonIntConverter()
   int? get duration => throw _privateConstructorUsedError;
+  @JsonKey(name: 'question_ids')
+  String? get questionIds => throw _privateConstructorUsedError;
+  @JsonKey(name: 'answer_keys')
+  String? get answerKeys => throw _privateConstructorUsedError;
+  @JsonKey(name: 'sync_question')
+  @JsonIntConverter()
+  int? get syncQuestion => throw _privateConstructorUsedError;
   @JsonKey(name: 'exam_completed')
   bool? get examCompleted => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_of_question')
-  int? get numOfQuestion => throw _privateConstructorUsedError;
+  @JsonKey(name: 'num_of_repeat')
+  @JsonIntConverter()
+  int? get numOfRepeat => throw _privateConstructorUsedError;
   @JsonKey(name: 'num_of_correct')
+  @JsonIntConverter()
   int? get numOfCorrect => throw _privateConstructorUsedError;
   @JsonKey(name: 'num_answered_question')
+  @JsonIntConverter()
   int? get numAnsweredQuestion => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_remain_question')
-  int? get numRemainQuestion => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_of_repeat')
-  int? get numOfRepeat => throw _privateConstructorUsedError;
-  @JsonKey(name: 'min_of_answer')
-  int? get minOfAnswer => throw _privateConstructorUsedError;
+  @JsonKey(name: 'num_of_question')
+  @JsonIntConverter()
+  int? get numOfQuestion => throw _privateConstructorUsedError;
   double? get score => throw _privateConstructorUsedError;
+  @JsonKey(name: 'passed_grade')
+  @JsonDoubleConverter()
+  double? get passedGrade => throw _privateConstructorUsedError;
 
   /// Serializes this Exam to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -56,17 +69,25 @@ abstract class $ExamCopyWith<$Res> {
       _$ExamCopyWithImpl<$Res, Exam>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'exam_start') DateTime? examStart,
-      @JsonKey(name: 'exam_end') DateTime? examEnd,
-      int? duration,
+      {@JsonKey(name: 'exam_start')
+      @JsonDateTimeConverter()
+      DateTime? examStart,
+      @JsonKey(name: 'exam_end') @JsonDateTimeConverter() DateTime? examEnd,
+      @JsonIntConverter() int? duration,
+      @JsonKey(name: 'question_ids') String? questionIds,
+      @JsonKey(name: 'answer_keys') String? answerKeys,
+      @JsonKey(name: 'sync_question') @JsonIntConverter() int? syncQuestion,
       @JsonKey(name: 'exam_completed') bool? examCompleted,
-      @JsonKey(name: 'num_of_question') int? numOfQuestion,
-      @JsonKey(name: 'num_of_correct') int? numOfCorrect,
-      @JsonKey(name: 'num_answered_question') int? numAnsweredQuestion,
-      @JsonKey(name: 'num_remain_question') int? numRemainQuestion,
-      @JsonKey(name: 'num_of_repeat') int? numOfRepeat,
-      @JsonKey(name: 'min_of_answer') int? minOfAnswer,
-      double? score});
+      @JsonKey(name: 'num_of_repeat') @JsonIntConverter() int? numOfRepeat,
+      @JsonKey(name: 'num_of_correct') @JsonIntConverter() int? numOfCorrect,
+      @JsonKey(name: 'num_answered_question')
+      @JsonIntConverter()
+      int? numAnsweredQuestion,
+      @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
+      double? score,
+      @JsonKey(name: 'passed_grade')
+      @JsonDoubleConverter()
+      double? passedGrade});
 }
 
 /// @nodoc
@@ -87,14 +108,16 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
     Object? examStart = freezed,
     Object? examEnd = freezed,
     Object? duration = freezed,
+    Object? questionIds = freezed,
+    Object? answerKeys = freezed,
+    Object? syncQuestion = freezed,
     Object? examCompleted = freezed,
-    Object? numOfQuestion = freezed,
+    Object? numOfRepeat = freezed,
     Object? numOfCorrect = freezed,
     Object? numAnsweredQuestion = freezed,
-    Object? numRemainQuestion = freezed,
-    Object? numOfRepeat = freezed,
-    Object? minOfAnswer = freezed,
+    Object? numOfQuestion = freezed,
     Object? score = freezed,
+    Object? passedGrade = freezed,
   }) {
     return _then(_value.copyWith(
       examStart: freezed == examStart
@@ -109,13 +132,25 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
               as int?,
+      questionIds: freezed == questionIds
+          ? _value.questionIds
+          : questionIds // ignore: cast_nullable_to_non_nullable
+              as String?,
+      answerKeys: freezed == answerKeys
+          ? _value.answerKeys
+          : answerKeys // ignore: cast_nullable_to_non_nullable
+              as String?,
+      syncQuestion: freezed == syncQuestion
+          ? _value.syncQuestion
+          : syncQuestion // ignore: cast_nullable_to_non_nullable
+              as int?,
       examCompleted: freezed == examCompleted
           ? _value.examCompleted
           : examCompleted // ignore: cast_nullable_to_non_nullable
               as bool?,
-      numOfQuestion: freezed == numOfQuestion
-          ? _value.numOfQuestion
-          : numOfQuestion // ignore: cast_nullable_to_non_nullable
+      numOfRepeat: freezed == numOfRepeat
+          ? _value.numOfRepeat
+          : numOfRepeat // ignore: cast_nullable_to_non_nullable
               as int?,
       numOfCorrect: freezed == numOfCorrect
           ? _value.numOfCorrect
@@ -125,21 +160,17 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
           ? _value.numAnsweredQuestion
           : numAnsweredQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
-      numRemainQuestion: freezed == numRemainQuestion
-          ? _value.numRemainQuestion
-          : numRemainQuestion // ignore: cast_nullable_to_non_nullable
-              as int?,
-      numOfRepeat: freezed == numOfRepeat
-          ? _value.numOfRepeat
-          : numOfRepeat // ignore: cast_nullable_to_non_nullable
-              as int?,
-      minOfAnswer: freezed == minOfAnswer
-          ? _value.minOfAnswer
-          : minOfAnswer // ignore: cast_nullable_to_non_nullable
+      numOfQuestion: freezed == numOfQuestion
+          ? _value.numOfQuestion
+          : numOfQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
       score: freezed == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
+              as double?,
+      passedGrade: freezed == passedGrade
+          ? _value.passedGrade
+          : passedGrade // ignore: cast_nullable_to_non_nullable
               as double?,
     ) as $Val);
   }
@@ -153,17 +184,25 @@ abstract class _$$ExamImplCopyWith<$Res> implements $ExamCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'exam_start') DateTime? examStart,
-      @JsonKey(name: 'exam_end') DateTime? examEnd,
-      int? duration,
+      {@JsonKey(name: 'exam_start')
+      @JsonDateTimeConverter()
+      DateTime? examStart,
+      @JsonKey(name: 'exam_end') @JsonDateTimeConverter() DateTime? examEnd,
+      @JsonIntConverter() int? duration,
+      @JsonKey(name: 'question_ids') String? questionIds,
+      @JsonKey(name: 'answer_keys') String? answerKeys,
+      @JsonKey(name: 'sync_question') @JsonIntConverter() int? syncQuestion,
       @JsonKey(name: 'exam_completed') bool? examCompleted,
-      @JsonKey(name: 'num_of_question') int? numOfQuestion,
-      @JsonKey(name: 'num_of_correct') int? numOfCorrect,
-      @JsonKey(name: 'num_answered_question') int? numAnsweredQuestion,
-      @JsonKey(name: 'num_remain_question') int? numRemainQuestion,
-      @JsonKey(name: 'num_of_repeat') int? numOfRepeat,
-      @JsonKey(name: 'min_of_answer') int? minOfAnswer,
-      double? score});
+      @JsonKey(name: 'num_of_repeat') @JsonIntConverter() int? numOfRepeat,
+      @JsonKey(name: 'num_of_correct') @JsonIntConverter() int? numOfCorrect,
+      @JsonKey(name: 'num_answered_question')
+      @JsonIntConverter()
+      int? numAnsweredQuestion,
+      @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
+      double? score,
+      @JsonKey(name: 'passed_grade')
+      @JsonDoubleConverter()
+      double? passedGrade});
 }
 
 /// @nodoc
@@ -181,14 +220,16 @@ class __$$ExamImplCopyWithImpl<$Res>
     Object? examStart = freezed,
     Object? examEnd = freezed,
     Object? duration = freezed,
+    Object? questionIds = freezed,
+    Object? answerKeys = freezed,
+    Object? syncQuestion = freezed,
     Object? examCompleted = freezed,
-    Object? numOfQuestion = freezed,
+    Object? numOfRepeat = freezed,
     Object? numOfCorrect = freezed,
     Object? numAnsweredQuestion = freezed,
-    Object? numRemainQuestion = freezed,
-    Object? numOfRepeat = freezed,
-    Object? minOfAnswer = freezed,
+    Object? numOfQuestion = freezed,
     Object? score = freezed,
+    Object? passedGrade = freezed,
   }) {
     return _then(_$ExamImpl(
       examStart: freezed == examStart
@@ -203,13 +244,25 @@ class __$$ExamImplCopyWithImpl<$Res>
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
               as int?,
+      questionIds: freezed == questionIds
+          ? _value.questionIds
+          : questionIds // ignore: cast_nullable_to_non_nullable
+              as String?,
+      answerKeys: freezed == answerKeys
+          ? _value.answerKeys
+          : answerKeys // ignore: cast_nullable_to_non_nullable
+              as String?,
+      syncQuestion: freezed == syncQuestion
+          ? _value.syncQuestion
+          : syncQuestion // ignore: cast_nullable_to_non_nullable
+              as int?,
       examCompleted: freezed == examCompleted
           ? _value.examCompleted
           : examCompleted // ignore: cast_nullable_to_non_nullable
               as bool?,
-      numOfQuestion: freezed == numOfQuestion
-          ? _value.numOfQuestion
-          : numOfQuestion // ignore: cast_nullable_to_non_nullable
+      numOfRepeat: freezed == numOfRepeat
+          ? _value.numOfRepeat
+          : numOfRepeat // ignore: cast_nullable_to_non_nullable
               as int?,
       numOfCorrect: freezed == numOfCorrect
           ? _value.numOfCorrect
@@ -219,21 +272,17 @@ class __$$ExamImplCopyWithImpl<$Res>
           ? _value.numAnsweredQuestion
           : numAnsweredQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
-      numRemainQuestion: freezed == numRemainQuestion
-          ? _value.numRemainQuestion
-          : numRemainQuestion // ignore: cast_nullable_to_non_nullable
-              as int?,
-      numOfRepeat: freezed == numOfRepeat
-          ? _value.numOfRepeat
-          : numOfRepeat // ignore: cast_nullable_to_non_nullable
-              as int?,
-      minOfAnswer: freezed == minOfAnswer
-          ? _value.minOfAnswer
-          : minOfAnswer // ignore: cast_nullable_to_non_nullable
+      numOfQuestion: freezed == numOfQuestion
+          ? _value.numOfQuestion
+          : numOfQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
       score: freezed == score
           ? _value.score
           : score // ignore: cast_nullable_to_non_nullable
+              as double?,
+      passedGrade: freezed == passedGrade
+          ? _value.passedGrade
+          : passedGrade // ignore: cast_nullable_to_non_nullable
               as double?,
     ));
   }
@@ -243,56 +292,75 @@ class __$$ExamImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExamImpl implements _Exam {
   _$ExamImpl(
-      {@JsonKey(name: 'exam_start') this.examStart,
-      @JsonKey(name: 'exam_end') this.examEnd,
-      this.duration,
+      {@JsonKey(name: 'exam_start') @JsonDateTimeConverter() this.examStart,
+      @JsonKey(name: 'exam_end') @JsonDateTimeConverter() this.examEnd,
+      @JsonIntConverter() this.duration,
+      @JsonKey(name: 'question_ids') this.questionIds,
+      @JsonKey(name: 'answer_keys') this.answerKeys,
+      @JsonKey(name: 'sync_question') @JsonIntConverter() this.syncQuestion,
       @JsonKey(name: 'exam_completed') this.examCompleted,
-      @JsonKey(name: 'num_of_question') this.numOfQuestion,
-      @JsonKey(name: 'num_of_correct') this.numOfCorrect,
-      @JsonKey(name: 'num_answered_question') this.numAnsweredQuestion,
-      @JsonKey(name: 'num_remain_question') this.numRemainQuestion,
-      @JsonKey(name: 'num_of_repeat') this.numOfRepeat,
-      @JsonKey(name: 'min_of_answer') this.minOfAnswer,
-      this.score});
+      @JsonKey(name: 'num_of_repeat') @JsonIntConverter() this.numOfRepeat,
+      @JsonKey(name: 'num_of_correct') @JsonIntConverter() this.numOfCorrect,
+      @JsonKey(name: 'num_answered_question')
+      @JsonIntConverter()
+      this.numAnsweredQuestion,
+      @JsonKey(name: 'num_of_question') @JsonIntConverter() this.numOfQuestion,
+      this.score,
+      @JsonKey(name: 'passed_grade') @JsonDoubleConverter() this.passedGrade});
 
   factory _$ExamImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExamImplFromJson(json);
 
   @override
   @JsonKey(name: 'exam_start')
+  @JsonDateTimeConverter()
   final DateTime? examStart;
   @override
   @JsonKey(name: 'exam_end')
+  @JsonDateTimeConverter()
   final DateTime? examEnd;
   @override
+  @JsonIntConverter()
   final int? duration;
+  @override
+  @JsonKey(name: 'question_ids')
+  final String? questionIds;
+  @override
+  @JsonKey(name: 'answer_keys')
+  final String? answerKeys;
+  @override
+  @JsonKey(name: 'sync_question')
+  @JsonIntConverter()
+  final int? syncQuestion;
   @override
   @JsonKey(name: 'exam_completed')
   final bool? examCompleted;
   @override
-  @JsonKey(name: 'num_of_question')
-  final int? numOfQuestion;
+  @JsonKey(name: 'num_of_repeat')
+  @JsonIntConverter()
+  final int? numOfRepeat;
   @override
   @JsonKey(name: 'num_of_correct')
+  @JsonIntConverter()
   final int? numOfCorrect;
   @override
   @JsonKey(name: 'num_answered_question')
+  @JsonIntConverter()
   final int? numAnsweredQuestion;
   @override
-  @JsonKey(name: 'num_remain_question')
-  final int? numRemainQuestion;
-  @override
-  @JsonKey(name: 'num_of_repeat')
-  final int? numOfRepeat;
-  @override
-  @JsonKey(name: 'min_of_answer')
-  final int? minOfAnswer;
+  @JsonKey(name: 'num_of_question')
+  @JsonIntConverter()
+  final int? numOfQuestion;
   @override
   final double? score;
+  @override
+  @JsonKey(name: 'passed_grade')
+  @JsonDoubleConverter()
+  final double? passedGrade;
 
   @override
   String toString() {
-    return 'Exam(examStart: $examStart, examEnd: $examEnd, duration: $duration, examCompleted: $examCompleted, numOfQuestion: $numOfQuestion, numOfCorrect: $numOfCorrect, numAnsweredQuestion: $numAnsweredQuestion, numRemainQuestion: $numRemainQuestion, numOfRepeat: $numOfRepeat, minOfAnswer: $minOfAnswer, score: $score)';
+    return 'Exam(examStart: $examStart, examEnd: $examEnd, duration: $duration, questionIds: $questionIds, answerKeys: $answerKeys, syncQuestion: $syncQuestion, examCompleted: $examCompleted, numOfRepeat: $numOfRepeat, numOfCorrect: $numOfCorrect, numAnsweredQuestion: $numAnsweredQuestion, numOfQuestion: $numOfQuestion, score: $score, passedGrade: $passedGrade)';
   }
 
   @override
@@ -305,21 +373,25 @@ class _$ExamImpl implements _Exam {
             (identical(other.examEnd, examEnd) || other.examEnd == examEnd) &&
             (identical(other.duration, duration) ||
                 other.duration == duration) &&
+            (identical(other.questionIds, questionIds) ||
+                other.questionIds == questionIds) &&
+            (identical(other.answerKeys, answerKeys) ||
+                other.answerKeys == answerKeys) &&
+            (identical(other.syncQuestion, syncQuestion) ||
+                other.syncQuestion == syncQuestion) &&
             (identical(other.examCompleted, examCompleted) ||
                 other.examCompleted == examCompleted) &&
-            (identical(other.numOfQuestion, numOfQuestion) ||
-                other.numOfQuestion == numOfQuestion) &&
+            (identical(other.numOfRepeat, numOfRepeat) ||
+                other.numOfRepeat == numOfRepeat) &&
             (identical(other.numOfCorrect, numOfCorrect) ||
                 other.numOfCorrect == numOfCorrect) &&
             (identical(other.numAnsweredQuestion, numAnsweredQuestion) ||
                 other.numAnsweredQuestion == numAnsweredQuestion) &&
-            (identical(other.numRemainQuestion, numRemainQuestion) ||
-                other.numRemainQuestion == numRemainQuestion) &&
-            (identical(other.numOfRepeat, numOfRepeat) ||
-                other.numOfRepeat == numOfRepeat) &&
-            (identical(other.minOfAnswer, minOfAnswer) ||
-                other.minOfAnswer == minOfAnswer) &&
-            (identical(other.score, score) || other.score == score));
+            (identical(other.numOfQuestion, numOfQuestion) ||
+                other.numOfQuestion == numOfQuestion) &&
+            (identical(other.score, score) || other.score == score) &&
+            (identical(other.passedGrade, passedGrade) ||
+                other.passedGrade == passedGrade));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -329,14 +401,16 @@ class _$ExamImpl implements _Exam {
       examStart,
       examEnd,
       duration,
+      questionIds,
+      answerKeys,
+      syncQuestion,
       examCompleted,
-      numOfQuestion,
+      numOfRepeat,
       numOfCorrect,
       numAnsweredQuestion,
-      numRemainQuestion,
-      numOfRepeat,
-      minOfAnswer,
-      score);
+      numOfQuestion,
+      score,
+      passedGrade);
 
   /// Create a copy of Exam
   /// with the given fields replaced by the non-null parameter values.
@@ -356,51 +430,84 @@ class _$ExamImpl implements _Exam {
 
 abstract class _Exam implements Exam {
   factory _Exam(
-      {@JsonKey(name: 'exam_start') final DateTime? examStart,
-      @JsonKey(name: 'exam_end') final DateTime? examEnd,
-      final int? duration,
+      {@JsonKey(name: 'exam_start')
+      @JsonDateTimeConverter()
+      final DateTime? examStart,
+      @JsonKey(name: 'exam_end')
+      @JsonDateTimeConverter()
+      final DateTime? examEnd,
+      @JsonIntConverter() final int? duration,
+      @JsonKey(name: 'question_ids') final String? questionIds,
+      @JsonKey(name: 'answer_keys') final String? answerKeys,
+      @JsonKey(name: 'sync_question')
+      @JsonIntConverter()
+      final int? syncQuestion,
       @JsonKey(name: 'exam_completed') final bool? examCompleted,
-      @JsonKey(name: 'num_of_question') final int? numOfQuestion,
-      @JsonKey(name: 'num_of_correct') final int? numOfCorrect,
-      @JsonKey(name: 'num_answered_question') final int? numAnsweredQuestion,
-      @JsonKey(name: 'num_remain_question') final int? numRemainQuestion,
-      @JsonKey(name: 'num_of_repeat') final int? numOfRepeat,
-      @JsonKey(name: 'min_of_answer') final int? minOfAnswer,
-      final double? score}) = _$ExamImpl;
+      @JsonKey(name: 'num_of_repeat')
+      @JsonIntConverter()
+      final int? numOfRepeat,
+      @JsonKey(name: 'num_of_correct')
+      @JsonIntConverter()
+      final int? numOfCorrect,
+      @JsonKey(name: 'num_answered_question')
+      @JsonIntConverter()
+      final int? numAnsweredQuestion,
+      @JsonKey(name: 'num_of_question')
+      @JsonIntConverter()
+      final int? numOfQuestion,
+      final double? score,
+      @JsonKey(name: 'passed_grade')
+      @JsonDoubleConverter()
+      final double? passedGrade}) = _$ExamImpl;
 
   factory _Exam.fromJson(Map<String, dynamic> json) = _$ExamImpl.fromJson;
 
   @override
   @JsonKey(name: 'exam_start')
+  @JsonDateTimeConverter()
   DateTime? get examStart;
   @override
   @JsonKey(name: 'exam_end')
+  @JsonDateTimeConverter()
   DateTime? get examEnd;
   @override
+  @JsonIntConverter()
   int? get duration;
+  @override
+  @JsonKey(name: 'question_ids')
+  String? get questionIds;
+  @override
+  @JsonKey(name: 'answer_keys')
+  String? get answerKeys;
+  @override
+  @JsonKey(name: 'sync_question')
+  @JsonIntConverter()
+  int? get syncQuestion;
   @override
   @JsonKey(name: 'exam_completed')
   bool? get examCompleted;
   @override
-  @JsonKey(name: 'num_of_question')
-  int? get numOfQuestion;
+  @JsonKey(name: 'num_of_repeat')
+  @JsonIntConverter()
+  int? get numOfRepeat;
   @override
   @JsonKey(name: 'num_of_correct')
+  @JsonIntConverter()
   int? get numOfCorrect;
   @override
   @JsonKey(name: 'num_answered_question')
+  @JsonIntConverter()
   int? get numAnsweredQuestion;
   @override
-  @JsonKey(name: 'num_remain_question')
-  int? get numRemainQuestion;
-  @override
-  @JsonKey(name: 'num_of_repeat')
-  int? get numOfRepeat;
-  @override
-  @JsonKey(name: 'min_of_answer')
-  int? get minOfAnswer;
+  @JsonKey(name: 'num_of_question')
+  @JsonIntConverter()
+  int? get numOfQuestion;
   @override
   double? get score;
+  @override
+  @JsonKey(name: 'passed_grade')
+  @JsonDoubleConverter()
+  double? get passedGrade;
 
   /// Create a copy of Exam
   /// with the given fields replaced by the non-null parameter values.

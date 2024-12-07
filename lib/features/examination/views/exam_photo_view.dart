@@ -1,37 +1,34 @@
-import 'dart:developer';
-
 import 'package:app.rynest.aasi/common/widgets/forms/group_list.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
-import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
-import 'package:app.rynest.aasi/features/user/model/profile.dart';
-import 'package:app.rynest.aasi/features/user/views/photo/widgets/image_card.dart';
+import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
+import 'package:app.rynest.aasi/features/examination/model/exam_photo.dart';
+import 'package:app.rynest.aasi/features/examination/views/widgets/image_card.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/orientation_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PhotoExamView extends ConsumerWidget {
-  const PhotoExamView({super.key});
+class ExamPhotoView extends ConsumerWidget {
+  const ExamPhotoView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(profileProvider);
+    final photos = ref.watch(examPhotosProvider);
+
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text('Foto Ujian')),
         body: RefreshIndicator(
-          onRefresh: () async {
-            log("$profile");
-          },
-          child: context.isLandscape() == false ? viewPortrait(profile) : viewLandscape(context, profile),
+          onRefresh: () async => await ref.read(examCtrlProvider).fetchPhotos(),
+          child: context.isLandscape() == false ? viewPortrait(photos) : viewLandscape(context, photos),
         ),
       ),
     );
   }
 
-  Widget viewLandscape(BuildContext context, Profile? profile) {
+  Widget viewLandscape(BuildContext context, ExamPhotos? photos) {
     return ListView(
       children: [
         5.height,
@@ -47,7 +44,7 @@ class PhotoExamView extends ConsumerWidget {
                 SizedBox(
                   width: context.screenWidthRatio(1, .4),
                   height: 250,
-                  child: ImageCard(image: profile!.photos?.examStart),
+                  child: ImageCard(image: photos?.examStart),
                 ),
               ],
             ),
@@ -58,7 +55,7 @@ class PhotoExamView extends ConsumerWidget {
                 SizedBox(
                   width: context.screenWidthRatio(1, .4),
                   height: 250,
-                  child: ImageCard(image: profile.photos?.examFinish),
+                  child: ImageCard(image: photos?.examFinish),
                 ),
               ],
             ),
@@ -69,10 +66,8 @@ class PhotoExamView extends ConsumerWidget {
     );
   }
 
-  Widget viewPortrait(Profile? profile) {
+  Widget viewPortrait(ExamPhotos? photos) {
     return ListView(
-      // scrollDirection: Axis.horizontal,
-      // shrinkWrap: true,
       children: [
         5.height,
         const LogoArtWork(child: LogoApp()),
@@ -84,7 +79,7 @@ class PhotoExamView extends ConsumerWidget {
             SizedBox(
               width: double.infinity,
               height: 250,
-              child: ImageCard(image: profile!.photos?.examStart),
+              child: ImageCard(image: photos?.examStart),
             ),
           ],
         ),
@@ -96,7 +91,7 @@ class PhotoExamView extends ConsumerWidget {
             SizedBox(
               width: double.infinity,
               height: 250,
-              child: ImageCard(image: profile.photos?.examFinish),
+              child: ImageCard(image: photos?.examFinish),
             ),
           ],
         ),

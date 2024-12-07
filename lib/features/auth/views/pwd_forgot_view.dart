@@ -40,24 +40,27 @@ class PwdForgotView extends ConsumerWidget {
                       validator: (p0) => p0!.isEmpty ? 'Kolom email harap di isi'.hardcoded : null,
                     ),
                     20.height,
-                    CustomButton(
-                      // busy: state.isLoading,
-                      width: double.infinity,
-                      child: Text('Kirim Kode Verifikasi!'.hardcoded),
-                      onPressed: () async {
-                        if (formStateKey.currentState!.validate() == false) {
-                          return;
-                        }
-
-                        ref.read(authCtrlProvider).sendCode();
-
-                        // var result = await context.push('/code_verify');
-                        // if (result == true) {
-                        //   // ignore: use_build_context_synchronously
-                        //   context.pop(true);
-                        // }
-                      },
+                    Center(
+                      child: CustomButton(
+                        // busy: state.isLoading,
+                        width: double.infinity,
+                        child: Text('Kirim Kode Verifikasi!'.hardcoded),
+                        onPressed: () async {
+                          if (formStateKey.currentState!.validate() == false) {
+                            return;
+                          }
+                      
+                          ref.read(authCtrlProvider).sendCode();
+                      
+                          // var result = await context.push('/code_verify');
+                          // if (result == true) {
+                          //   // ignore: use_build_context_synchronously
+                          //   context.pop(true);
+                          // }
+                        },
+                      ),
                     ),
+                    60.height,
                   ],
                 ),
               ),

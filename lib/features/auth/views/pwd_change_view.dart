@@ -71,19 +71,21 @@ class PwdChangeView extends ConsumerWidget {
                       prefixIcon: const Icon(Icons.lock_outline),
                     ),
                     40.height,
-                    CustomButton(
-                      // busy: state.isLoading,
-                      width: double.infinity,
-                      child: Text('Simpan'.hardcoded),
-                      onPressed: () async {
-                        if (formStateKey.currentState!.validate() == false) {
-                          return;
-                        }
-                        // Submit
-                        await ref.read(authCtrlProvider).changePwd();
-                      },
+                    Center(
+                      child: CustomButton(
+                        // busy: state.isLoading,
+                        width: double.infinity,
+                        child: Text('Simpan'.hardcoded),
+                        onPressed: () async {
+                          if (formStateKey.currentState!.validate() == false) {
+                            return;
+                          }
+                          // Submit
+                          await ref.read(authCtrlProvider).changePwd();
+                        },
+                      ),
                     ),
-                    20.height,
+                    60.height,
                   ],
                 ),
               ),

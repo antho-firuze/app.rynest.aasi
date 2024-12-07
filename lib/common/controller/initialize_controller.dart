@@ -1,6 +1,7 @@
 import 'package:app.rynest.aasi/common/controller/network_controller.dart';
 import 'package:app.rynest.aasi/common/controller/package_info_controller.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,23 +18,26 @@ class InitializeCtrl {
     // Get Device Info
     // await ref.read(deviceServiceProvider).getDeviceInfo();
 
-    // // Initialize Package Info
+    // Initialize Package Info
     ref.read(packageInfoCtrlProvider).initialize();
 
-    // // Initialize Network
+    // Initialize Network
     ref.read(networkCtrlProvider).initialize();
 
-    // // Initialize Location/GPS
+    // Initialize Location/GPS
     // await ref.read(locationCtrlProvider).initialize();
 
-    // // Check User & token
+    // Check User & token
     ref.read(authCtrlProvider).initialize();
 
-    // // Initialize User Settings
+    // Initialize User Settings
     // ref.read(userSettingCtrlProvider).initialize();
 
-    // // Initialize Profile
+    // Initialize Profile
     ref.read(profileCtrlProvider).initialize();
+
+    // Initialize Examination
+    ref.read(examCtrlProvider).initialize();
 
     // // Initialize Prayer Times
     // ref.read(prayerTimesCtrlProvider).initialize();

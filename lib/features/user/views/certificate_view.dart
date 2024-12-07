@@ -1,9 +1,9 @@
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
-import 'package:app.rynest.aasi/features/user/views/certificate/widgets/back_card.dart';
-import 'package:app.rynest.aasi/features/user/views/certificate/widgets/empty_card.dart';
-import 'package:app.rynest.aasi/features/user/views/certificate/widgets/front_card.dart';
+import 'package:app.rynest.aasi/features/user/views/widgets/back_card.dart';
+import 'package:app.rynest.aasi/features/user/views/widgets/empty_card.dart';
+import 'package:app.rynest.aasi/features/user/views/widgets/front_card.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flip_card/flip_card.dart';
@@ -15,7 +15,7 @@ class CertificateView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(profileProvider);
+    final certificate = ref.watch(certificateProvider);
 
     return MyUI(
       child: Scaffold(
@@ -32,8 +32,8 @@ class CertificateView extends ConsumerWidget {
                   width: context.screenWidthRatio(.9, .65),
                   height: context.screenWidthRatio(.55, .4),
                   child: FlipCard(
-                    front: profile?.certificate == null ? const EmptyCard() : const FrontCard(),
-                    back: profile?.certificate == null ? const EmptyCard() : const BackCard(),
+                    front: certificate == null ? const EmptyCard() : const FrontCard(),
+                    back: certificate == null ? const EmptyCard() : const BackCard(),
                   ),
                 ),
               ),

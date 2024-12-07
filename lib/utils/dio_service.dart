@@ -1,4 +1,3 @@
-
 import 'package:app.rynest.aasi/utils/dio_auth_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_busy_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_jsonrpc_response_interceptor.dart';
@@ -14,7 +13,7 @@ final dioProvider = Provider.autoDispose((ref) {
   // ref.onDispose(dio.close);
   dio.options.connectTimeout = const Duration(seconds: 10);
 
-  dio.interceptors.add(DioLoggerInterceptor());
+  // dio.interceptors.add(DioLoggerInterceptor());
   // dio.interceptors.add(DioBusyInterceptor(ref));
   return dio;
 });
@@ -22,7 +21,8 @@ final dioProvider = Provider.autoDispose((ref) {
 final dioApiProvider = Provider.autoDispose((ref) {
   final dio = ref.read(dioProvider);
 
-  dio.interceptors.add(DioJsonRpcResponseInterceptor());
+  dio.interceptors.add(DioLoggerInterceptor());
+  dio.interceptors.add(DioJsonRpcResponseInterceptor(ref));
   // dio.interceptors.add(DioAuthInterceptor(ref));
   return dio;
 });
@@ -80,4 +80,21 @@ final dioStreamProvider = Provider.autoDispose((ref) {
   dio.options.headers['Content-Type'] = 'text/event-stream';
   dio.options.responseType = ResponseType.stream;
   return dio;
+});
+
+final dioIsValidUrlProvider = FutureProvider.autoDispose.family<bool, String?>((ref, url) async {
+  final dio = Dio();
+
+  if (url == null) {
+    return false;
+  }
+
+  var type = url.substring(0, 4).toLowerCase();
+  if (type != 'http') {
+    return false;
+  }
+
+  final state = await AsyncValue.guard(() async => await dio.get(url));
+
+  return !state.hasError;
 });
