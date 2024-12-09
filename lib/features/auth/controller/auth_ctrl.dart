@@ -61,9 +61,11 @@ class AuthCtrl {
 
   void setToken(String? token) {
     if (token == null) {
+      ref.read(tokenValidProvider.notifier).state = false;
       ref.read(authTokenProvider.notifier).state = null;
       ref.read(sharedPrefProvider).remove(_tokenKey);
     } else {
+      ref.read(tokenValidProvider.notifier).state = true;
       ref.read(authTokenProvider.notifier).state = token;
       ref.read(sharedPrefProvider).setString(_tokenKey, token);
     }
@@ -75,7 +77,6 @@ class AuthCtrl {
 
     if (state.hasError) {
       setToken(null);
-      ref.read(tokenValidProvider.notifier).state = false;
       return;
     }
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:app.rynest.aasi/common/controller/package_info_controller.dart';
 import 'package:app.rynest.aasi/common/views/about_view.dart';
 import 'package:app.rynest.aasi/common/views/contact_us_view.dart';
