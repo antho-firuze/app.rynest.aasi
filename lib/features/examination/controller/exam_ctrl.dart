@@ -51,12 +51,8 @@ class ExamCtrl {
 
     loadSetting();
 
-    await fetchSchedule();
-    await fetchPhotos();
-    await fetchStatus();
-
-    ref.listen(authTokenProvider, (previous, next) async {
-      if (next != null && next != previous) {
+    ref.listen(tokenValidProvider, (previous, next) async {
+      if (next == true) {
         await fetchSchedule();
         await fetchPhotos();
         await fetchStatus();
@@ -77,15 +73,15 @@ class ExamCtrl {
       if (DateTime.now().isBefore(open!)) {
         ref.read(examStageProvider.notifier).state = ExamStage.tooEarlier;
       } else if (DateTime.now().isAfter(close!)) {
-        if (exam == null) {
+        if (exam == null || exam.examStart == null) {
           ref.read(examStageProvider.notifier).state = ExamStage.expired;
         } else {
           ref.read(examStageProvider.notifier).state = ExamStage.finish;
         }
       } else {
-        if (exam == null) {
+        if (exam == null || exam.examStart == null) {
           ref.read(examStageProvider.notifier).state = ExamStage.start;
-        } else if (exam.examCompleted != true) {
+        } else if (exam.examCompleted == false && exam.examStart != null) {
           ref.read(examStageProvider.notifier).state = ExamStage.ongoing;
         } else {
           ref.read(examStageProvider.notifier).state = ExamStage.finish;
@@ -93,6 +89,7 @@ class ExamCtrl {
       }
     }
 
+    // UPDATE EXAM STATUS
     ref.read(examStatusProvider.notifier).state = ref.read(examStageProvider) == ExamStage.start
         ? "READY"
         : ref.read(examStageProvider) == ExamStage.ongoing
@@ -101,6 +98,7 @@ class ExamCtrl {
                 ? "FINISH / DONE"
                 : "EXPIRED";
 
+    // RESTART TIMER
     if (ref.read(examStageProvider) == ExamStage.ongoing) {
       if (mainTimer == null) {
         _calcRemainingTime();
@@ -110,12 +108,20 @@ class ExamCtrl {
         _calcRemainingTime();
       }
     }
+
+    // CANCEL TIMER
+    if (ref.read(examStageProvider) == ExamStage.finish) {
+      if (mainTimer != null) {
+        mainTimer?.cancel();
+        mainTimer == null;
+      }
+    }
   }
 
   void _calcRemainingTime() {
     log('_calcRemainingTime on call', name: 'EXAM-CTRL');
 
-    if (ref.read(examProvider) == null) {
+    if (ref.read(examProvider)?.examEnd == null) {
       return;
     }
 
@@ -240,7 +246,14 @@ class ExamCtrl {
     if (state.hasError) return;
 
     final exam = state.value?.result == null ? null : Exam.fromJson(state.value?.result);
-    ref.read(examProvider.notifier).state = ref.read(examProvider)?.copyWith(examCompleted: exam?.examCompleted);
+    ref.read(examProvider.notifier).state = ref.read(examProvider)?.copyWith(
+          examCompleted: exam?.examCompleted,
+          questionIds: null,
+        );
+
+    // Clear Questions
+    ref.read(questionProvider.notifier).state = null;
+    ref.read(questionsProvider.notifier).state = [];
 
     _updateExamStage();
   }
@@ -328,6 +341,7 @@ class ExamCtrl {
           numAnsweredQuestion: exam?.numAnsweredQuestion,
           numOfCorrect: exam?.numOfCorrect,
           score: exam?.score,
+          passedGrade: exam?.passedGrade,
         );
 
     _updateExamStage();

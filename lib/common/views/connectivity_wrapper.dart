@@ -22,7 +22,7 @@ class ConnectivityWrapper extends ConsumerWidget {
     bool isShowOverlay = ref.watch(isConnectedProvider) == false;
 
     if (!enabled) {
-      return Container();
+      isShowOverlay = false;
     }
 
     return Scaffold(

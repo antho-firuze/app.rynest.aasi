@@ -20,6 +20,8 @@
         android:name="${applicationName}" 
         android:label="AASI" 
         android:allowBackup="false" 
+        android:usesCleartextTraffic="true"        
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
         <activity 
             android:name=".MainActivity" 
@@ -48,6 +50,6 @@
         <meta-data android:name="flutterEmbedding" android:value="2" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/black" />
         <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="high_importance_channel" />
-        <activity android:name="com.yalantis.ucrop.UCropActivity" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <!-- <activity android:name="com.yalantis.ucrop.UCropActivity" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/> -->
     </application>
 </manifest>

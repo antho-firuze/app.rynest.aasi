@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app.rynest.aasi/common/services/notification_service.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
 import 'package:app.rynest.aasi/core/app_theme.dart';
 import 'package:app.rynest.aasi/utils/router.dart';
@@ -8,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'helpers/notification_helper.dart';
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -49,59 +48,6 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   // await Firebase.initializeApp(
-//   //   name: 'aasi',
-//   //   options: DefaultFirebaseOptions.currentPlatform,
-//   // );
-//   await setupFlutterNotifications();
-//   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-//   //   statusBarColor: Colors.transparent, // transparent status bar
-//   // ));
-//   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//   await setupLocator();
-//   HttpOverrides.global = MyHttpOverrides();
-
-//   runApp(
-//     GetMaterialApp(
-//       home: const MyApp(),
-//       translations: Translation(),
-//       locale: const Locale('id', 'ID'),
-//       fallbackLocale: const Locale('id', 'ID'),
-//       debugShowCheckedModeBanner: false,
-//     ),
-//   );
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // final scale = MediaQuery.of(context).textScaleFactor.clamp(0.8, 1.35);
-//     return MaterialApp(
-//       title: 'AASI',
-//       debugShowCheckedModeBanner: false,
-//       // theme: ThemeData(
-//       //   primarySwatch: Colors.blue,
-//       //   fontFamily: 'Poppins',
-//       //   visualDensity: VisualDensity.adaptivePlatformDensity,
-//       // ),
-//       onGenerateRoute: StackedRouter().onGenerateRoute,
-//       localizationsDelegates: const [
-//         GlobalMaterialLocalizations.delegate,
-//         GlobalWidgetsLocalizations.delegate,
-//         GlobalCupertinoLocalizations.delegate,
-//       ],
-//       supportedLocales: const [
-//         Locale('en', 'US'),
-//         Locale('id', 'ID'),
-//       ],
-//     );
-//   }
-// }
 
 // HandshakeException: Handshake error in client (OS Error: E/flutter ( 6264):
 // CERTIFICATE_VERIFY_FAILED: unable to get local issuer certificate(handshake.cc:363))

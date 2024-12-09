@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
@@ -9,6 +10,7 @@ import 'package:image/image.dart' as img;
 class CameraService {
   static List<CameraDescription>? _cameras = [];
   CameraController? _controller;
+  File? _file;
 
   Future takeSilencePic({required Function(File file)? callback}) async {
     _cameras = await availableCameras();
@@ -27,15 +29,17 @@ class CameraService {
       XFile xfile = await _controller!.takePicture();
 
       // convert xfile => file
-      File file = File(xfile.path);
-
+      _file = File(xfile.path);
+      log('_originalImage => ${fileSize(_file?.lengthSync())}', name: "CAMERA-SERVICE");
+      
       // If camera direction front (1), then flip image
-      file = await _flipImage(file);
-      file = await _compressImage(file);
+      _file = await _flipImage(_file!);
+      _file = await _compressImage(_file!);
+      log('_finalImage => ${fileSize(_file!.lengthSync())}', name: "CAMERA-SERVICE");
 
       if (callback == null) return;
 
-      callback(file);
+      callback(_file!);
 
     }).whenComplete(() {
       _controller?.dispose();
@@ -48,7 +52,7 @@ class CameraService {
     Uint8List imageBytes = await file.readAsBytes();
     img.Image? originalImage = img.decodeImage(imageBytes);
     img.Image fixedImage = img.flipHorizontal(originalImage!);
-    log('_flipImage => ${fixedImage.lengthInBytes}', name: "CAMERA-SERVICE");
+    log('_flipImage => ${fileSize(fixedImage.lengthInBytes)}', name: "CAMERA-SERVICE");
 
     return await file.writeAsBytes(img.encodeJpg(fixedImage), flush: true);
   }
@@ -65,7 +69,7 @@ class CameraService {
     );
     File fille = File(compressedFile!.path);
 
-    log('_compressImage => ${fille.lengthSync()}', name: "CAMERA-SERVICE");
+    log('_compressImage => ${fileSize(fille.lengthSync())}', name: "CAMERA-SERVICE");
 
     return fille;
   }

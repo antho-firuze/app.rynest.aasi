@@ -61,7 +61,7 @@ class ExamPhotoView extends ConsumerWidget {
             ),
           ],
         ),
-        20.height,
+        60.height,
       ],
     );
   }
@@ -95,7 +95,7 @@ class ExamPhotoView extends ConsumerWidget {
             ),
           ],
         ),
-        20.height,
+        60.height,
       ],
     );
   }

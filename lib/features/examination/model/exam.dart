@@ -20,7 +20,7 @@ class Exam with _$Exam {
     @JsonKey(name: 'num_of_correct') @JsonIntConverter() int? numOfCorrect,
     @JsonKey(name: 'num_answered_question') @JsonIntConverter() int? numAnsweredQuestion,
     @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
-    double? score,
+    @JsonDoubleConverter() double? score,
     @JsonKey(name: 'passed_grade') @JsonDoubleConverter() double? passedGrade,
   }) = _Exam;
 

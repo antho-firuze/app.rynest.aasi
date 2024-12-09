@@ -1,5 +1,4 @@
 import 'package:app.rynest.aasi/core/app_color.dart';
-import 'package:app.rynest.aasi/ui/shared/colors.dart';
 import 'package:app.rynest.aasi/utils/orientation_utils.dart';
 import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:app.rynest.aasi/utils/theme_utils.dart';

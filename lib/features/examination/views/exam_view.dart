@@ -24,7 +24,7 @@ class ExamView extends ConsumerWidget {
 
     // return const ExamStageCancel();
 
-    if ([ExamStage.start, ExamStage.ongoing].contains(stage) && exam != null && questions != null) {
+    if ([ExamStage.start, ExamStage.ongoing].contains(stage) && exam?.examStart != null && questions != null) {
       return const ExamQuestions();
     }
 

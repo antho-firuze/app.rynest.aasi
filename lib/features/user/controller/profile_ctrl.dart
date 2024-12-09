@@ -26,8 +26,8 @@ class ProfileCtrl {
 
     loadProfile();
 
-    ref.listen(authTokenProvider, (previous, next) async {
-      if (next != null && next != previous) {
+    ref.listen(tokenValidProvider, (previous, next) async {
+      if (next == true) {
         if (ref.read(profileProvider) == null) {
           await fetchProfile();
         }
@@ -71,7 +71,7 @@ class ProfileCtrl {
     if (valid != true) {
       profile = profile.copyWith(photoIdCard: null);
     } else {
-      profile = profile.copyWith(photo: "${profile.photoIdCard}?v=$dummyId");
+      profile = profile.copyWith(photoIdCard: "${profile.photoIdCard}?v=$dummyId");
     }
 
     saveProfile(profile);

@@ -24,6 +24,8 @@ const Color oGreen = Colors.green;
 const Color oOvercast = Color(0xFFF1F1F2);
 const Color oBasilGreen = Color(0xFF3F6C45);
 
+const Color kcLinkColor = Color.fromARGB(170, 75, 64, 224);
+
 // Ref1 : Qubah
 const Color oGreen70 = Color(0xFF078243);
 const Color oDarkGreen = Color(0xFF30684d);

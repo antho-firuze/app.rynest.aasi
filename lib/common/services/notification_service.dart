@@ -1,8 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'F.dart';
 
 late FlutterLocalNotificationsPlugin localNotification;
 bool isFlutterLocalNotificationsInitialized = false;
@@ -45,16 +44,14 @@ class NotificationHelper {
   Future requestPermission() async {
     if (Platform.isIOS || Platform.isMacOS) {
       await localNotification
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
             alert: true,
             badge: true,
             sound: true,
           );
       await localNotification
-          .resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<MacOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
             alert: true,
             badge: true,
@@ -62,8 +59,7 @@ class NotificationHelper {
           );
     } else if (Platform.isAndroid) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          localNotification.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+          localNotification.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
       await androidImplementation?.areNotificationsEnabled();
       // await androidImplementation?.requestPermission();
@@ -74,30 +70,29 @@ class NotificationHelper {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    final DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: true,
-            requestSoundPermission: true,
-            onDidReceiveLocalNotification: (
-              int id,
-              String? title,
-              String? body,
-              String? payload,
-            ) async {
-              F.log.d('id $id');
-              // didReceiveLocalNotificationSubject.add(
-              //   ReceivedNotification(
-              //     id: id,
-              //     title: title,
-              //     body: body,
-              //     payload: payload,
-              //   ),
-              // );
-            });
+    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      // onDidReceiveLocalNotification: (
+      //   int id,
+      //   String? title,
+      //   String? body,
+      //   String? payload,
+      // ) async {
+      //   log('id $id', name: "NOTIFICATION-SVC");
+      //   // didReceiveLocalNotificationSubject.add(
+      //   //   ReceivedNotification(
+      //   //     id: id,
+      //   //     title: title,
+      //   //     body: body,
+      //   //     payload: payload,
+      //   //   ),
+      //   // );
+      // },
+    );
 
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
+    final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -105,14 +100,13 @@ class NotificationHelper {
     await localNotification.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
-        F.log.i(details.payload);
+        log("${details.payload}", name: "NOTIFICATION-SVC");
       },
     );
   }
 
   Future<NotificationDetails> notificationDetails() async {
-    AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails(
+    AndroidNotificationDetails androidNotificationDetails = const AndroidNotificationDetails(
       'channelId',
       'channelName',
       channelDescription: 'description',
@@ -121,8 +115,7 @@ class NotificationHelper {
       playSound: true,
     );
 
-    DarwinNotificationDetails iosNotificationDetails =
-        const DarwinNotificationDetails();
+    DarwinNotificationDetails iosNotificationDetails = const DarwinNotificationDetails();
 
     return NotificationDetails(
       android: androidNotificationDetails,
@@ -131,8 +124,7 @@ class NotificationHelper {
   }
 
   static show({String? title, String? message}) async {
-    AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails(
+    AndroidNotificationDetails androidNotificationDetails = const AndroidNotificationDetails(
       'channelId',
       'channelName',
       channelDescription: 'description',
@@ -141,8 +133,7 @@ class NotificationHelper {
       playSound: true,
     );
 
-    DarwinNotificationDetails iosNotificationDetails =
-        const DarwinNotificationDetails();
+    DarwinNotificationDetails iosNotificationDetails = const DarwinNotificationDetails();
 
     final details = NotificationDetails(
       android: androidNotificationDetails,

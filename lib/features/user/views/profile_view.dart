@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app.rynest.aasi/common/controller/package_info_controller.dart';
 import 'package:app.rynest.aasi/common/views/about_view.dart';
 import 'package:app.rynest.aasi/common/views/contact_us_view.dart';
@@ -30,6 +32,9 @@ class ProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+
+    // log("${profile?.photo}", name: "ProfileView");
+
     return MyUI(
       child: ExamWrapper(
         child: Scaffold(
@@ -41,7 +46,7 @@ class ProfileView extends ConsumerWidget {
             onRefresh: () async => await ref.read(profileCtrlProvider).fetchProfile(),
             child: ListView(
               children: [
-                if (ref.watch(authTokenProvider) == null) ...[
+                if (ref.watch(tokenValidProvider) == false) ...[
                   20.height,
                   LogoArtWork(
                     pressedOverflow: true,
@@ -150,7 +155,7 @@ class ProfileView extends ConsumerWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: CustomButton(
-                          onPressed: () => ref.read(authCtrlProvider).signOut(),
+                          onPressed: () async => await ref.read(authCtrlProvider).signOut(),
                           child: const Text('Keluar / Logout'),
                         ),
                       ),

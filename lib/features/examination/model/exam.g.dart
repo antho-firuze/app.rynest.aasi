@@ -19,7 +19,7 @@ _$ExamImpl _$$ExamImplFromJson(Map<String, dynamic> json) => _$ExamImpl(
       numAnsweredQuestion:
           const JsonIntConverter().fromJson(json['num_answered_question']),
       numOfQuestion: const JsonIntConverter().fromJson(json['num_of_question']),
-      score: (json['score'] as num?)?.toDouble(),
+      score: const JsonDoubleConverter().fromJson(json['score']),
       passedGrade: const JsonDoubleConverter().fromJson(json['passed_grade']),
     );
 
@@ -42,7 +42,8 @@ Map<String, dynamic> _$$ExamImplToJson(_$ExamImpl instance) =>
           instance.numAnsweredQuestion, const JsonIntConverter().toJson),
       'num_of_question': _$JsonConverterToJson<dynamic, int>(
           instance.numOfQuestion, const JsonIntConverter().toJson),
-      'score': instance.score,
+      'score': _$JsonConverterToJson<dynamic, double>(
+          instance.score, const JsonDoubleConverter().toJson),
       'passed_grade': _$JsonConverterToJson<dynamic, double>(
           instance.passedGrade, const JsonDoubleConverter().toJson),
     };

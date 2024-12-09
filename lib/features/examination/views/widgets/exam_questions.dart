@@ -27,13 +27,12 @@ class ExamQuestions extends ConsumerWidget {
     final questions = ref.watch(questionsProvider);
     final fontSize = ref.watch(fontSizeProvider);
 
-    // int index = exam?.syncQuestion ?? 0;
+    int index = exam?.syncQuestion ?? 0;
     final question = ref.watch(questionProvider);
-    int page = 0;
-    if (question != null) {
-      page = (questions?.indexOf(question) ?? 0) + 1;
-    }
-    // int page = index + 1;
+    // if (question != null) {
+    //   page = (questions?.indexOf(question) ?? 0) + 1;
+    // }
+    int page = index + 1;
 
     log("questionId : ${question?.questionId}", name: 'ExamQuestions');
 

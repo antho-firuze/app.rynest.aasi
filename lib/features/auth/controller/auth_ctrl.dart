@@ -17,6 +17,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final authTokenProvider = StateProvider<String?>((ref) => null);
 final authUserProvider = StateProvider<User?>((ref) => null);
 
+final tokenValidProvider = StateProvider<bool>((ref) => false);
+
 final textIdentifierProvider = StateProvider<String>((ref) => '');
 final textPasswordOldProvider = StateProvider<String>((ref) => '');
 final textPasswordProvider = StateProvider<String>((ref) => '');
@@ -67,16 +69,17 @@ class AuthCtrl {
     }
   }
 
-  Future<bool> checkToken() async {
+  Future<void> checkToken() async {
     final reqs = Reqs(method: "auth.check_token");
     final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
 
     if (state.hasError) {
       setToken(null);
-      return false;
+      ref.read(tokenValidProvider.notifier).state = false;
+      return;
     }
 
-    return true;
+    ref.read(tokenValidProvider.notifier).state = true;
   }
 
   void loadUser() {
@@ -313,7 +316,7 @@ class AuthCtrl {
 
     await AlertService.confirm(
       body: "Anda yakin ingin keluar ?",
-      onOk: () {
+      onYes: () {
         setUser(null);
         setToken(null);
       },
@@ -323,7 +326,7 @@ class AuthCtrl {
   Future removeAccount() async {
     await AlertService.confirm(
       body: "Anda yakin ingin menon-aktifkan Akun Anda ?",
-      onOk: () async {
+      onYes: () async {
         final reqs = Reqs(method: "auth.unregister");
         final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
 

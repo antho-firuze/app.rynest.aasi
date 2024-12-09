@@ -17,6 +17,7 @@ class PhotoCardView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
     return MyUI(
+      onlyPortrait: true,
       child: Scaffold(
         appBar: AppBar(title: const Text('Foto KTP')),
         body: RefreshIndicator(
@@ -43,7 +44,8 @@ class PhotoCardView extends ConsumerWidget {
                     onPressed: () => context.goto(page: const CameraIdCardView()),
                   ),
                 ),
-              )
+              ),
+              60.height,
             ],
           ),
         ),

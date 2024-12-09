@@ -1,5 +1,5 @@
+import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/localization/string_hardcoded.dart';
-import 'package:app.rynest.aasi/ui/shared/app_colors.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:super_icons/super_icons.dart';

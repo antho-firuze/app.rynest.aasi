@@ -1,8 +1,9 @@
 import 'package:app.rynest.aasi/common/widgets/logo/logo.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
-import 'package:app.rynest.aasi/helpers/extensions.dart';
+import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/orientation_utils.dart';
+import 'package:app.rynest.aasi/utils/string_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,8 +27,8 @@ class FrontCard extends ConsumerWidget {
     // String fullName = 'YUSWANTINI SPECIAL PAKE TELOR SEPULUH';
     String fullName = profile!.fullName ?? '';
     String companyName = profile.company?.name ?? 'PT. Amanah Asuransi';
-    String releaseDate = certificate?.releaseDate!.asStringShort() ?? '07 Jun 2021';
-    String expiredDate = certificate?.expiredDate!.asStringShort() ?? '07 Jun 2022';
+    String releaseDate = certificate?.releaseDate!.yMMMMd() ?? '07 Jun 2021';
+    String expiredDate = certificate?.expiredDate!.yMMMMd() ?? '07 Jun 2022';
     String checkUrl = 'https://lsp-ps.id/check_sertifikat/validate/${certificate?.certNo}';
 
     return Card(

@@ -49,6 +49,7 @@ mixin _$Exam {
   @JsonKey(name: 'num_of_question')
   @JsonIntConverter()
   int? get numOfQuestion => throw _privateConstructorUsedError;
+  @JsonDoubleConverter()
   double? get score => throw _privateConstructorUsedError;
   @JsonKey(name: 'passed_grade')
   @JsonDoubleConverter()
@@ -84,7 +85,7 @@ abstract class $ExamCopyWith<$Res> {
       @JsonIntConverter()
       int? numAnsweredQuestion,
       @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
-      double? score,
+      @JsonDoubleConverter() double? score,
       @JsonKey(name: 'passed_grade')
       @JsonDoubleConverter()
       double? passedGrade});
@@ -199,7 +200,7 @@ abstract class _$$ExamImplCopyWith<$Res> implements $ExamCopyWith<$Res> {
       @JsonIntConverter()
       int? numAnsweredQuestion,
       @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
-      double? score,
+      @JsonDoubleConverter() double? score,
       @JsonKey(name: 'passed_grade')
       @JsonDoubleConverter()
       double? passedGrade});
@@ -305,7 +306,7 @@ class _$ExamImpl implements _Exam {
       @JsonIntConverter()
       this.numAnsweredQuestion,
       @JsonKey(name: 'num_of_question') @JsonIntConverter() this.numOfQuestion,
-      this.score,
+      @JsonDoubleConverter() this.score,
       @JsonKey(name: 'passed_grade') @JsonDoubleConverter() this.passedGrade});
 
   factory _$ExamImpl.fromJson(Map<String, dynamic> json) =>
@@ -352,6 +353,7 @@ class _$ExamImpl implements _Exam {
   @JsonIntConverter()
   final int? numOfQuestion;
   @override
+  @JsonDoubleConverter()
   final double? score;
   @override
   @JsonKey(name: 'passed_grade')
@@ -455,7 +457,7 @@ abstract class _Exam implements Exam {
       @JsonKey(name: 'num_of_question')
       @JsonIntConverter()
       final int? numOfQuestion,
-      final double? score,
+      @JsonDoubleConverter() final double? score,
       @JsonKey(name: 'passed_grade')
       @JsonDoubleConverter()
       final double? passedGrade}) = _$ExamImpl;
@@ -503,6 +505,7 @@ abstract class _Exam implements Exam {
   @JsonIntConverter()
   int? get numOfQuestion;
   @override
+  @JsonDoubleConverter()
   double? get score;
   @override
   @JsonKey(name: 'passed_grade')

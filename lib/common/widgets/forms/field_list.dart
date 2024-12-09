@@ -20,7 +20,7 @@ class FieldList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: caption),
-        SizedBox(width: width ?? context.screenWidthRatio(.5, .6), child: value),
+        SizedBox(width: width ?? context.screenWidthRatio(.5, .35), child: value),
       ],
     );
   }

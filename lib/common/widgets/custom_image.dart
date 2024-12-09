@@ -30,7 +30,6 @@ class CustomImage extends StatelessWidget {
     }
 
     if (src is String) {
-      
       var type = src.substring(0, 4).toLowerCase();
       if (type == 'http') {
         return imageNetwork();
@@ -54,6 +53,18 @@ class CustomImage extends StatelessWidget {
         src,
         color: color,
         fit: fit ?? BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) => loadingProgress == null
+            ? child
+            : Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(),
+                    5.height,
+                    Text('loading...').center(),
+                  ],
+                ),
+              ),
         errorBuilder: (context, error, stackTrace) => ImageFailed(
           title: errorTitle,
         ),

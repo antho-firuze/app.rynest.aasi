@@ -137,8 +137,7 @@ class ExamStageStart extends ConsumerWidget {
                 ),
                 20.height,
               ],
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+              Center(
                 child: CustomButton(
                   onPressed: (photo == true && idcard == true && photoExamStart == true)
                       ? () async => await ref.read(examCtrlProvider).fetchStart()

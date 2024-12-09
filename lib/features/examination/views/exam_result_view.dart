@@ -13,6 +13,7 @@ import 'package:app.rynest.aasi/features/examination/views/widgets/section_resul
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
+import 'package:app.rynest.aasi/utils/orientation_utils.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -194,25 +195,27 @@ class ExamResultView extends ConsumerWidget {
                       20.height,
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Wrap(
+                          direction: context.isLandscape() ? Axis.horizontal : Axis.vertical,
+                          spacing: 10.whenLandscape(20)!,
+                          runSpacing: 10,
                           children: [
                             Column(
                               children: [
                                 const Text('Mulai ujian').tsBodyM().center(),
                                 if (exam?.examStart != null)
-                                  Text(exam!.examStart!.custom('E, d MMM yyyy - HH:mm')).tsTitleM().center()
+                                  Text(exam!.examStart!.custom('E, d MMM yyyy - HH:mm')).tsTitleL().center()
                                 else
-                                  const Text("-").tsTitleM().center(),
+                                  const Text("-").tsTitleL().center(),
                               ],
                             ),
                             Column(
                               children: [
                                 const Text('Selesai ujian').tsBodyM().center(),
                                 if (exam?.examEnd != null)
-                                  Text(exam!.examEnd!.custom('E, d MMM yyyy - HH:mm')).tsTitleM().center()
+                                  Text(exam!.examEnd!.custom('E, d MMM yyyy - HH:mm')).tsTitleL().center()
                                 else
-                                  const Text("-").tsTitleM().center(),
+                                  const Text("-").tsTitleL().center(),
                               ],
                             ),
                           ],

@@ -115,7 +115,7 @@ class AccountView extends ConsumerWidget {
                   onPressed: () async => await ref.read(authCtrlProvider).removeAccount(),
                 ),
               ),
-              20.height,
+              60.height,
             ],
           ),
         ),

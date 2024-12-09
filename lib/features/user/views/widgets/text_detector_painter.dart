@@ -28,17 +28,13 @@ class TextRecognizerPainter extends CustomPainter {
       ..strokeWidth = 3.0
       ..color = Colors.lightGreenAccent;
 
-    final Paint background = Paint()..color = Color(0x99000000);
+    final Paint background = Paint()..color = const Color(0x99000000);
 
     for (final textBlock in recognizedText.blocks) {
       final ParagraphBuilder builder = ParagraphBuilder(
-        ParagraphStyle(
-            textAlign: TextAlign.left,
-            fontSize: 16,
-            textDirection: TextDirection.ltr),
+        ParagraphStyle(textAlign: TextAlign.left, fontSize: 16, textDirection: TextDirection.ltr),
       );
-      builder.pushStyle(
-          ui.TextStyle(color: Colors.lightGreenAccent, background: background));
+      builder.pushStyle(ui.TextStyle(color: Colors.lightGreenAccent, background: background));
       builder.addText(textBlock.text);
       builder.pop();
 
@@ -81,12 +77,7 @@ class TextRecognizerPainter extends CustomPainter {
           ..layout(ParagraphConstraints(
             width: (right - left).abs(),
           )),
-        Offset(
-            Platform.isAndroid &&
-                    cameraLensDirection == CameraLensDirection.front
-                ? right
-                : left,
-            top),
+        Offset(Platform.isAndroid && cameraLensDirection == CameraLensDirection.front ? right : left, top),
       );
     }
   }

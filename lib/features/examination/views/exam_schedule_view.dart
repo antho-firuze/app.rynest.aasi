@@ -10,6 +10,7 @@ import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
+import 'package:app.rynest.aasi/utils/orientation_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -157,19 +158,26 @@ class ExamScheduleView extends ConsumerWidget {
                     20.height,
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Wrap(
+                        direction: context.isLandscape() ? Axis.horizontal : Axis.vertical,
+                        spacing: 10.whenLandscape(20)!,
+                        runSpacing: 10,
                         children: [
                           Column(
                             children: [
                               const Text('Tanggal mulai').tsBodyM().center(),
-                              Text(examSchedule!.openRegistration!.custom('E, d MMM yyyy - HH:mm')).tsTitleM().center(),
+                              Text(examSchedule?.openRegistration!.custom('E, d MMM yyyy - HH:mm') ?? '-')
+                                  .tsTitleL()
+                                  .center(),
                             ],
                           ),
+                          // 20.height,
                           Column(
                             children: [
                               const Text('Tanggal berakhir').tsBodyM().center(),
-                              Text(examSchedule.closeRegistration!.custom('E, d MMM yyyy - HH:mm')).tsTitleM().center(),
+                              Text(examSchedule?.closeRegistration!.custom('E, d MMM yyyy - HH:mm') ?? '-')
+                                  .tsTitleL()
+                                  .center(),
                             ],
                           ),
                         ],

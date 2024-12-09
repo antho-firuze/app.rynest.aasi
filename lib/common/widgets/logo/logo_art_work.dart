@@ -25,6 +25,7 @@ class LogoArtWork extends StatelessWidget {
             'assets/images/artwork.png',
             fit: BoxFit.fill,
             color: color ?? primaryLight,
+            // width: width,
             width: width ?? context.screenWidthRatio(1, .65),
           ),
         ),

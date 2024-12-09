@@ -2,10 +2,11 @@ import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_checkbox.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_input.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_rich_text.dart';
+import 'package:app.rynest.aasi/common/widgets/logo/logo.dart';
+import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/auth/views/pwd_forgot_view.dart';
 import 'package:app.rynest.aasi/localization/string_hardcoded.dart';
-import 'package:app.rynest.aasi/ui/shared/widgets/logos.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -23,16 +24,32 @@ class SignInView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // log("${context.screenHeight}");
+    double paddingTopLogo = context.screenHeight <= 640 ? 0 : context.screenHeight * .1;
     return MyUI(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            const SafeArea(
+            Align(
+              alignment: Alignment.topCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: LogoSignature2(),
+                padding: EdgeInsets.only(top: paddingTopLogo),
+                child: Logo(
+                  color: oWhite,
+                  src: 'assets/images/artwork.png',
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: paddingTopLogo + 30),
+                child: Logo(
+                  src: 'assets/images/logo_aasi.png',
+                  width: 250,
+                ),
               ),
             ),
             Align(
@@ -216,7 +233,7 @@ class SignInView extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              60.height,
+                              20.height,
                             ],
                           ),
                         ),

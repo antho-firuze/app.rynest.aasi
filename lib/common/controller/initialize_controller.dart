@@ -68,11 +68,12 @@ class InitializeCtrl {
 
     // Check token validity
     if (ref.read(authTokenProvider) != null) {
-      if (await ref.read(authCtrlProvider).checkToken()) {
-        if (ref.read(profileProvider) == null) {
-          await ref.read(profileCtrlProvider).fetchProfile();
-        }
-      }
+      await ref.read(authCtrlProvider).checkToken();
+      // if (await ref.read(authCtrlProvider).checkToken()) {
+      //   if (ref.read(profileProvider) == null) {
+      //     await ref.read(profileCtrlProvider).fetchProfile();
+      //   }
+      // }
     }
     // Goto Next Route
     ref.read(goRouterProvider).go('/home');
