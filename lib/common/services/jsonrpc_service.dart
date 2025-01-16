@@ -4,6 +4,7 @@ import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/model/resp.dart';
 import 'package:app.rynest.aasi/core/app_base.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/utils/dio_auth_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +13,13 @@ class JsonrpcService {
   final Ref ref;
   JsonrpcService(this.ref);
 
-  Future<Resp?> call({required Reqs reqs}) async {
+  Future<Resp?> call({required Reqs reqs, bool checkToken = true}) async {
     final dio = ref.read(dioApiProvider);
+
+    if (checkToken) {
+      dio.interceptors.add(DioAuthInterceptor(ref));
+    }
+
     final url = Uri.parse(AppBase.url).toString();
     String agent = Platform.isAndroid ? 'android' : 'ios';
     String language = "id";

@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_questions.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_cancel.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_expired.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_finish.dart';
+import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_kicked_out.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_not_registered.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_start.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_too_earlier.dart';
@@ -23,6 +25,10 @@ class ExamView extends ConsumerWidget {
     log(stage.toString(), name: 'EXAM-VIEW');
 
     // return const ExamStageCancel();
+
+    if (ref.watch(authUserProvider) == null) {
+      return ExamStageKickedOut();
+    }
 
     if ([ExamStage.start, ExamStage.ongoing].contains(stage) && exam?.examStart != null && questions != null) {
       return const ExamQuestions();

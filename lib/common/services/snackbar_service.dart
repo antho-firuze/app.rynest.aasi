@@ -6,6 +6,7 @@ class SnackBarService {
     required String message,
     Duration? duration,
   }) {
+    scaffoldKey.currentState!.clearSnackBars();
     scaffoldKey.currentState!.showSnackBar(
       SnackBar(
         content: Text(message),
@@ -16,6 +17,7 @@ class SnackBarService {
 
 extension SnackBarExt on BuildContext {
   void showSnackBar(String message) {
+    ScaffoldMessenger.of(this).clearSnackBars();
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message),

@@ -1,9 +1,34 @@
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
-class CustomInput extends StatefulWidget {
-  const CustomInput({
+import 'button/custom_button.dart';
+import 'custom_dialog.dart';
+
+enum ComboType { gender, religion }
+
+enum GenderList {
+  male('Laki-laki'),
+  female('Perempuan');
+
+  const GenderList(this.desc);
+  final String desc;
+}
+
+enum ReligionList {
+  islam('Islam'),
+  kriskat('Kristen Katholik'),
+  krispro('Kristen Protestan'),
+  hindu('Hindu'),
+  budha('Budha');
+
+  const ReligionList(this.desc);
+  final String desc;
+}
+
+class CustomCombo extends StatefulWidget {
+  const CustomCombo({
     super.key,
     this.controller,
     this.onSubmitted,
@@ -24,6 +49,8 @@ class CustomInput extends StatefulWidget {
     this.formatter,
     this.validator,
     this.onChanged,
+    this.items,
+    this.type = ComboType.gender,
   });
 
   final String? initialValue;
@@ -45,12 +72,14 @@ class CustomInput extends StatefulWidget {
   final Function()? enterPressed;
   final List<TextInputFormatter>? formatter;
   final String? Function(String? val)? validator;
+  final List<String>? items;
+  final ComboType type;
 
   @override
-  State<CustomInput> createState() => _CustomInputState();
+  State<CustomCombo> createState() => _CustomComboState();
 }
 
-class _CustomInputState extends State<CustomInput> with SingleTickerProviderStateMixin {
+class _CustomComboState extends State<CustomCombo> with SingleTickerProviderStateMixin {
   bool isEmpty = true;
   bool showPassword = false;
   String? labelText;
@@ -109,12 +138,12 @@ class _CustomInputState extends State<CustomInput> with SingleTickerProviderStat
     return TextFormField(
       controller: controller,
       autofocus: false,
-      // focusNode: widget.focusNode,
+      focusNode: widget.focusNode,
       // style: tsBodyM(),
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
       enabled: widget.enabled,
-      readOnly: widget.readOnly,
+      readOnly: true,
       obscureText: showPassword ? !showPassword : widget.isPassword!,
       buildCounter: generateCounter,
       onChanged: (value) {
@@ -142,9 +171,14 @@ class _CustomInputState extends State<CustomInput> with SingleTickerProviderStat
         prefixIcon: widget.prefixIcon,
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             showClearBtn,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Icon(Icons.arrow_drop_down, size: 30),
+            ),
             showPasswordVisibility,
             widget.suffixIcon ?? Container(),
           ],
@@ -155,6 +189,60 @@ class _CustomInputState extends State<CustomInput> with SingleTickerProviderStat
           minHeight: 47,
         ),
       ),
+      onTap: () async => await showDialog(
+        context: context,
+        builder: (context) {
+          List<String> items = switch (widget.type) {
+            ComboType.gender => GenderList.values.map((e) => e.desc).toList(),
+            ComboType.religion => ReligionList.values.map((e) => e.desc).toList(),
+          };
+          return ComboDialog<String>(
+            items: items,
+            onSelected: (value) => controller.text = value,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ComboDialog<T> extends StatelessWidget {
+  const ComboDialog({
+    super.key,
+    required this.items,
+    this.onSelected,
+  });
+
+  final List<T> items;
+  final Function(T value)? onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomDialog(
+      title: Text('Pilihan :'),
+      content: SingleChildScrollView(
+        child: Column(
+          children: List.generate(
+            items.length,
+            (index) {
+              final item = items[index];
+              return ListTile(
+                title: Text("$item"),
+                onTap: () {
+                  if (onSelected != null) onSelected!(item);
+                  context.pop();
+                },
+              );
+            },
+          ),
+        ),
+      ),
+      actions: [
+        CustomButton(
+          child: const Text('BATAL'),
+          onPressed: () => context.pop(),
+        ),
+      ],
     );
   }
 }

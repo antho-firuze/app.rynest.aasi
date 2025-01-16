@@ -128,31 +128,35 @@ class SignInView extends ConsumerWidget {
                                 ),
                               ),
                               10.height,
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: CustomCheckBox(
-                                        caption: const Text('Ingatkan saya').link(),
-                                        value: ref.watch(isRememberProvider),
-                                        onChanged: (p0) =>
-                                            ref.read(isRememberProvider.notifier).state = !ref.read(isRememberProvider),
-                                      ),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: CustomCheckBox(
+                                            caption: const Text('Ingatkan saya').link(),
+                                            value: ref.watch(isRememberProvider),
+                                            onChanged: (p0) => ref.read(isRememberProvider.notifier).state =
+                                                !ref.read(isRememberProvider),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            // const result = true;
+                                            final result = await context.goto(page: const PwdForgotView());
+                                            if (result == true && context.mounted) {
+                                              context.pop();
+                                            }
+                                          },
+                                          child: const Text('Lupa sandi ?').tsBodyM().link(),
+                                        ),
+                                      ],
                                     ),
-                                    InkWell(
-                                      onTap: () async {
-                                        // const result = true;
-                                        final result = await context.goto(page: const PwdForgotView());
-                                        if (result == true && context.mounted) {
-                                          context.pop();
-                                        }
-                                      },
-                                      child: const Text('Lupa sandi ?').tsBodyM().link(),
-                                    ),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
                               40.height,
                               Padding(

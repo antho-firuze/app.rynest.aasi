@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 class OneUINestedScrollView extends StatefulWidget {
   const OneUINestedScrollView({
     super.key,
-    this.expandedHeight,
-    this.tollbarHeight,
+    this.expandedHeight = 200,
+    this.tollbarHeight = kToolbarHeight,
     this.expandedWidget,
     this.collapsedWidget,
     this.boxDecoration,
@@ -23,8 +23,8 @@ class OneUINestedScrollView extends StatefulWidget {
     this.onRefresh,
   });
 
-  final double? expandedHeight;
-  final double? tollbarHeight;
+  final double expandedHeight;
+  final double tollbarHeight;
   final Widget? expandedWidget;
   final Widget? collapsedWidget;
   final BoxDecoration? boxDecoration;
@@ -88,7 +88,7 @@ class _OneUINestedScrollViewState extends State<OneUINestedScrollView> {
                       child: FadeAnimation(
                         animation: animation,
                         isExpanded: true,
-                        child: widget.expandedWidget!,
+                        child: widget.expandedWidget ?? Container(),
                       ),
                     ),
                     Align(
@@ -118,7 +118,7 @@ class _OneUINestedScrollViewState extends State<OneUINestedScrollView> {
                                 child: FadeAnimation(
                                   animation: animation,
                                   isExpanded: false,
-                                  child: widget.collapsedWidget!,
+                                  child: widget.collapsedWidget ?? Container(),
                                 ),
                               ),
                             ),
@@ -184,8 +184,8 @@ class _OneUINestedScrollViewState extends State<OneUINestedScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    _expandedHeight = 200;
-    _toolbarHeight = kToolbarHeight;
+    _expandedHeight = widget.expandedHeight;
+    _toolbarHeight = widget.tollbarHeight;
 
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overScroll) {

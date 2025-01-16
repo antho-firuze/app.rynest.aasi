@@ -16,7 +16,6 @@ class MyUI extends StatelessWidget {
     this.isTransparent = false,
     this.showScreenInfo = false,
     this.showConnectivityInfo = true,
-    this.onlyPortrait = false,
   });
 
   final Decoration? decoration;
@@ -27,7 +26,6 @@ class MyUI extends StatelessWidget {
   final bool isTransparent;
   final bool showScreenInfo;
   final bool showConnectivityInfo;
-  final bool onlyPortrait;
 
   @override
   Widget build(BuildContext context) {

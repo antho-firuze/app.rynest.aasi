@@ -1,6 +1,6 @@
 import 'package:app.rynest.aasi/utils/dio_auth_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_busy_interceptor.dart';
-import 'package:app.rynest.aasi/utils/dio_jsonrpc_response_interceptor.dart';
+import 'package:app.rynest.aasi/utils/dio_jsonrpc_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_logger_interceptor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
@@ -22,7 +22,7 @@ final dioApiProvider = Provider.autoDispose((ref) {
   final dio = ref.read(dioProvider);
 
   dio.interceptors.add(DioLoggerInterceptor());
-  dio.interceptors.add(DioJsonRpcResponseInterceptor(ref));
+  dio.interceptors.add(DioJsonRpcInterceptor(ref));
   // dio.interceptors.add(DioAuthInterceptor(ref));
   return dio;
 });

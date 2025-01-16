@@ -189,7 +189,12 @@ extension StringConversionDateTime on String {
     return DateTime.now();
   }
 
-  DateTime toDateTime() => DateTime.parse(this);
+  DateTime toDateTime([String? format]) {
+    if (format != null) {
+      return DateFormat(format).parse(this);
+    }
+    return DateTime.parse(this);
+  }
 }
 
 extension DurationExtension on Duration {

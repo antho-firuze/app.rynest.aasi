@@ -6,9 +6,9 @@ import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DioJsonRpcResponseInterceptor implements Interceptor {
+class DioJsonRpcInterceptor implements Interceptor {
   final Ref ref;
-  DioJsonRpcResponseInterceptor(this.ref);
+  DioJsonRpcInterceptor(this.ref);
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
