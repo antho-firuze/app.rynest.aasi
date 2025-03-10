@@ -31,7 +31,13 @@ class CustomDialog extends StatelessWidget {
             if (title != null) title!,
           ],
         ),
-        content: content,
+        content: MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(.8)),
+          child: Material(
+            color: Colors.transparent,
+            child: content,
+          ),
+        ),
         actions: actions,
       ),
     );

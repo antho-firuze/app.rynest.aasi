@@ -1,7 +1,9 @@
 import 'dart:developer';
 
-import 'package:app.rynest.aasi/common/controller/initialize_controller.dart';
+import 'package:app.rynest.aasi/common/controller/initialize_ctrl.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
+import 'package:app.rynest.aasi/common/widgets/skelton.dart';
+import 'package:app.rynest.aasi/common/widgets/version_info.dart';
 import 'package:app.rynest.aasi/features/user/views/widgets/custom_shape.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -73,7 +75,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
                         .center(),
                   ),
                   20.height,
-                  // CircleButton(
+                  // CustomButton(
                   //   child: const Icon(
                   //     Icons.arrow_forward_rounded,
                   //     color: Colors.white,
@@ -83,6 +85,14 @@ class _SplashViewState extends ConsumerState<SplashView> {
                 ],
               ),
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: context.screenHeight * .05),
+                child: VersionInfo(),
+              ),
+            ),
+            Align(alignment: Alignment.bottomCenter, child: Skelton(radius: 0)),
           ],
         ),
       ),

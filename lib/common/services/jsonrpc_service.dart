@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
+import 'dart:math' hide log;
 
 import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/model/resp.dart';
@@ -16,20 +18,25 @@ class JsonrpcService {
   Future<Resp?> call({required Reqs reqs, bool checkToken = true}) async {
     final dio = ref.read(dioApiProvider);
 
+    String? token = ref.read(authTokenProvider);
     if (checkToken) {
       dio.interceptors.add(DioAuthInterceptor(ref));
+
+      if (token == null) {
+        log('Failed Call => reason token is null !!!', name: 'JSONRPC-SERVICE');
+        return null;
+      }
     }
 
     final url = Uri.parse(AppBase.url).toString();
     String agent = Platform.isAndroid ? 'android' : 'ios';
     String language = "id";
-    String? token = ref.read(authTokenProvider);
 
     dio.options.headers['Content-Type'] = 'application/json; charset=utf-8';
 
     FormData? formData;
     Map<String, dynamic> payload = {
-      'id': 99999,
+      'id': Random().nextInt(99999),
       'lang': language,
       'agent': agent,
       'method': reqs.method,

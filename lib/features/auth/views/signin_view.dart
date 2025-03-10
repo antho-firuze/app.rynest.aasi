@@ -2,6 +2,7 @@ import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_checkbox.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_input.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_rich_text.dart';
+import 'package:app.rynest.aasi/common/widgets/forms/ordered_list.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
@@ -169,10 +170,18 @@ class SignInView extends ConsumerWidget {
                                       return;
                                     }
 
-                                    bool result = await ref.read(authCtrlProvider).signIn();
-                                    if (result == true && context.mounted) {
-                                      context.pop(true);
-                                    }
+                                    ref.read(fetchSignInProvider.future).then((value) {
+                                      if (value && context.mounted) {
+                                        context.pop(true);
+                                      }
+                                    }).whenComplete(() {
+                                      ref.invalidate(fetchSignInProvider);
+                                    });
+
+                                    // bool result = await ref.read(authCtrlProvider).signIn();
+                                    // if (result == true && context.mounted) {
+                                    //   context.pop(true);
+                                    // }
                                   },
                                 ),
                               ),
@@ -191,7 +200,6 @@ class SignInView extends ConsumerWidget {
                                             context: context,
                                             shape: const BeveledRectangleBorder(),
                                             builder: (context) => MyUI(
-                                              isTransparent: true,
                                               child: SizedBox(
                                                 width: double.infinity,
                                                 child: Column(
@@ -202,16 +210,15 @@ class SignInView extends ConsumerWidget {
                                                     30.height,
                                                     Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                      child: Column(
+                                                      child: OrderedList(
+                                                        type: OLType.arrow,
                                                         children: [
                                                           const Text(
-                                                              "• Anda harus terdaftar sebagai Agen pada Perusahaan Asuransi Syariah."),
-                                                          10.height,
+                                                              "Anda harus terdaftar sebagai Agen pada Perusahaan Asuransi Syariah."),
                                                           const Text(
-                                                              "• Melakukan pendaftaran sebagai Agen Asuransi Syariah pada Perusahaan Asuransi Syariah."),
-                                                          10.height,
+                                                              "Melakukan pendaftaran sebagai Agen Asuransi Syariah pada Perusahaan Asuransi Syariah."),
                                                           const Text(
-                                                              "• Username dan Password akan dikirimkan kepada masing-masing user."),
+                                                              "Username dan Password akan dikirimkan kepada masing-masing user."),
                                                         ],
                                                       ),
                                                     ),

@@ -19,7 +19,7 @@ class ExamStageCancel extends ConsumerWidget {
         appBar: AppBar(title: const Text('Ujian')),
         body: RefreshIndicator(
           onRefresh: () async {
-            await ref.read(profileCtrlProvider).fetchProfile();
+            ref.refresh(fetchProfileProvider);
             await ref.read(examCtrlProvider).fetchSchedule();
             await ref.read(examCtrlProvider).fetchPhotos();
             await ref.read(examCtrlProvider).fetchStatus();

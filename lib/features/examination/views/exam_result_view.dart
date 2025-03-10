@@ -5,6 +5,7 @@ import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
+import 'package:app.rynest.aasi/common/widgets/skelton.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/views/camera_exam_finish_view.dart';
@@ -112,10 +113,12 @@ class ExamResultView extends ConsumerWidget {
             ? AppBar(title: const Text('Hasil Ujian'))
             : AppBar(title: const Text('Hasil Ujian Sementara')),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.read(examCtrlProvider).fetchResult(),
+          onRefresh: () async => ref.refresh(fetchExamResultProvider),
+          // onRefresh: () async => await ref.read(examCtrlProvider).fetchResult(),
           child: ListView(
             children: [
               5.height,
+              // AVATAR
               LogoArtWork(
                 child: CustomAvatar(
                   width: 120,
@@ -125,6 +128,7 @@ class ExamResultView extends ConsumerWidget {
                 ),
               ),
               10.height,
+              // PROFILE
               CustomCard(
                 title: const Text('Profil').tsTitleL().center().clr(oWhite),
                 child: Column(
@@ -173,7 +177,9 @@ class ExamResultView extends ConsumerWidget {
                 ),
               ),
               20.height,
+              // SECTION POINT
               SectionPoint(
+                exam: exam,
                 numOfQuestion: exam?.numOfQuestion ?? 60,
                 numAnsweredQuestion: exam?.numAnsweredQuestion ?? 0,
                 numOfCorrect: exam?.numOfCorrect ?? 0,
@@ -182,9 +188,26 @@ class ExamResultView extends ConsumerWidget {
                     : (exam?.numAnsweredQuestion ?? 0) - (exam?.numOfCorrect ?? 0),
               ),
               20.height,
+              // SECTION RESULT
               if (stage == ExamStage.finish) ...[
-                SectionResult(score: exam?.score ?? 0.0, passed: exam?.passedGrade ?? 0.0),
+                ref.watch(fetchExamResultProvider).when(
+                      skipLoadingOnRefresh: false,
+                      data: (data) {
+                        return SectionResult(
+                          exam: data,
+                          onRefresh: () async => ref.refresh(fetchExamResultProvider),
+                        );
+                      },
+                      error: (error, stackTrace) => Container(),
+                      loading: () => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Skelton(height: 30),
+                      ),
+                    ),
                 20.height,
+              ],
+              // EXAM DETAIL
+              if (stage == ExamStage.finish) ...[
                 CustomCard(
                   color: Colors.green[300]!,
                   title: const Text('Detail Ujian').tsTitleL().center().clr(oWhite),

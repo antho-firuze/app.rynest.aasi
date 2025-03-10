@@ -21,11 +21,14 @@ class AboutView extends StatelessWidget {
         body: OneUINestedScrollView(
           foregroundColor: oWhite,
           expandedWidget: Text(''.hardcoded).tsHeadlineL().center().clr(oWhite),
-          collapsedWidget: Text('Tentang Kami'.hardcoded).tsTitleL().ellipsis().clr(oWhite).maxLn(1),
+          collapsedWidget: Text('Tentang Kami'.hardcoded).tsTitleL().clr(oWhite).ellipsis().maxLn(1).bold(),
           background: Center(
             child: LogoArtWork(
               color: oWhite,
-              child: Logo(width: context.screenWidthRatio(.6, .5), src: 'assets/images/logo_aasi_2.png'),
+              child: Logo(
+                width: context.screenWidthRatio(.6, .5),
+                src: 'assets/images/logo_aasi_2.png',
+              ),
             ),
           ),
           // actions: [

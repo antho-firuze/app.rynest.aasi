@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/exceptions/data_exeception_layout.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
@@ -15,35 +16,52 @@ class PhotoCardView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(profileProvider);
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text('Foto KTP')),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.read(profileCtrlProvider).fetchProfile(),
+          onRefresh: () async => await ref.refresh(fetchProfileProvider),
           child: ListView(
             children: [
               5.height,
               const LogoArtWork(child: LogoApp()),
               5.height,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 250,
-                  child: ImageCard(image: profile?.photoIdCard),
-                ),
-              ),
-              20.height,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Center(
-                  child: CustomButton(
-                    child: profile?.photoIdCard == null ? const Text('Ambil Foto KTP') : const Text('Update Foto KTP'),
-                    onPressed: () => context.goto(page: const CameraIdCardView()),
+              ref.watch(fetchProfileProvider).when(
+                    skipLoadingOnRefresh: false,
+                    data: (data) {
+                      final profile = data;
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 250,
+                              child: ImageCard(image: profile?.photoIdCard),
+                            ),
+                          ),
+                          20.height,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: CustomButton(
+                                child: profile?.photoIdCard == null
+                                    ? const Text('Ambil Foto KTP')
+                                    : const Text('Update Foto KTP'),
+                                onPressed: () => context.goto(page: const CameraIdCardView()),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    error: (error, stackTrace) => DataExceptionLayout(
+                      error: error,
+                      child: Container(),
+                      onTap: () => ref.refresh(fetchProfileProvider),
+                    ),
+                    loading: () => Center(child: CircularProgressIndicator()),
                   ),
-                ),
-              ),
               60.height,
             ],
           ),

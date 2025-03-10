@@ -73,25 +73,29 @@ class ExamPhotoView extends ConsumerWidget {
         const LogoArtWork(child: LogoApp()),
         10.height,
         GroupList(
-          title: 'Foto mulai ujian',
-          padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+          title: Text('Foto mulai ujian'),
           children: [
-            SizedBox(
-              width: double.infinity,
-              height: 250,
-              child: ImageCard(image: photos?.examStart),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+              child: SizedBox(
+                width: double.infinity,
+                height: 250,
+                child: ImageCard(image: photos?.examStart),
+              ),
             ),
           ],
         ),
         20.height,
         GroupList(
-          title: 'Foto selesai ujian',
-          padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+          title: Text('Foto selesai ujian'),
           children: [
-            SizedBox(
-              width: double.infinity,
-              height: 250,
-              child: ImageCard(image: photos?.examFinish),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+              child: SizedBox(
+                width: double.infinity,
+                height: 250,
+                child: ImageCard(image: photos?.examFinish),
+              ),
             ),
           ],
         ),

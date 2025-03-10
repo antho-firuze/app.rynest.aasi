@@ -80,7 +80,7 @@ class _OneUINestedScrollViewState extends State<OneUINestedScrollView> {
                         isExpanded: true,
                         child: widget.background!,
                       ),
-                      Container(color: oBlack.withOpacity(.3)),
+                      // Container(color: oBlack.withOpacity(.3)),
                     ],
                     Container(decoration: widget.boxDecoration),
                     // Center big title

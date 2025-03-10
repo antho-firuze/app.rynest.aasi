@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CustomRichText extends StatelessWidget {
   const CustomRichText({
     super.key,
-    required this.text, this.textAlign,
+    required this.text,
+    this.textAlign,
   });
 
   final TextSpan text;

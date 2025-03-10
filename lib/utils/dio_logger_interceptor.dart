@@ -33,7 +33,7 @@ class DioLoggerInterceptor implements Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final url = '${err.requestOptions.uri}';
     _logMessageAndClearStopwatch(null, url, '❌ Received error');
-    log('❌ ${err.stackTrace}', name: 'DIO');
+    // log('❌ ${err.stackTrace}', name: 'DIO');
     if (err.response?.data != null) {
       log('❌ Response Error: ${err.response?.data}', name: 'DIO');
     }

@@ -21,7 +21,7 @@ class ContactUsView extends StatelessWidget {
         body: OneUINestedScrollView(
           foregroundColor: oWhite,
           expandedWidget: Text(''.hardcoded).tsHeadlineL().center().clr(oWhite),
-          collapsedWidget: Text('Kontak Kami'.hardcoded).tsTitleL().ellipsis().clr(oWhite).maxLn(1),
+          collapsedWidget: Text('Kontak Kami'.hardcoded).tsTitleL().ellipsis().clr(oWhite).maxLn(1).bold(),
           background: Center(
             child: LogoArtWork(
               color: oWhite,

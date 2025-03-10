@@ -20,15 +20,22 @@ final checkDataAvailableStreamProvider = StreamProvider<void>((ref) async* {
   }
 });
 
+final isConnectedFutureProvider = FutureProvider<bool>((ref) async {
+  final check = await Connectivity().checkConnectivity();
+  if (check.contains(ConnectivityResult.wifi) || check.contains(ConnectivityResult.mobile)) {
+    return await ref.read(networkServiceProvider).checkDataAvailable();
+  }
+  return false;
+});
+
 class NetworkCtrl {
   Ref ref;
   NetworkCtrl(this.ref);
 
   void initialize() {
     log('Initialize Network Info & Connection !');
+
     networkConnectivityListen();
-    // getNetworkInfo();
-    // ref.watch(checkDataAvailableStreamProvider);
   }
 
   void networkConnectivityListen() async {

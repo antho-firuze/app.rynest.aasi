@@ -5,14 +5,18 @@ class GroupList extends StatelessWidget {
   const GroupList({
     super.key,
     this.title,
+    this.showDividerTop = true,
+    this.showDividerBottom = false,
+    this.showDividerCenter = false,
     this.children,
-    this.padding,
     this.onTap,
     this.trailing,
   });
 
-  final EdgeInsetsGeometry? padding;
-  final String? title;
+  final bool showDividerTop;
+  final bool showDividerBottom;
+  final bool showDividerCenter;
+  final Widget? title;
   final IconData? trailing;
   final List<Widget>? children;
   final Function()? onTap;
@@ -23,34 +27,28 @@ class GroupList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        divider(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (title != null) ...[
-              Padding(
-                padding: padding ?? EdgeInsets.zero,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(title!).bold(),
-                    if (trailing != null) ...[
-                      10.width,
-                      Icon(trailing).link(onTap: onTap),
-                    ],
-                  ],
+        if (showDividerTop) divider(),
+        if (title != null) ...[
+          if (showDividerCenter)
+            Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                divider(),
+                Container(
+                  padding: EdgeInsets.only(right: 10),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: title!,
                 ),
-              ),
-            ],
-            if (children != null)
-              ListView(
-                shrinkWrap: true,
-                padding: padding,
-                physics: const NeverScrollableScrollPhysics(),
-                children: children!.toList(),
-              ),
-          ],
-        ),
+              ],
+            )
+          else
+            title!,
+        ],
+        if (showDividerBottom) divider(),
+        if (children != null) ...[
+          20.height,
+          ...children!,
+        ],
       ],
     );
   }

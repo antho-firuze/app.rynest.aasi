@@ -60,7 +60,7 @@ class ExamCtrl {
     });
   }
 
-  void _updateExamStage() {
+  void updateExamStage() {
     final schedule = ref.read(examScheduleProvider);
     final exam = ref.read(examProvider);
 
@@ -172,7 +172,7 @@ class ExamCtrl {
     ref.read(examScheduleProvider.notifier).state =
         state.value!.result == null ? null : ExamSchedule.fromJson(state.value!.result!);
 
-    _updateExamStage();
+    updateExamStage();
   }
 
   Future<void> fetchPhotos() async {
@@ -199,7 +199,7 @@ class ExamCtrl {
     final exam = state.value?.result == null ? null : Exam.fromJson(state.value?.result);
     ref.read(examProvider.notifier).state = exam;
 
-    _updateExamStage();
+    updateExamStage();
   }
 
   Future<void> fetchStart() async {
@@ -229,7 +229,7 @@ class ExamCtrl {
 
     await loadQuestion();
 
-    _updateExamStage();
+    updateExamStage();
   }
 
   Future<void> fetchFinish() async {
@@ -248,6 +248,8 @@ class ExamCtrl {
     final exam = state.value?.result == null ? null : Exam.fromJson(state.value?.result);
     ref.read(examProvider.notifier).state = ref.read(examProvider)?.copyWith(
           examCompleted: exam?.examCompleted,
+          // score: exam?.score,
+          // passedGrade: exam?.passedGrade,
           questionIds: null,
         );
 
@@ -255,7 +257,7 @@ class ExamCtrl {
     ref.read(questionProvider.notifier).state = null;
     ref.read(questionsProvider.notifier).state = [];
 
-    _updateExamStage();
+    updateExamStage();
   }
 
   Future<void> fetchAnswer(String answer) async {
@@ -344,7 +346,7 @@ class ExamCtrl {
           passedGrade: exam?.passedGrade,
         );
 
-    _updateExamStage();
+    updateExamStage();
   }
 
   Future loadQuestion([Go? go]) async {
@@ -473,3 +475,45 @@ class ExamCtrl {
 }
 
 final examCtrlProvider = Provider(ExamCtrl.new);
+
+final fetchExamResultProvider = FutureProvider<Exam?>((ref) async {
+  final reqs = Reqs(
+    method: "exam4.result",
+    params: {
+      'datetime': DateTime.now().dbDateTime(),
+    },
+  );
+  final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
+
+  if (state.hasError) return null;
+
+  final exam = state.value?.result == null ? null : Exam.fromJson(state.value?.result);
+  return exam;
+});
+
+final fetchExamScheduleProvider = FutureProvider<ExamSchedule?>((ref) async {
+  final reqs = Reqs(method: "exam4.schedule");
+  final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
+
+  if (state.hasError) return null;
+
+  final schedule = ExamSchedule.fromJson(state.value!.result!);
+
+  ref.read(examScheduleProvider.notifier).state = schedule;
+
+  ref.read(examCtrlProvider).updateExamStage();
+
+  return schedule;
+});
+
+final fetchExamPhotosProvider = FutureProvider<ExamPhotos?>((ref) async {
+  final reqs = Reqs(method: "exam4.photos");
+  final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
+
+  if (state.hasError) return null;
+
+  final examPhotos = ExamPhotos.fromJson(state.value!.result!);
+
+  ref.read(examPhotosProvider.notifier).state = examPhotos;
+  return examPhotos;
+});

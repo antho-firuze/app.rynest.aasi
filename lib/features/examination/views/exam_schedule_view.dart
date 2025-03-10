@@ -5,6 +5,7 @@ import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
+import 'package:app.rynest.aasi/common/widgets/skelton.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
@@ -21,9 +22,9 @@ class ExamScheduleView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stage = ref.watch(examStageProvider);
-    final profile = ref.watch(profileProvider);
-    final examSchedule = ref.watch(examScheduleProvider);
-    final examCategory = examSchedule?.category;
+    // final profile = ref.watch(profileProvider);
+    // final examSchedule = ref.watch(examScheduleProvider);
+    // final examCategory = examSchedule?.category;
 
     log(stage.toString());
 
@@ -32,7 +33,7 @@ class ExamScheduleView extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(title: const Text('Jadwal Ujian')),
           body: RefreshIndicator(
-            onRefresh: () async => await ref.read(examCtrlProvider).fetchSchedule(),
+            onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
             child: ListView(
               children: [
                 5.height,
@@ -54,147 +55,190 @@ class ExamScheduleView extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(title: const Text('Jadwal & Status Ujian')),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.read(examCtrlProvider).fetchSchedule(),
+          onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
           child: ListView(
             children: [
               5.height,
-              LogoArtWork(
-                child: CustomAvatar(
-                  width: 120,
-                  height: 120,
-                  image: profile?.photo,
-                  initial: profile?.fullName,
-                ),
-              ),
+              ref.watch(fetchProfileProvider).when(
+                    data: (data) {
+                      if (data == null) {
+                        return Container();
+                      }
+
+                      final profile = data;
+                      return LogoArtWork(
+                        child: CustomAvatar(
+                          width: 120,
+                          height: 120,
+                          image: profile.photo,
+                          initial: profile.fullName,
+                        ),
+                      );
+                    },
+                    error: (error, stackTrace) => Container(),
+                    loading: () => Center(child: CircularProgressIndicator()),
+                  ),
               10.height,
               CustomCard(
                 title: const Text('Profil').tsTitleL().center().clr(oWhite),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          const Text('Nama Lengkap').tsBodyM().center(),
-                          Text(profile?.fullName ?? '').tsTitleL().center(),
-                        ],
+                child: ref.watch(fetchProfileProvider).when(
+                      data: (data) {
+                        if (data == null) {
+                          return Container();
+                        }
+
+                        final profile = data;
+
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                children: [
+                                  const Text('Nama Lengkap').tsBodyM().center(),
+                                  Text(profile.fullName ?? '').tsTitleL().center(),
+                                ],
+                              ),
+                            ),
+                            20.height,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      const Text('No Identitas').tsBodyM().center(),
+                                      Text(profile.cardNo ?? '').tsTitleL().center(),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      const Text('Code').tsBodyM().center(),
+                                      Text(profile.memberId ?? '').tsTitleL().center(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            20.height,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                children: [
+                                  const Text('Perusahaan').tsBodyM().center(),
+                                  Text(profile.company?.name ?? '').tsTitleL().center(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      error: (error, stackTrace) => Container(),
+                      loading: () => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(spacing: 20, children: List.generate(3, (index) => Skelton(height: 20))),
                       ),
                     ),
-                    20.height,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              const Text('No Identitas').tsBodyM().center(),
-                              Text(profile?.cardNo ?? '').tsTitleL().center(),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Text('Code').tsBodyM().center(),
-                              Text(profile?.memberId ?? '').tsTitleL().center(),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    20.height,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          const Text('Perusahaan').tsBodyM().center(),
-                          Text(profile?.company?.name ?? '').tsTitleL().center(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ),
               20.height,
               CustomCard(
                 title: const Text('Jadwal & Status Ujian').tsTitleL().center().clr(oWhite),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          const Text('Kategori').tsBodyM().center(),
-                          Text(examCategory?.name ?? '').tsTitleL().center(),
-                        ],
+                child: ref.watch(fetchExamScheduleProvider).when(
+                      skipLoadingOnRefresh: false,
+                      data: (data) {
+                        if (data == null) {
+                          return Container();
+                        }
+
+                        final examSchedule = data;
+                        final examCategory = examSchedule.category;
+
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                children: [
+                                  const Text('Kategori').tsBodyM().center(),
+                                  Text(examCategory?.name ?? '').tsTitleL().center(),
+                                ],
+                              ),
+                            ),
+                            20.height,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      const Text('Sesi').tsBodyM().center(),
+                                      Text(examSchedule.name ?? '').tsTitleL().center(),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      const Text('Durasi').tsBodyM().center(),
+                                      Text("${examCategory?.duration} menit").tsTitleL().center(),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      const Text('Minimal Point').tsBodyM().center(),
+                                      Text("${examCategory?.passedGrade}%").tsTitleL().center(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            20.height,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Wrap(
+                                direction: context.isLandscape() ? Axis.horizontal : Axis.vertical,
+                                spacing: 10.whenLandscape(20)!,
+                                runSpacing: 10,
+                                children: [
+                                  Column(
+                                    children: [
+                                      const Text('Tanggal mulai').tsBodyM().center(),
+                                      Text(examSchedule.openRegistration!.custom('E, d MMM yyyy - HH:mm'))
+                                          .tsTitleL()
+                                          .center(),
+                                    ],
+                                  ),
+                                  // 20.height,
+                                  Column(
+                                    children: [
+                                      const Text('Tanggal berakhir').tsBodyM().center(),
+                                      Text(examSchedule.closeRegistration!.custom('E, d MMM yyyy - HH:mm'))
+                                          .tsTitleL()
+                                          .center(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            20.height,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                children: [
+                                  const Text('Status').tsBodyM().center(),
+                                  Text(ref.watch(examStatusProvider)).tsTitleL().center(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      error: (error, stackTrace) => Container(),
+                      loading: () => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(spacing: 20, children: List.generate(3, (index) => Skelton(height: 20))),
                       ),
                     ),
-                    20.height,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              const Text('Sesi').tsBodyM().center(),
-                              Text(examSchedule?.name ?? '').tsTitleL().center(),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Text('Durasi').tsBodyM().center(),
-                              Text("${examCategory?.duration} menit").tsTitleL().center(),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Text('Minimal Point').tsBodyM().center(),
-                              Text("${examCategory?.passedGrade}%").tsTitleL().center(),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    20.height,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Wrap(
-                        direction: context.isLandscape() ? Axis.horizontal : Axis.vertical,
-                        spacing: 10.whenLandscape(20)!,
-                        runSpacing: 10,
-                        children: [
-                          Column(
-                            children: [
-                              const Text('Tanggal mulai').tsBodyM().center(),
-                              Text(examSchedule?.openRegistration!.custom('E, d MMM yyyy - HH:mm') ?? '-')
-                                  .tsTitleL()
-                                  .center(),
-                            ],
-                          ),
-                          // 20.height,
-                          Column(
-                            children: [
-                              const Text('Tanggal berakhir').tsBodyM().center(),
-                              Text(examSchedule?.closeRegistration!.custom('E, d MMM yyyy - HH:mm') ?? '-')
-                                  .tsTitleL()
-                                  .center(),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    20.height,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          const Text('Status').tsBodyM().center(),
-                          Text(ref.watch(examStatusProvider)).tsTitleL().center(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ),
               20.height,
               Column(

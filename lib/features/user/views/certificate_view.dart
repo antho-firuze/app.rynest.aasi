@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/exceptions/data_exeception_layout.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
@@ -15,28 +16,50 @@ class CertificateView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final certificate = ref.watch(certificateProvider);
-
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text("Kartu Lisensi")),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.read(profileCtrlProvider).fetchProfile(),
+          onRefresh: () async => await ref.refresh(fetchCertificateProvider),
           child: ListView(
             children: [
               10.height,
               const LogoArtWork(child: LogoApp()),
               10.height,
-              Center(
-                child: SizedBox(
-                  width: context.screenWidthRatio(.9, .65),
-                  height: context.screenWidthRatio(.55, .4),
-                  child: FlipCard(
-                    front: certificate == null ? const EmptyCard() : const FrontCard(),
-                    back: certificate == null ? const EmptyCard() : const BackCard(),
+              ref.watch(fetchCertificateProvider).when(
+                    skipLoadingOnRefresh: false,
+                    data: (data) {
+                      if (data == null) {
+                        return Center(
+                          child: SizedBox(
+                            width: context.screenWidthRatio(.9, .65),
+                            height: context.screenWidthRatio(.55, .4),
+                            child: FlipCard(
+                              front: EmptyCard(),
+                              back: EmptyCard(),
+                            ),
+                          ),
+                        );
+                      }
+                      // final certificate = data;
+                      return Center(
+                        child: SizedBox(
+                          width: context.screenWidthRatio(.9, .65),
+                          height: context.screenWidthRatio(.55, .4),
+                          child: FlipCard(
+                            front: const FrontCard(),
+                            back: const BackCard(),
+                          ),
+                        ),
+                      );
+                    },
+                    error: (error, stackTrace) => DataExceptionLayout(
+                      error: error,
+                      child: Container(),
+                      onTap: () => ref.watch(fetchCertificateProvider),
+                    ),
+                    loading: () => Center(child: CircularProgressIndicator()),
                   ),
-                ),
-              ),
               20.height,
             ],
           ),

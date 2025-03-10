@@ -34,6 +34,28 @@ final verifyTypeProvider = StateProvider<String>((ref) => 'email');
 final countdownTimerProvider = StateProvider<int>((ref) => 60 * 3);
 final isCountdownExpiredProvider = StateProvider<bool>((ref) => false);
 
+final fetchSignInProvider = FutureProvider<bool>((ref) async {
+  final reqs = Reqs(
+    method: "auth.login",
+    params: {
+      'username': ref.read(textIdentifierProvider),
+      'password': ref.read(textPasswordProvider),
+    },
+  );
+  final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs, checkToken: false));
+
+  log('fetchSignInProvider => ${state.value}', name: 'AUTH-CTRL');
+
+  final token = state.value?.result?['token'];
+  final user = User.fromJson(state.value?.result?['user']);
+
+  ref.read(authCtrlProvider).setToken(token);
+  ref.read(authCtrlProvider).setUser(user);
+  ref.read(authCtrlProvider).setRemember(ref.read(isRememberProvider));
+
+  return true;
+});
+
 class AuthCtrl {
   final Ref ref;
   AuthCtrl(this.ref);
@@ -132,28 +154,28 @@ class AuthCtrl {
     }
   }
 
-  Future<bool> signIn() async {
-    final reqs = Reqs(
-      method: "auth.login",
-      params: {
-        'username': ref.read(textIdentifierProvider),
-        'password': ref.read(textPasswordProvider),
-        // 'username': "1589972726",
-        // 'password': "P455worD@Byp455",
-        // 'dt_client': DateTime.now().asFormatDBDateTime(),
-      },
-    );
-    final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
+  // Future<bool> signIn() async {
+  //   final reqs = Reqs(
+  //     method: "auth.login",
+  //     params: {
+  //       'username': ref.read(textIdentifierProvider),
+  //       'password': ref.read(textPasswordProvider),
+  //       // 'username': "1589972726",
+  //       // 'password': "P455worD@Byp455",
+  //       // 'dt_client': DateTime.now().asFormatDBDateTime(),
+  //     },
+  //   );
+  //   final state = await AsyncValue.guard(() async => await ref.read(jsonRpcProvider).call(reqs: reqs));
 
-    if (state.hasError) return false;
+  //   if (state.hasError) return false;
 
-    setToken(state.value?.result?['token']);
+  //   setToken(state.value?.result?['token']);
 
-    setUser(state.value?.result?['user'] == null ? null : User.fromJson(state.value?.result?['user']));
-    setRemember(ref.read(isRememberProvider));
+  //   setUser(state.value?.result?['user'] == null ? null : User.fromJson(state.value?.result?['user']));
+  //   setRemember(ref.read(isRememberProvider));
 
-    return true;
-  }
+  //   return true;
+  // }
 
   Future<bool> signUp() async {
     final reqs = Reqs(
