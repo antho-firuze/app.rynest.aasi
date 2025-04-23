@@ -1,5 +1,5 @@
 class AppConfig {
-  static const devMode = false;
-  static const isTesting = false;
+  static const devMode = true;
+  static const isTesting = true;
   static const isSignIn = false;
 }

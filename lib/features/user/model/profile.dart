@@ -33,7 +33,7 @@ class Company with _$Company {
   factory Company({
     @JsonIntConverter() int? id,
     String? name,
-    @JsonKey(name: 'kode_company') String? code,
+    @JsonKey(name: 'kd') String? code,
     @JsonIntConverter() int? type,
   }) = _Company;
 

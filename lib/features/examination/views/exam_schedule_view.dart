@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
+import 'package:app.rynest.aasi/common/widgets/forms/field_list.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/common/widgets/skelton.dart';
@@ -11,7 +10,6 @@ import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
-import 'package:app.rynest.aasi/utils/orientation_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,216 +19,99 @@ class ExamScheduleView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stage = ref.watch(examStageProvider);
-    // final profile = ref.watch(profileProvider);
-    // final examSchedule = ref.watch(examScheduleProvider);
-    // final examCategory = examSchedule?.category;
-
-    log(stage.toString());
-
-    if ([ExamStage.notRegistered, ExamStage.cancel].contains(stage)) {
-      return MyUI(
-        child: Scaffold(
-          appBar: AppBar(title: const Text('Jadwal Ujian')),
-          body: RefreshIndicator(
-            onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
-            child: ListView(
-              children: [
-                5.height,
-                const LogoArtWork(
-                  child: LogoApp(),
-                ),
-                10.height,
-                const WarningException(
-                  title: 'Jadwal ujian Anda belum tersedia.',
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    final profile = ref.watch(profileProvider);
 
     return MyUI(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Jadwal & Status Ujian')),
+        appBar: AppBar(
+          title: const Text('Jadwal & Status Ujian'),
+          actions: [
+            TextButton(
+              onPressed: () async => ref.refresh(fetchExamScheduleProvider),
+              child: Text('Refresh').clr(oWhite),
+            ),
+          ],
+        ),
         body: RefreshIndicator(
           onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
           child: ListView(
             children: [
               5.height,
-              ref.watch(fetchProfileProvider).when(
-                    data: (data) {
-                      if (data == null) {
-                        return Container();
-                      }
-
-                      final profile = data;
-                      return LogoArtWork(
-                        child: CustomAvatar(
-                          width: 120,
-                          height: 120,
-                          image: profile.photo,
-                          initial: profile.fullName,
-                        ),
-                      );
-                    },
-                    error: (error, stackTrace) => Container(),
-                    loading: () => Center(child: CircularProgressIndicator()),
-                  ),
+              LogoArtWork(
+                child: CustomAvatar(
+                  width: 120,
+                  height: 120,
+                  image: profile?.photo,
+                  initial: profile?.fullName,
+                ),
+              ),
               10.height,
               CustomCard(
-                title: const Text('Profil').tsTitleL().center().clr(oWhite),
-                child: ref.watch(fetchProfileProvider).when(
-                      data: (data) {
-                        if (data == null) {
-                          return Container();
-                        }
-
-                        final profile = data;
-
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                children: [
-                                  const Text('Nama Lengkap').tsBodyM().center(),
-                                  Text(profile.fullName ?? '').tsTitleL().center(),
-                                ],
-                              ),
-                            ),
-                            20.height,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const Text('No Identitas').tsBodyM().center(),
-                                      Text(profile.cardNo ?? '').tsTitleL().center(),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text('Code').tsBodyM().center(),
-                                      Text(profile.memberId ?? '').tsTitleL().center(),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            20.height,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                children: [
-                                  const Text('Perusahaan').tsBodyM().center(),
-                                  Text(profile.company?.name ?? '').tsTitleL().center(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      error: (error, stackTrace) => Container(),
-                      loading: () => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(spacing: 20, children: List.generate(3, (index) => Skelton(height: 20))),
-                      ),
-                    ),
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: const Text('Profil').tsTitleL().clr(oWhite),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Column(
+                    spacing: 10,
+                    children: [
+                      FieldList(caption: Text('Nama Lengkap'), value: Text(profile?.fullName ?? '').bold().clr(oBlack)),
+                      FieldList(caption: Text('No Identitas'), value: Text(profile?.cardNo ?? '').bold().clr(oBlack)),
+                      FieldList(caption: Text('Code'), value: Text(profile?.memberId ?? '').bold().clr(oBlack)),
+                      FieldList(
+                          caption: Text('Perusahaan'), value: Text(profile?.company?.name ?? '').bold().clr(oBlack)),
+                    ],
+                  ),
+                ),
               ),
               20.height,
               CustomCard(
-                title: const Text('Jadwal & Status Ujian').tsTitleL().center().clr(oWhite),
+                title: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: const Text('Jadwal & Status Ujian').tsTitleL().clr(oWhite),
+                ),
                 child: ref.watch(fetchExamScheduleProvider).when(
                       skipLoadingOnRefresh: false,
                       data: (data) {
                         if (data == null) {
-                          return Container();
+                          return WarningException(title: 'Jadwal ujian Anda belum tersedia.');
                         }
 
                         final examSchedule = data;
                         final examCategory = examSchedule.category;
 
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                children: [
-                                  const Text('Kategori').tsBodyM().center(),
-                                  Text(examCategory?.name ?? '').tsTitleL().center(),
-                                ],
-                              ),
-                            ),
-                            20.height,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const Text('Sesi').tsBodyM().center(),
-                                      Text(examSchedule.name ?? '').tsTitleL().center(),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text('Durasi').tsBodyM().center(),
-                                      Text("${examCategory?.duration} menit").tsTitleL().center(),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      const Text('Minimal Point').tsBodyM().center(),
-                                      Text("${examCategory?.passedGrade}%").tsTitleL().center(),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            20.height,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Wrap(
-                                direction: context.isLandscape() ? Axis.horizontal : Axis.vertical,
-                                spacing: 10.whenLandscape(20)!,
-                                runSpacing: 10,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const Text('Tanggal mulai').tsBodyM().center(),
-                                      Text(examSchedule.openRegistration!.custom('E, d MMM yyyy - HH:mm'))
-                                          .tsTitleL()
-                                          .center(),
-                                    ],
-                                  ),
-                                  // 20.height,
-                                  Column(
-                                    children: [
-                                      const Text('Tanggal berakhir').tsBodyM().center(),
-                                      Text(examSchedule.closeRegistration!.custom('E, d MMM yyyy - HH:mm'))
-                                          .tsTitleL()
-                                          .center(),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            20.height,
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                children: [
-                                  const Text('Status').tsBodyM().center(),
-                                  Text(ref.watch(examStatusProvider)).tsTitleL().center(),
-                                ],
-                              ),
-                            ),
-                          ],
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              FieldList(
+                                  caption: Text('Kategori'), value: Text(examCategory?.name ?? '').bold().clr(oBlack)),
+                              FieldList(caption: Text('Sesi'), value: Text(examSchedule.name ?? '').bold().clr(oBlack)),
+                              FieldList(
+                                  caption: Text('Durasi'),
+                                  value: Text("${examCategory?.duration} menit").bold().clr(oBlack)),
+                              FieldList(
+                                  caption: Text('Nilai Lulus'),
+                                  value: Text("${examCategory?.passedGrade}%").bold().clr(oBlack)),
+                              5.height,
+                              FieldList(
+                                  caption: Text('Tanggal Mulai'),
+                                  value: Text(examSchedule.openRegistration!.custom('EEEE, d MMM yyyy - HH:mm'))
+                                      .bold()
+                                      .clr(oBlack)),
+                              FieldList(
+                                  caption: Text('Tanggal Berakhir'),
+                                  value: Text(examSchedule.closeRegistration!.custom('EEEE, d MMM yyyy - HH:mm'))
+                                      .bold()
+                                      .clr(oBlack)),
+                              5.height,
+                              FieldList(
+                                  caption: Text('Status Ujian'),
+                                  value: Text("${examSchedule.state}").bold().clr(oBlack)),
+                            ],
+                          ),
                         );
                       },
                       error: (error, stackTrace) => Container(),

@@ -2,6 +2,7 @@ import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/features/examination/views/exam_view.dart';
 import 'package:app.rynest.aasi/features/examination/views/exam_wrapper.dart';
 import 'package:app.rynest.aasi/features/user/views/certificate_view.dart';
 import 'package:app.rynest.aasi/features/user/views/widgets/carousel_page.dart';
@@ -10,6 +11,7 @@ import 'package:app.rynest.aasi/features/user/views/widgets/icon_certificate.dar
 import 'package:app.rynest.aasi/features/user/views/widgets/menu_list.dart';
 import 'package:app.rynest.aasi/utils/gradient.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
+import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +32,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     return MyUI(
       enabledSafeArea: false,
       child: ExamWrapper(
+        onTap: () async => await context.goto(page: const ExamView()),
         child: Scaffold(
           body: Stack(
             children: [

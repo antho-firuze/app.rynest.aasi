@@ -28,9 +28,12 @@ mixin _$ExamCategory {
   @JsonKey(name: 'passed_grade')
   @JsonIntConverter()
   int get passedGrade => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_of_question')
+  @JsonKey(name: 'questions')
   @JsonIntConverter()
   int? get numOfQuestion => throw _privateConstructorUsedError;
+  @JsonKey(name: 'min_point')
+  @JsonIntConverter()
+  int? get minPoint => throw _privateConstructorUsedError;
 
   /// Serializes this ExamCategory to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,9 +56,8 @@ abstract class $ExamCategoryCopyWith<$Res> {
       String? name,
       @JsonIntConverter() int duration,
       @JsonKey(name: 'passed_grade') @JsonIntConverter() int passedGrade,
-      @JsonKey(name: 'num_of_question')
-      @JsonIntConverter()
-      int? numOfQuestion});
+      @JsonKey(name: 'questions') @JsonIntConverter() int? numOfQuestion,
+      @JsonKey(name: 'min_point') @JsonIntConverter() int? minPoint});
 }
 
 /// @nodoc
@@ -78,6 +80,7 @@ class _$ExamCategoryCopyWithImpl<$Res, $Val extends ExamCategory>
     Object? duration = null,
     Object? passedGrade = null,
     Object? numOfQuestion = freezed,
+    Object? minPoint = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -100,6 +103,10 @@ class _$ExamCategoryCopyWithImpl<$Res, $Val extends ExamCategory>
           ? _value.numOfQuestion
           : numOfQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
+      minPoint: freezed == minPoint
+          ? _value.minPoint
+          : minPoint // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -117,9 +124,8 @@ abstract class _$$ExamCategoryImplCopyWith<$Res>
       String? name,
       @JsonIntConverter() int duration,
       @JsonKey(name: 'passed_grade') @JsonIntConverter() int passedGrade,
-      @JsonKey(name: 'num_of_question')
-      @JsonIntConverter()
-      int? numOfQuestion});
+      @JsonKey(name: 'questions') @JsonIntConverter() int? numOfQuestion,
+      @JsonKey(name: 'min_point') @JsonIntConverter() int? minPoint});
 }
 
 /// @nodoc
@@ -140,6 +146,7 @@ class __$$ExamCategoryImplCopyWithImpl<$Res>
     Object? duration = null,
     Object? passedGrade = null,
     Object? numOfQuestion = freezed,
+    Object? minPoint = freezed,
   }) {
     return _then(_$ExamCategoryImpl(
       id: freezed == id
@@ -162,6 +169,10 @@ class __$$ExamCategoryImplCopyWithImpl<$Res>
           ? _value.numOfQuestion
           : numOfQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
+      minPoint: freezed == minPoint
+          ? _value.minPoint
+          : minPoint // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -174,9 +185,8 @@ class _$ExamCategoryImpl implements _ExamCategory {
       this.name,
       @JsonIntConverter() this.duration = 0,
       @JsonKey(name: 'passed_grade') @JsonIntConverter() this.passedGrade = 0,
-      @JsonKey(name: 'num_of_question')
-      @JsonIntConverter()
-      this.numOfQuestion});
+      @JsonKey(name: 'questions') @JsonIntConverter() this.numOfQuestion,
+      @JsonKey(name: 'min_point') @JsonIntConverter() this.minPoint});
 
   factory _$ExamCategoryImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExamCategoryImplFromJson(json);
@@ -195,13 +205,17 @@ class _$ExamCategoryImpl implements _ExamCategory {
   @JsonIntConverter()
   final int passedGrade;
   @override
-  @JsonKey(name: 'num_of_question')
+  @JsonKey(name: 'questions')
   @JsonIntConverter()
   final int? numOfQuestion;
+  @override
+  @JsonKey(name: 'min_point')
+  @JsonIntConverter()
+  final int? minPoint;
 
   @override
   String toString() {
-    return 'ExamCategory(id: $id, name: $name, duration: $duration, passedGrade: $passedGrade, numOfQuestion: $numOfQuestion)';
+    return 'ExamCategory(id: $id, name: $name, duration: $duration, passedGrade: $passedGrade, numOfQuestion: $numOfQuestion, minPoint: $minPoint)';
   }
 
   @override
@@ -216,13 +230,15 @@ class _$ExamCategoryImpl implements _ExamCategory {
             (identical(other.passedGrade, passedGrade) ||
                 other.passedGrade == passedGrade) &&
             (identical(other.numOfQuestion, numOfQuestion) ||
-                other.numOfQuestion == numOfQuestion));
+                other.numOfQuestion == numOfQuestion) &&
+            (identical(other.minPoint, minPoint) ||
+                other.minPoint == minPoint));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, duration, passedGrade, numOfQuestion);
+  int get hashCode => Object.hash(
+      runtimeType, id, name, duration, passedGrade, numOfQuestion, minPoint);
 
   /// Create a copy of ExamCategory
   /// with the given fields replaced by the non-null parameter values.
@@ -246,9 +262,10 @@ abstract class _ExamCategory implements ExamCategory {
       final String? name,
       @JsonIntConverter() final int duration,
       @JsonKey(name: 'passed_grade') @JsonIntConverter() final int passedGrade,
-      @JsonKey(name: 'num_of_question')
+      @JsonKey(name: 'questions') @JsonIntConverter() final int? numOfQuestion,
+      @JsonKey(name: 'min_point')
       @JsonIntConverter()
-      final int? numOfQuestion}) = _$ExamCategoryImpl;
+      final int? minPoint}) = _$ExamCategoryImpl;
 
   factory _ExamCategory.fromJson(Map<String, dynamic> json) =
       _$ExamCategoryImpl.fromJson;
@@ -266,9 +283,13 @@ abstract class _ExamCategory implements ExamCategory {
   @JsonIntConverter()
   int get passedGrade;
   @override
-  @JsonKey(name: 'num_of_question')
+  @JsonKey(name: 'questions')
   @JsonIntConverter()
   int? get numOfQuestion;
+  @override
+  @JsonKey(name: 'min_point')
+  @JsonIntConverter()
+  int? get minPoint;
 
   /// Create a copy of ExamCategory
   /// with the given fields replaced by the non-null parameter values.

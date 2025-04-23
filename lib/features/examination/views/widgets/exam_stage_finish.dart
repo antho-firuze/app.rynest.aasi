@@ -4,8 +4,6 @@ import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/features/examination/views/camera_exam_finish_view.dart';
-import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
-import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -17,80 +15,90 @@ class ExamStageFinish extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final photos = ref.watch(examPhotosProvider);
-
-    bool? photoExamFinish = photos?.examFinish != null;
-
-    return MyUI(
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Ujian')),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            ref.refresh(fetchProfileProvider);
-            await ref.read(examCtrlProvider).fetchSchedule();
-            await ref.read(examCtrlProvider).fetchPhotos();
-            await ref.read(examCtrlProvider).fetchStatus();
-            // log("$photos");
-          },
-          child: ListView(
-            children: [
-              5.height,
-              const LogoArtWork(child: LogoApp()),
-              5.height,
-              if (photoExamFinish == false) ...[
-                CustomCard(
-                  title: const Text('Pasca Ujian').tsTitleL().center().clr(oWhite),
-                  subTitle: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Text(
-                            'Mohon lengkapi terlebih dahulu data dibawah ini, sebagai syarat untuk dapat melihat Hasil Ujian :')
-                        .tsBodyM()
-                        .center(),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Icon(SuperIcons.mg_IDcard_line),
-                        title: const Text('Foto Selesai Ujian').bold(),
-                        subtitle: const Text('Silahkan anda ambil foto setelah ujian.'),
-                        trailing: Icon(photoExamFinish == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
-                            color: photoExamFinish == true ? oGreen : oRed),
-                        onTap: photoExamFinish == true
-                            ? null
-                            : () async => await context.goto(page: const CameraExamFinishView()),
-                      ),
-                    ],
-                  ),
-                ),
-                20.height,
-              ],
-              if (photoExamFinish == true) ...[
-                CustomCard(
-                  title: const Text('Ujian Selesai').tsTitleL().center().clr(oWhite),
-                  subTitle: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Text('Terima kasih atas waktu anda dalam mengikuti Ujian Lisensi AASI.')
-                        .tsBodyM()
-                        .center(),
-                  ),
-                  child: Column(
-                    children: [
-                      20.height,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: const Text(
-                                'Apabila ada pertanyaan mengenai Ujian Lisensi ini silahkan hubungi Customer Service AASI.')
-                            .center(),
-                      ),
-                      10.height,
-                    ],
-                  ),
-                ),
-              ],
-              60.height,
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ujian'),
+        actions: [
+          TextButton(
+            onPressed: () async => ref.refresh(fetchExamScheduleProvider),
+            child: Text('Refresh').clr(oWhite),
           ),
-        ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
+        child: ref.watch(fetchExamScheduleProvider).when(
+              skipLoadingOnRefresh: false,
+              data: (data) {
+                if (data == null) {
+                  return Container();
+                }
+
+                final examSchedule = data;
+
+                return ListView(
+                  children: [
+                    5.height,
+                    const LogoArtWork(child: LogoApp()),
+                    5.height,
+                    if (examSchedule.photoFinish == false) ...[
+                      CustomCard(
+                        title: const Text('Pasca Ujian').tsTitleL().center().clr(oWhite),
+                        subTitle: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Text(
+                                  'Mohon lengkapi terlebih dahulu data dibawah ini, sebagai syarat untuk dapat melihat Hasil Ujian :')
+                              .tsBodyM()
+                              .center(),
+                        ),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: const Icon(SuperIcons.mg_IDcard_line),
+                              title: const Text('Foto Selesai Ujian').bold(),
+                              subtitle: const Text('Silahkan anda ambil foto setelah ujian.'),
+                              trailing: Icon(
+                                  examSchedule.photoFinish == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
+                                  color: examSchedule.photoFinish == true ? oGreen : oRed),
+                              onTap: examSchedule.photoFinish == true
+                                  ? null
+                                  : () async => await context.goto(page: const CameraExamFinishView()),
+                            ),
+                          ],
+                        ),
+                      ),
+                      20.height,
+                    ] else ...[
+                      CustomCard(
+                        title: const Text('Ujian Selesai').tsTitleL().center().clr(oWhite),
+                        subTitle: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Text('Terima kasih, Anda telah selesai mengikuti Ujian Lisensi AASI.')
+                              .tsBodyM()
+                              .center(),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              Text('Note: Untuk melihat hasil ujian silahkan anda cek di Menu Hasil Ujian').center(),
+                              20.height,
+                              const Text(
+                                      'Apabila ada pertanyaan mengenai Ujian Lisensi ini silahkan hubungi Customer Service AASI.')
+                                  .center(),
+                              10.height,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                    60.height,
+                  ],
+                );
+              },
+              error: (error, stackTrace) => Container(),
+              loading: () => Center(child: CircularProgressIndicator()),
+            ),
       ),
     );
   }

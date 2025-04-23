@@ -1,19 +1,16 @@
 import 'package:app.rynest.aasi/core/app_color.dart';
-import 'package:app.rynest.aasi/features/examination/model/exam.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 
 class SectionPoint extends StatelessWidget {
   const SectionPoint({
     super.key,
-    this.exam,
     required this.numOfQuestion,
     required this.numAnsweredQuestion,
     required this.numOfCorrect,
     required this.numOfWrong,
   });
 
-  final Exam? exam;
   final int numOfQuestion;
   final int numAnsweredQuestion;
   final int numOfCorrect;
@@ -30,22 +27,18 @@ class SectionPoint extends StatelessWidget {
             ValueCard(
               title: 'Soal',
               value: numOfQuestion,
-              color: secondaryLight,
             ),
             ValueCard(
               title: 'Jawab',
               value: numAnsweredQuestion,
-              color: Colors.blue[200],
             ),
             ValueCard(
               title: 'Benar',
               value: numOfCorrect,
-              color: Colors.green[200],
             ),
             ValueCard(
               title: 'Salah',
               value: numOfWrong,
-              color: Colors.red[200],
             ),
           ],
         ),
@@ -59,12 +52,12 @@ class ValueCard extends StatelessWidget {
     super.key,
     required this.value,
     required this.title,
-    this.color,
+    this.color = primaryLight,
   });
 
   final String title;
   final int value;
-  final Color? color;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +70,13 @@ class ValueCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 5),
               decoration: BoxDecoration(
-                color: color ?? Colors.white,
+                color: color,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
               ),
-              child: Text(title).tsTitleL().center(),
+              child: Text(title).tsTitleM().center().clr(oWhite),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),

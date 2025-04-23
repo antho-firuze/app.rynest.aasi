@@ -1,6 +1,5 @@
 import 'package:app.rynest.aasi/common/widgets/fade_animation.dart';
 import 'package:app.rynest.aasi/common/widgets/one_ui/one_ui_scroll_physics.dart';
-import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:flutter/material.dart';
 
 class OneUINestedScrollView extends StatefulWidget {

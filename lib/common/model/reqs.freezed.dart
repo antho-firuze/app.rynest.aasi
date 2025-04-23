@@ -20,9 +20,15 @@ Reqs _$ReqsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Reqs {
-  String get method => throw _privateConstructorUsedError;
+  String? get method => throw _privateConstructorUsedError;
   Map<String, dynamic>? get params => throw _privateConstructorUsedError;
+  String? get url => throw _privateConstructorUsedError;
+  String? get path => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get queryParameters =>
+      throw _privateConstructorUsedError;
+  Map<String, dynamic>? get data => throw _privateConstructorUsedError;
   String? get filePath => throw _privateConstructorUsedError;
+  String get fileKey => throw _privateConstructorUsedError;
 
   /// Serializes this Reqs to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,7 +44,15 @@ abstract class $ReqsCopyWith<$Res> {
   factory $ReqsCopyWith(Reqs value, $Res Function(Reqs) then) =
       _$ReqsCopyWithImpl<$Res, Reqs>;
   @useResult
-  $Res call({String method, Map<String, dynamic>? params, String? filePath});
+  $Res call(
+      {String? method,
+      Map<String, dynamic>? params,
+      String? url,
+      String? path,
+      Map<String, dynamic>? queryParameters,
+      Map<String, dynamic>? data,
+      String? filePath,
+      String fileKey});
 }
 
 /// @nodoc
@@ -56,23 +70,48 @@ class _$ReqsCopyWithImpl<$Res, $Val extends Reqs>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? method = null,
+    Object? method = freezed,
     Object? params = freezed,
+    Object? url = freezed,
+    Object? path = freezed,
+    Object? queryParameters = freezed,
+    Object? data = freezed,
     Object? filePath = freezed,
+    Object? fileKey = null,
   }) {
     return _then(_value.copyWith(
-      method: null == method
+      method: freezed == method
           ? _value.method
           : method // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       params: freezed == params
           ? _value.params
           : params // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      url: freezed == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      path: freezed == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
+              as String?,
+      queryParameters: freezed == queryParameters
+          ? _value.queryParameters
+          : queryParameters // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      data: freezed == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>?,
       filePath: freezed == filePath
           ? _value.filePath
           : filePath // ignore: cast_nullable_to_non_nullable
               as String?,
+      fileKey: null == fileKey
+          ? _value.fileKey
+          : fileKey // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -84,7 +123,15 @@ abstract class _$$ReqsImplCopyWith<$Res> implements $ReqsCopyWith<$Res> {
       __$$ReqsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String method, Map<String, dynamic>? params, String? filePath});
+  $Res call(
+      {String? method,
+      Map<String, dynamic>? params,
+      String? url,
+      String? path,
+      Map<String, dynamic>? queryParameters,
+      Map<String, dynamic>? data,
+      String? filePath,
+      String fileKey});
 }
 
 /// @nodoc
@@ -99,23 +146,48 @@ class __$$ReqsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? method = null,
+    Object? method = freezed,
     Object? params = freezed,
+    Object? url = freezed,
+    Object? path = freezed,
+    Object? queryParameters = freezed,
+    Object? data = freezed,
     Object? filePath = freezed,
+    Object? fileKey = null,
   }) {
     return _then(_$ReqsImpl(
-      method: null == method
+      method: freezed == method
           ? _value.method
           : method // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       params: freezed == params
           ? _value._params
           : params // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      url: freezed == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      path: freezed == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
+              as String?,
+      queryParameters: freezed == queryParameters
+          ? _value._queryParameters
+          : queryParameters // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      data: freezed == data
+          ? _value._data
+          : data // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>?,
       filePath: freezed == filePath
           ? _value.filePath
           : filePath // ignore: cast_nullable_to_non_nullable
               as String?,
+      fileKey: null == fileKey
+          ? _value.fileKey
+          : fileKey // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -124,14 +196,23 @@ class __$$ReqsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ReqsImpl implements _Reqs {
   _$ReqsImpl(
-      {required this.method, final Map<String, dynamic>? params, this.filePath})
-      : _params = params;
+      {this.method,
+      final Map<String, dynamic>? params,
+      this.url,
+      this.path,
+      final Map<String, dynamic>? queryParameters,
+      final Map<String, dynamic>? data,
+      this.filePath,
+      this.fileKey = 'userfile'})
+      : _params = params,
+        _queryParameters = queryParameters,
+        _data = data;
 
   factory _$ReqsImpl.fromJson(Map<String, dynamic> json) =>
       _$$ReqsImplFromJson(json);
 
   @override
-  final String method;
+  final String? method;
   final Map<String, dynamic>? _params;
   @override
   Map<String, dynamic>? get params {
@@ -143,11 +224,38 @@ class _$ReqsImpl implements _Reqs {
   }
 
   @override
+  final String? url;
+  @override
+  final String? path;
+  final Map<String, dynamic>? _queryParameters;
+  @override
+  Map<String, dynamic>? get queryParameters {
+    final value = _queryParameters;
+    if (value == null) return null;
+    if (_queryParameters is EqualUnmodifiableMapView) return _queryParameters;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  final Map<String, dynamic>? _data;
+  @override
+  Map<String, dynamic>? get data {
+    final value = _data;
+    if (value == null) return null;
+    if (_data is EqualUnmodifiableMapView) return _data;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  @override
   final String? filePath;
+  @override
+  @JsonKey()
+  final String fileKey;
 
   @override
   String toString() {
-    return 'Reqs(method: $method, params: $params, filePath: $filePath)';
+    return 'Reqs(method: $method, params: $params, url: $url, path: $path, queryParameters: $queryParameters, data: $data, filePath: $filePath, fileKey: $fileKey)';
   }
 
   @override
@@ -157,14 +265,28 @@ class _$ReqsImpl implements _Reqs {
             other is _$ReqsImpl &&
             (identical(other.method, method) || other.method == method) &&
             const DeepCollectionEquality().equals(other._params, _params) &&
+            (identical(other.url, url) || other.url == url) &&
+            (identical(other.path, path) || other.path == path) &&
+            const DeepCollectionEquality()
+                .equals(other._queryParameters, _queryParameters) &&
+            const DeepCollectionEquality().equals(other._data, _data) &&
             (identical(other.filePath, filePath) ||
-                other.filePath == filePath));
+                other.filePath == filePath) &&
+            (identical(other.fileKey, fileKey) || other.fileKey == fileKey));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, method,
-      const DeepCollectionEquality().hash(_params), filePath);
+  int get hashCode => Object.hash(
+      runtimeType,
+      method,
+      const DeepCollectionEquality().hash(_params),
+      url,
+      path,
+      const DeepCollectionEquality().hash(_queryParameters),
+      const DeepCollectionEquality().hash(_data),
+      filePath,
+      fileKey);
 
   /// Create a copy of Reqs
   /// with the given fields replaced by the non-null parameter values.
@@ -184,18 +306,33 @@ class _$ReqsImpl implements _Reqs {
 
 abstract class _Reqs implements Reqs {
   factory _Reqs(
-      {required final String method,
+      {final String? method,
       final Map<String, dynamic>? params,
-      final String? filePath}) = _$ReqsImpl;
+      final String? url,
+      final String? path,
+      final Map<String, dynamic>? queryParameters,
+      final Map<String, dynamic>? data,
+      final String? filePath,
+      final String fileKey}) = _$ReqsImpl;
 
   factory _Reqs.fromJson(Map<String, dynamic> json) = _$ReqsImpl.fromJson;
 
   @override
-  String get method;
+  String? get method;
   @override
   Map<String, dynamic>? get params;
   @override
+  String? get url;
+  @override
+  String? get path;
+  @override
+  Map<String, dynamic>? get queryParameters;
+  @override
+  Map<String, dynamic>? get data;
+  @override
   String? get filePath;
+  @override
+  String get fileKey;
 
   /// Create a copy of Reqs
   /// with the given fields replaced by the non-null parameter values.

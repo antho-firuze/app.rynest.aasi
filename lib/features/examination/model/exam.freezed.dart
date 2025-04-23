@@ -20,14 +20,19 @@ Exam _$ExamFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Exam {
-  @JsonKey(name: 'exam_start')
+  @JsonKey(name: 'id')
+  int? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'start_at')
   @JsonDateTimeConverter()
-  DateTime? get examStart => throw _privateConstructorUsedError;
-  @JsonKey(name: 'exam_end')
+  DateTime? get startAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'finish_at')
   @JsonDateTimeConverter()
-  DateTime? get examEnd => throw _privateConstructorUsedError;
+  DateTime? get finishAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'duration')
   @JsonIntConverter()
   int? get duration => throw _privateConstructorUsedError;
+  @JsonKey(name: 'real_duration')
+  String? get realDuration => throw _privateConstructorUsedError;
   @JsonKey(name: 'question_ids')
   String? get questionIds => throw _privateConstructorUsedError;
   @JsonKey(name: 'answer_keys')
@@ -35,25 +40,51 @@ mixin _$Exam {
   @JsonKey(name: 'sync_question')
   @JsonIntConverter()
   int? get syncQuestion => throw _privateConstructorUsedError;
-  @JsonKey(name: 'exam_completed')
-  bool? get examCompleted => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_of_repeat')
+  @JsonKey(name: 'click_score')
   @JsonIntConverter()
-  int? get numOfRepeat => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_of_correct')
+  int? get clickScore => throw _privateConstructorUsedError;
+  @JsonKey(name: 'check_score')
   @JsonIntConverter()
-  int? get numOfCorrect => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_answered_question')
+  int? get checkScore => throw _privateConstructorUsedError;
+  @JsonKey(name: 'questions')
   @JsonIntConverter()
-  int? get numAnsweredQuestion => throw _privateConstructorUsedError;
-  @JsonKey(name: 'num_of_question')
+  int? get questionCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'answered_count')
   @JsonIntConverter()
-  int? get numOfQuestion => throw _privateConstructorUsedError;
-  @JsonDoubleConverter()
-  double? get score => throw _privateConstructorUsedError;
+  int? get answeredCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'r_answered_count')
+  @JsonIntConverter()
+  int? get correctCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'w_answered_count')
+  @JsonIntConverter()
+  int? get wrongCount => throw _privateConstructorUsedError;
   @JsonKey(name: 'passed_grade')
   @JsonDoubleConverter()
   double? get passedGrade => throw _privateConstructorUsedError;
+  @JsonKey(name: 'score')
+  @JsonDoubleConverter()
+  double? get score => throw _privateConstructorUsedError;
+  @JsonKey(name: 'desc1')
+  String? get desc1 => throw _privateConstructorUsedError;
+  @JsonKey(name: 'desc2')
+  String? get desc2 => throw _privateConstructorUsedError;
+  @JsonKey(name: 'restart')
+  int? get restart => throw _privateConstructorUsedError;
+  @JsonKey(name: 'device')
+  String? get device => throw _privateConstructorUsedError;
+  @JsonKey(name: 'location')
+  String? get location => throw _privateConstructorUsedError;
+  @JsonKey(name: 'ip_address')
+  String? get ipAddress => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photo_start')
+  bool get photoStart => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photo_finish')
+  bool get photoFinish => throw _privateConstructorUsedError;
+  @JsonKey(name: 'state')
+  String? get state => throw _privateConstructorUsedError;
+  List<int> get qids => throw _privateConstructorUsedError;
+  List<String> get opts => throw _privateConstructorUsedError;
+  List<String> get keys => throw _privateConstructorUsedError;
 
   /// Serializes this Exam to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -70,25 +101,34 @@ abstract class $ExamCopyWith<$Res> {
       _$ExamCopyWithImpl<$Res, Exam>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'exam_start')
-      @JsonDateTimeConverter()
-      DateTime? examStart,
-      @JsonKey(name: 'exam_end') @JsonDateTimeConverter() DateTime? examEnd,
-      @JsonIntConverter() int? duration,
+      {@JsonKey(name: 'id') int? id,
+      @JsonKey(name: 'start_at') @JsonDateTimeConverter() DateTime? startAt,
+      @JsonKey(name: 'finish_at') @JsonDateTimeConverter() DateTime? finishAt,
+      @JsonKey(name: 'duration') @JsonIntConverter() int? duration,
+      @JsonKey(name: 'real_duration') String? realDuration,
       @JsonKey(name: 'question_ids') String? questionIds,
       @JsonKey(name: 'answer_keys') String? answerKeys,
       @JsonKey(name: 'sync_question') @JsonIntConverter() int? syncQuestion,
-      @JsonKey(name: 'exam_completed') bool? examCompleted,
-      @JsonKey(name: 'num_of_repeat') @JsonIntConverter() int? numOfRepeat,
-      @JsonKey(name: 'num_of_correct') @JsonIntConverter() int? numOfCorrect,
-      @JsonKey(name: 'num_answered_question')
-      @JsonIntConverter()
-      int? numAnsweredQuestion,
-      @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
-      @JsonDoubleConverter() double? score,
-      @JsonKey(name: 'passed_grade')
-      @JsonDoubleConverter()
-      double? passedGrade});
+      @JsonKey(name: 'click_score') @JsonIntConverter() int? clickScore,
+      @JsonKey(name: 'check_score') @JsonIntConverter() int? checkScore,
+      @JsonKey(name: 'questions') @JsonIntConverter() int? questionCount,
+      @JsonKey(name: 'answered_count') @JsonIntConverter() int? answeredCount,
+      @JsonKey(name: 'r_answered_count') @JsonIntConverter() int? correctCount,
+      @JsonKey(name: 'w_answered_count') @JsonIntConverter() int? wrongCount,
+      @JsonKey(name: 'passed_grade') @JsonDoubleConverter() double? passedGrade,
+      @JsonKey(name: 'score') @JsonDoubleConverter() double? score,
+      @JsonKey(name: 'desc1') String? desc1,
+      @JsonKey(name: 'desc2') String? desc2,
+      @JsonKey(name: 'restart') int? restart,
+      @JsonKey(name: 'device') String? device,
+      @JsonKey(name: 'location') String? location,
+      @JsonKey(name: 'ip_address') String? ipAddress,
+      @JsonKey(name: 'photo_start') bool photoStart,
+      @JsonKey(name: 'photo_finish') bool photoFinish,
+      @JsonKey(name: 'state') String? state,
+      List<int> qids,
+      List<String> opts,
+      List<String> keys});
 }
 
 /// @nodoc
@@ -106,33 +146,56 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? examStart = freezed,
-    Object? examEnd = freezed,
+    Object? id = freezed,
+    Object? startAt = freezed,
+    Object? finishAt = freezed,
     Object? duration = freezed,
+    Object? realDuration = freezed,
     Object? questionIds = freezed,
     Object? answerKeys = freezed,
     Object? syncQuestion = freezed,
-    Object? examCompleted = freezed,
-    Object? numOfRepeat = freezed,
-    Object? numOfCorrect = freezed,
-    Object? numAnsweredQuestion = freezed,
-    Object? numOfQuestion = freezed,
-    Object? score = freezed,
+    Object? clickScore = freezed,
+    Object? checkScore = freezed,
+    Object? questionCount = freezed,
+    Object? answeredCount = freezed,
+    Object? correctCount = freezed,
+    Object? wrongCount = freezed,
     Object? passedGrade = freezed,
+    Object? score = freezed,
+    Object? desc1 = freezed,
+    Object? desc2 = freezed,
+    Object? restart = freezed,
+    Object? device = freezed,
+    Object? location = freezed,
+    Object? ipAddress = freezed,
+    Object? photoStart = null,
+    Object? photoFinish = null,
+    Object? state = freezed,
+    Object? qids = null,
+    Object? opts = null,
+    Object? keys = null,
   }) {
     return _then(_value.copyWith(
-      examStart: freezed == examStart
-          ? _value.examStart
-          : examStart // ignore: cast_nullable_to_non_nullable
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      startAt: freezed == startAt
+          ? _value.startAt
+          : startAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      examEnd: freezed == examEnd
-          ? _value.examEnd
-          : examEnd // ignore: cast_nullable_to_non_nullable
+      finishAt: freezed == finishAt
+          ? _value.finishAt
+          : finishAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
               as int?,
+      realDuration: freezed == realDuration
+          ? _value.realDuration
+          : realDuration // ignore: cast_nullable_to_non_nullable
+              as String?,
       questionIds: freezed == questionIds
           ? _value.questionIds
           : questionIds // ignore: cast_nullable_to_non_nullable
@@ -145,34 +208,86 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
           ? _value.syncQuestion
           : syncQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
-      examCompleted: freezed == examCompleted
-          ? _value.examCompleted
-          : examCompleted // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      numOfRepeat: freezed == numOfRepeat
-          ? _value.numOfRepeat
-          : numOfRepeat // ignore: cast_nullable_to_non_nullable
+      clickScore: freezed == clickScore
+          ? _value.clickScore
+          : clickScore // ignore: cast_nullable_to_non_nullable
               as int?,
-      numOfCorrect: freezed == numOfCorrect
-          ? _value.numOfCorrect
-          : numOfCorrect // ignore: cast_nullable_to_non_nullable
+      checkScore: freezed == checkScore
+          ? _value.checkScore
+          : checkScore // ignore: cast_nullable_to_non_nullable
               as int?,
-      numAnsweredQuestion: freezed == numAnsweredQuestion
-          ? _value.numAnsweredQuestion
-          : numAnsweredQuestion // ignore: cast_nullable_to_non_nullable
+      questionCount: freezed == questionCount
+          ? _value.questionCount
+          : questionCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      numOfQuestion: freezed == numOfQuestion
-          ? _value.numOfQuestion
-          : numOfQuestion // ignore: cast_nullable_to_non_nullable
+      answeredCount: freezed == answeredCount
+          ? _value.answeredCount
+          : answeredCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      score: freezed == score
-          ? _value.score
-          : score // ignore: cast_nullable_to_non_nullable
-              as double?,
+      correctCount: freezed == correctCount
+          ? _value.correctCount
+          : correctCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      wrongCount: freezed == wrongCount
+          ? _value.wrongCount
+          : wrongCount // ignore: cast_nullable_to_non_nullable
+              as int?,
       passedGrade: freezed == passedGrade
           ? _value.passedGrade
           : passedGrade // ignore: cast_nullable_to_non_nullable
               as double?,
+      score: freezed == score
+          ? _value.score
+          : score // ignore: cast_nullable_to_non_nullable
+              as double?,
+      desc1: freezed == desc1
+          ? _value.desc1
+          : desc1 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      desc2: freezed == desc2
+          ? _value.desc2
+          : desc2 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      restart: freezed == restart
+          ? _value.restart
+          : restart // ignore: cast_nullable_to_non_nullable
+              as int?,
+      device: freezed == device
+          ? _value.device
+          : device // ignore: cast_nullable_to_non_nullable
+              as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ipAddress: freezed == ipAddress
+          ? _value.ipAddress
+          : ipAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
+      photoStart: null == photoStart
+          ? _value.photoStart
+          : photoStart // ignore: cast_nullable_to_non_nullable
+              as bool,
+      photoFinish: null == photoFinish
+          ? _value.photoFinish
+          : photoFinish // ignore: cast_nullable_to_non_nullable
+              as bool,
+      state: freezed == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as String?,
+      qids: null == qids
+          ? _value.qids
+          : qids // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      opts: null == opts
+          ? _value.opts
+          : opts // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      keys: null == keys
+          ? _value.keys
+          : keys // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -185,25 +300,34 @@ abstract class _$$ExamImplCopyWith<$Res> implements $ExamCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'exam_start')
-      @JsonDateTimeConverter()
-      DateTime? examStart,
-      @JsonKey(name: 'exam_end') @JsonDateTimeConverter() DateTime? examEnd,
-      @JsonIntConverter() int? duration,
+      {@JsonKey(name: 'id') int? id,
+      @JsonKey(name: 'start_at') @JsonDateTimeConverter() DateTime? startAt,
+      @JsonKey(name: 'finish_at') @JsonDateTimeConverter() DateTime? finishAt,
+      @JsonKey(name: 'duration') @JsonIntConverter() int? duration,
+      @JsonKey(name: 'real_duration') String? realDuration,
       @JsonKey(name: 'question_ids') String? questionIds,
       @JsonKey(name: 'answer_keys') String? answerKeys,
       @JsonKey(name: 'sync_question') @JsonIntConverter() int? syncQuestion,
-      @JsonKey(name: 'exam_completed') bool? examCompleted,
-      @JsonKey(name: 'num_of_repeat') @JsonIntConverter() int? numOfRepeat,
-      @JsonKey(name: 'num_of_correct') @JsonIntConverter() int? numOfCorrect,
-      @JsonKey(name: 'num_answered_question')
-      @JsonIntConverter()
-      int? numAnsweredQuestion,
-      @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
-      @JsonDoubleConverter() double? score,
-      @JsonKey(name: 'passed_grade')
-      @JsonDoubleConverter()
-      double? passedGrade});
+      @JsonKey(name: 'click_score') @JsonIntConverter() int? clickScore,
+      @JsonKey(name: 'check_score') @JsonIntConverter() int? checkScore,
+      @JsonKey(name: 'questions') @JsonIntConverter() int? questionCount,
+      @JsonKey(name: 'answered_count') @JsonIntConverter() int? answeredCount,
+      @JsonKey(name: 'r_answered_count') @JsonIntConverter() int? correctCount,
+      @JsonKey(name: 'w_answered_count') @JsonIntConverter() int? wrongCount,
+      @JsonKey(name: 'passed_grade') @JsonDoubleConverter() double? passedGrade,
+      @JsonKey(name: 'score') @JsonDoubleConverter() double? score,
+      @JsonKey(name: 'desc1') String? desc1,
+      @JsonKey(name: 'desc2') String? desc2,
+      @JsonKey(name: 'restart') int? restart,
+      @JsonKey(name: 'device') String? device,
+      @JsonKey(name: 'location') String? location,
+      @JsonKey(name: 'ip_address') String? ipAddress,
+      @JsonKey(name: 'photo_start') bool photoStart,
+      @JsonKey(name: 'photo_finish') bool photoFinish,
+      @JsonKey(name: 'state') String? state,
+      List<int> qids,
+      List<String> opts,
+      List<String> keys});
 }
 
 /// @nodoc
@@ -218,33 +342,56 @@ class __$$ExamImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? examStart = freezed,
-    Object? examEnd = freezed,
+    Object? id = freezed,
+    Object? startAt = freezed,
+    Object? finishAt = freezed,
     Object? duration = freezed,
+    Object? realDuration = freezed,
     Object? questionIds = freezed,
     Object? answerKeys = freezed,
     Object? syncQuestion = freezed,
-    Object? examCompleted = freezed,
-    Object? numOfRepeat = freezed,
-    Object? numOfCorrect = freezed,
-    Object? numAnsweredQuestion = freezed,
-    Object? numOfQuestion = freezed,
-    Object? score = freezed,
+    Object? clickScore = freezed,
+    Object? checkScore = freezed,
+    Object? questionCount = freezed,
+    Object? answeredCount = freezed,
+    Object? correctCount = freezed,
+    Object? wrongCount = freezed,
     Object? passedGrade = freezed,
+    Object? score = freezed,
+    Object? desc1 = freezed,
+    Object? desc2 = freezed,
+    Object? restart = freezed,
+    Object? device = freezed,
+    Object? location = freezed,
+    Object? ipAddress = freezed,
+    Object? photoStart = null,
+    Object? photoFinish = null,
+    Object? state = freezed,
+    Object? qids = null,
+    Object? opts = null,
+    Object? keys = null,
   }) {
     return _then(_$ExamImpl(
-      examStart: freezed == examStart
-          ? _value.examStart
-          : examStart // ignore: cast_nullable_to_non_nullable
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      startAt: freezed == startAt
+          ? _value.startAt
+          : startAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      examEnd: freezed == examEnd
-          ? _value.examEnd
-          : examEnd // ignore: cast_nullable_to_non_nullable
+      finishAt: freezed == finishAt
+          ? _value.finishAt
+          : finishAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       duration: freezed == duration
           ? _value.duration
           : duration // ignore: cast_nullable_to_non_nullable
               as int?,
+      realDuration: freezed == realDuration
+          ? _value.realDuration
+          : realDuration // ignore: cast_nullable_to_non_nullable
+              as String?,
       questionIds: freezed == questionIds
           ? _value.questionIds
           : questionIds // ignore: cast_nullable_to_non_nullable
@@ -257,34 +404,86 @@ class __$$ExamImplCopyWithImpl<$Res>
           ? _value.syncQuestion
           : syncQuestion // ignore: cast_nullable_to_non_nullable
               as int?,
-      examCompleted: freezed == examCompleted
-          ? _value.examCompleted
-          : examCompleted // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      numOfRepeat: freezed == numOfRepeat
-          ? _value.numOfRepeat
-          : numOfRepeat // ignore: cast_nullable_to_non_nullable
+      clickScore: freezed == clickScore
+          ? _value.clickScore
+          : clickScore // ignore: cast_nullable_to_non_nullable
               as int?,
-      numOfCorrect: freezed == numOfCorrect
-          ? _value.numOfCorrect
-          : numOfCorrect // ignore: cast_nullable_to_non_nullable
+      checkScore: freezed == checkScore
+          ? _value.checkScore
+          : checkScore // ignore: cast_nullable_to_non_nullable
               as int?,
-      numAnsweredQuestion: freezed == numAnsweredQuestion
-          ? _value.numAnsweredQuestion
-          : numAnsweredQuestion // ignore: cast_nullable_to_non_nullable
+      questionCount: freezed == questionCount
+          ? _value.questionCount
+          : questionCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      numOfQuestion: freezed == numOfQuestion
-          ? _value.numOfQuestion
-          : numOfQuestion // ignore: cast_nullable_to_non_nullable
+      answeredCount: freezed == answeredCount
+          ? _value.answeredCount
+          : answeredCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      score: freezed == score
-          ? _value.score
-          : score // ignore: cast_nullable_to_non_nullable
-              as double?,
+      correctCount: freezed == correctCount
+          ? _value.correctCount
+          : correctCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      wrongCount: freezed == wrongCount
+          ? _value.wrongCount
+          : wrongCount // ignore: cast_nullable_to_non_nullable
+              as int?,
       passedGrade: freezed == passedGrade
           ? _value.passedGrade
           : passedGrade // ignore: cast_nullable_to_non_nullable
               as double?,
+      score: freezed == score
+          ? _value.score
+          : score // ignore: cast_nullable_to_non_nullable
+              as double?,
+      desc1: freezed == desc1
+          ? _value.desc1
+          : desc1 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      desc2: freezed == desc2
+          ? _value.desc2
+          : desc2 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      restart: freezed == restart
+          ? _value.restart
+          : restart // ignore: cast_nullable_to_non_nullable
+              as int?,
+      device: freezed == device
+          ? _value.device
+          : device // ignore: cast_nullable_to_non_nullable
+              as String?,
+      location: freezed == location
+          ? _value.location
+          : location // ignore: cast_nullable_to_non_nullable
+              as String?,
+      ipAddress: freezed == ipAddress
+          ? _value.ipAddress
+          : ipAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
+      photoStart: null == photoStart
+          ? _value.photoStart
+          : photoStart // ignore: cast_nullable_to_non_nullable
+              as bool,
+      photoFinish: null == photoFinish
+          ? _value.photoFinish
+          : photoFinish // ignore: cast_nullable_to_non_nullable
+              as bool,
+      state: freezed == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as String?,
+      qids: null == qids
+          ? _value._qids
+          : qids // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      opts: null == opts
+          ? _value._opts
+          : opts // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      keys: null == keys
+          ? _value._keys
+          : keys // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -293,36 +492,59 @@ class __$$ExamImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExamImpl implements _Exam {
   _$ExamImpl(
-      {@JsonKey(name: 'exam_start') @JsonDateTimeConverter() this.examStart,
-      @JsonKey(name: 'exam_end') @JsonDateTimeConverter() this.examEnd,
-      @JsonIntConverter() this.duration,
+      {@JsonKey(name: 'id') this.id,
+      @JsonKey(name: 'start_at') @JsonDateTimeConverter() this.startAt,
+      @JsonKey(name: 'finish_at') @JsonDateTimeConverter() this.finishAt,
+      @JsonKey(name: 'duration') @JsonIntConverter() this.duration,
+      @JsonKey(name: 'real_duration') this.realDuration,
       @JsonKey(name: 'question_ids') this.questionIds,
       @JsonKey(name: 'answer_keys') this.answerKeys,
       @JsonKey(name: 'sync_question') @JsonIntConverter() this.syncQuestion,
-      @JsonKey(name: 'exam_completed') this.examCompleted,
-      @JsonKey(name: 'num_of_repeat') @JsonIntConverter() this.numOfRepeat,
-      @JsonKey(name: 'num_of_correct') @JsonIntConverter() this.numOfCorrect,
-      @JsonKey(name: 'num_answered_question')
-      @JsonIntConverter()
-      this.numAnsweredQuestion,
-      @JsonKey(name: 'num_of_question') @JsonIntConverter() this.numOfQuestion,
-      @JsonDoubleConverter() this.score,
-      @JsonKey(name: 'passed_grade') @JsonDoubleConverter() this.passedGrade});
+      @JsonKey(name: 'click_score') @JsonIntConverter() this.clickScore,
+      @JsonKey(name: 'check_score') @JsonIntConverter() this.checkScore,
+      @JsonKey(name: 'questions') @JsonIntConverter() this.questionCount,
+      @JsonKey(name: 'answered_count') @JsonIntConverter() this.answeredCount,
+      @JsonKey(name: 'r_answered_count') @JsonIntConverter() this.correctCount,
+      @JsonKey(name: 'w_answered_count') @JsonIntConverter() this.wrongCount,
+      @JsonKey(name: 'passed_grade') @JsonDoubleConverter() this.passedGrade,
+      @JsonKey(name: 'score') @JsonDoubleConverter() this.score,
+      @JsonKey(name: 'desc1') this.desc1,
+      @JsonKey(name: 'desc2') this.desc2,
+      @JsonKey(name: 'restart') this.restart,
+      @JsonKey(name: 'device') this.device,
+      @JsonKey(name: 'location') this.location,
+      @JsonKey(name: 'ip_address') this.ipAddress,
+      @JsonKey(name: 'photo_start') this.photoStart = false,
+      @JsonKey(name: 'photo_finish') this.photoFinish = false,
+      @JsonKey(name: 'state') this.state,
+      final List<int> qids = const [],
+      final List<String> opts = const [],
+      final List<String> keys = const []})
+      : _qids = qids,
+        _opts = opts,
+        _keys = keys;
 
   factory _$ExamImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExamImplFromJson(json);
 
   @override
-  @JsonKey(name: 'exam_start')
-  @JsonDateTimeConverter()
-  final DateTime? examStart;
+  @JsonKey(name: 'id')
+  final int? id;
   @override
-  @JsonKey(name: 'exam_end')
+  @JsonKey(name: 'start_at')
   @JsonDateTimeConverter()
-  final DateTime? examEnd;
+  final DateTime? startAt;
   @override
+  @JsonKey(name: 'finish_at')
+  @JsonDateTimeConverter()
+  final DateTime? finishAt;
+  @override
+  @JsonKey(name: 'duration')
   @JsonIntConverter()
   final int? duration;
+  @override
+  @JsonKey(name: 'real_duration')
+  final String? realDuration;
   @override
   @JsonKey(name: 'question_ids')
   final String? questionIds;
@@ -334,35 +556,94 @@ class _$ExamImpl implements _Exam {
   @JsonIntConverter()
   final int? syncQuestion;
   @override
-  @JsonKey(name: 'exam_completed')
-  final bool? examCompleted;
-  @override
-  @JsonKey(name: 'num_of_repeat')
+  @JsonKey(name: 'click_score')
   @JsonIntConverter()
-  final int? numOfRepeat;
+  final int? clickScore;
   @override
-  @JsonKey(name: 'num_of_correct')
+  @JsonKey(name: 'check_score')
   @JsonIntConverter()
-  final int? numOfCorrect;
+  final int? checkScore;
   @override
-  @JsonKey(name: 'num_answered_question')
+  @JsonKey(name: 'questions')
   @JsonIntConverter()
-  final int? numAnsweredQuestion;
+  final int? questionCount;
   @override
-  @JsonKey(name: 'num_of_question')
+  @JsonKey(name: 'answered_count')
   @JsonIntConverter()
-  final int? numOfQuestion;
+  final int? answeredCount;
   @override
-  @JsonDoubleConverter()
-  final double? score;
+  @JsonKey(name: 'r_answered_count')
+  @JsonIntConverter()
+  final int? correctCount;
+  @override
+  @JsonKey(name: 'w_answered_count')
+  @JsonIntConverter()
+  final int? wrongCount;
   @override
   @JsonKey(name: 'passed_grade')
   @JsonDoubleConverter()
   final double? passedGrade;
+  @override
+  @JsonKey(name: 'score')
+  @JsonDoubleConverter()
+  final double? score;
+  @override
+  @JsonKey(name: 'desc1')
+  final String? desc1;
+  @override
+  @JsonKey(name: 'desc2')
+  final String? desc2;
+  @override
+  @JsonKey(name: 'restart')
+  final int? restart;
+  @override
+  @JsonKey(name: 'device')
+  final String? device;
+  @override
+  @JsonKey(name: 'location')
+  final String? location;
+  @override
+  @JsonKey(name: 'ip_address')
+  final String? ipAddress;
+  @override
+  @JsonKey(name: 'photo_start')
+  final bool photoStart;
+  @override
+  @JsonKey(name: 'photo_finish')
+  final bool photoFinish;
+  @override
+  @JsonKey(name: 'state')
+  final String? state;
+  final List<int> _qids;
+  @override
+  @JsonKey()
+  List<int> get qids {
+    if (_qids is EqualUnmodifiableListView) return _qids;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_qids);
+  }
+
+  final List<String> _opts;
+  @override
+  @JsonKey()
+  List<String> get opts {
+    if (_opts is EqualUnmodifiableListView) return _opts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_opts);
+  }
+
+  final List<String> _keys;
+  @override
+  @JsonKey()
+  List<String> get keys {
+    if (_keys is EqualUnmodifiableListView) return _keys;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_keys);
+  }
 
   @override
   String toString() {
-    return 'Exam(examStart: $examStart, examEnd: $examEnd, duration: $duration, questionIds: $questionIds, answerKeys: $answerKeys, syncQuestion: $syncQuestion, examCompleted: $examCompleted, numOfRepeat: $numOfRepeat, numOfCorrect: $numOfCorrect, numAnsweredQuestion: $numAnsweredQuestion, numOfQuestion: $numOfQuestion, score: $score, passedGrade: $passedGrade)';
+    return 'Exam(id: $id, startAt: $startAt, finishAt: $finishAt, duration: $duration, realDuration: $realDuration, questionIds: $questionIds, answerKeys: $answerKeys, syncQuestion: $syncQuestion, clickScore: $clickScore, checkScore: $checkScore, questionCount: $questionCount, answeredCount: $answeredCount, correctCount: $correctCount, wrongCount: $wrongCount, passedGrade: $passedGrade, score: $score, desc1: $desc1, desc2: $desc2, restart: $restart, device: $device, location: $location, ipAddress: $ipAddress, photoStart: $photoStart, photoFinish: $photoFinish, state: $state, qids: $qids, opts: $opts, keys: $keys)';
   }
 
   @override
@@ -370,49 +651,86 @@ class _$ExamImpl implements _Exam {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ExamImpl &&
-            (identical(other.examStart, examStart) ||
-                other.examStart == examStart) &&
-            (identical(other.examEnd, examEnd) || other.examEnd == examEnd) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.startAt, startAt) || other.startAt == startAt) &&
+            (identical(other.finishAt, finishAt) ||
+                other.finishAt == finishAt) &&
             (identical(other.duration, duration) ||
                 other.duration == duration) &&
+            (identical(other.realDuration, realDuration) ||
+                other.realDuration == realDuration) &&
             (identical(other.questionIds, questionIds) ||
                 other.questionIds == questionIds) &&
             (identical(other.answerKeys, answerKeys) ||
                 other.answerKeys == answerKeys) &&
             (identical(other.syncQuestion, syncQuestion) ||
                 other.syncQuestion == syncQuestion) &&
-            (identical(other.examCompleted, examCompleted) ||
-                other.examCompleted == examCompleted) &&
-            (identical(other.numOfRepeat, numOfRepeat) ||
-                other.numOfRepeat == numOfRepeat) &&
-            (identical(other.numOfCorrect, numOfCorrect) ||
-                other.numOfCorrect == numOfCorrect) &&
-            (identical(other.numAnsweredQuestion, numAnsweredQuestion) ||
-                other.numAnsweredQuestion == numAnsweredQuestion) &&
-            (identical(other.numOfQuestion, numOfQuestion) ||
-                other.numOfQuestion == numOfQuestion) &&
-            (identical(other.score, score) || other.score == score) &&
+            (identical(other.clickScore, clickScore) ||
+                other.clickScore == clickScore) &&
+            (identical(other.checkScore, checkScore) ||
+                other.checkScore == checkScore) &&
+            (identical(other.questionCount, questionCount) ||
+                other.questionCount == questionCount) &&
+            (identical(other.answeredCount, answeredCount) ||
+                other.answeredCount == answeredCount) &&
+            (identical(other.correctCount, correctCount) ||
+                other.correctCount == correctCount) &&
+            (identical(other.wrongCount, wrongCount) ||
+                other.wrongCount == wrongCount) &&
             (identical(other.passedGrade, passedGrade) ||
-                other.passedGrade == passedGrade));
+                other.passedGrade == passedGrade) &&
+            (identical(other.score, score) || other.score == score) &&
+            (identical(other.desc1, desc1) || other.desc1 == desc1) &&
+            (identical(other.desc2, desc2) || other.desc2 == desc2) &&
+            (identical(other.restart, restart) || other.restart == restart) &&
+            (identical(other.device, device) || other.device == device) &&
+            (identical(other.location, location) ||
+                other.location == location) &&
+            (identical(other.ipAddress, ipAddress) ||
+                other.ipAddress == ipAddress) &&
+            (identical(other.photoStart, photoStart) ||
+                other.photoStart == photoStart) &&
+            (identical(other.photoFinish, photoFinish) ||
+                other.photoFinish == photoFinish) &&
+            (identical(other.state, state) || other.state == state) &&
+            const DeepCollectionEquality().equals(other._qids, _qids) &&
+            const DeepCollectionEquality().equals(other._opts, _opts) &&
+            const DeepCollectionEquality().equals(other._keys, _keys));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      examStart,
-      examEnd,
-      duration,
-      questionIds,
-      answerKeys,
-      syncQuestion,
-      examCompleted,
-      numOfRepeat,
-      numOfCorrect,
-      numAnsweredQuestion,
-      numOfQuestion,
-      score,
-      passedGrade);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        startAt,
+        finishAt,
+        duration,
+        realDuration,
+        questionIds,
+        answerKeys,
+        syncQuestion,
+        clickScore,
+        checkScore,
+        questionCount,
+        answeredCount,
+        correctCount,
+        wrongCount,
+        passedGrade,
+        score,
+        desc1,
+        desc2,
+        restart,
+        device,
+        location,
+        ipAddress,
+        photoStart,
+        photoFinish,
+        state,
+        const DeepCollectionEquality().hash(_qids),
+        const DeepCollectionEquality().hash(_opts),
+        const DeepCollectionEquality().hash(_keys)
+      ]);
 
   /// Create a copy of Exam
   /// with the given fields replaced by the non-null parameter values.
@@ -432,49 +750,69 @@ class _$ExamImpl implements _Exam {
 
 abstract class _Exam implements Exam {
   factory _Exam(
-      {@JsonKey(name: 'exam_start')
+      {@JsonKey(name: 'id') final int? id,
+      @JsonKey(name: 'start_at')
       @JsonDateTimeConverter()
-      final DateTime? examStart,
-      @JsonKey(name: 'exam_end')
+      final DateTime? startAt,
+      @JsonKey(name: 'finish_at')
       @JsonDateTimeConverter()
-      final DateTime? examEnd,
-      @JsonIntConverter() final int? duration,
+      final DateTime? finishAt,
+      @JsonKey(name: 'duration') @JsonIntConverter() final int? duration,
+      @JsonKey(name: 'real_duration') final String? realDuration,
       @JsonKey(name: 'question_ids') final String? questionIds,
       @JsonKey(name: 'answer_keys') final String? answerKeys,
       @JsonKey(name: 'sync_question')
       @JsonIntConverter()
       final int? syncQuestion,
-      @JsonKey(name: 'exam_completed') final bool? examCompleted,
-      @JsonKey(name: 'num_of_repeat')
+      @JsonKey(name: 'click_score') @JsonIntConverter() final int? clickScore,
+      @JsonKey(name: 'check_score') @JsonIntConverter() final int? checkScore,
+      @JsonKey(name: 'questions') @JsonIntConverter() final int? questionCount,
+      @JsonKey(name: 'answered_count')
       @JsonIntConverter()
-      final int? numOfRepeat,
-      @JsonKey(name: 'num_of_correct')
+      final int? answeredCount,
+      @JsonKey(name: 'r_answered_count')
       @JsonIntConverter()
-      final int? numOfCorrect,
-      @JsonKey(name: 'num_answered_question')
+      final int? correctCount,
+      @JsonKey(name: 'w_answered_count')
       @JsonIntConverter()
-      final int? numAnsweredQuestion,
-      @JsonKey(name: 'num_of_question')
-      @JsonIntConverter()
-      final int? numOfQuestion,
-      @JsonDoubleConverter() final double? score,
+      final int? wrongCount,
       @JsonKey(name: 'passed_grade')
       @JsonDoubleConverter()
-      final double? passedGrade}) = _$ExamImpl;
+      final double? passedGrade,
+      @JsonKey(name: 'score') @JsonDoubleConverter() final double? score,
+      @JsonKey(name: 'desc1') final String? desc1,
+      @JsonKey(name: 'desc2') final String? desc2,
+      @JsonKey(name: 'restart') final int? restart,
+      @JsonKey(name: 'device') final String? device,
+      @JsonKey(name: 'location') final String? location,
+      @JsonKey(name: 'ip_address') final String? ipAddress,
+      @JsonKey(name: 'photo_start') final bool photoStart,
+      @JsonKey(name: 'photo_finish') final bool photoFinish,
+      @JsonKey(name: 'state') final String? state,
+      final List<int> qids,
+      final List<String> opts,
+      final List<String> keys}) = _$ExamImpl;
 
   factory _Exam.fromJson(Map<String, dynamic> json) = _$ExamImpl.fromJson;
 
   @override
-  @JsonKey(name: 'exam_start')
-  @JsonDateTimeConverter()
-  DateTime? get examStart;
+  @JsonKey(name: 'id')
+  int? get id;
   @override
-  @JsonKey(name: 'exam_end')
+  @JsonKey(name: 'start_at')
   @JsonDateTimeConverter()
-  DateTime? get examEnd;
+  DateTime? get startAt;
   @override
+  @JsonKey(name: 'finish_at')
+  @JsonDateTimeConverter()
+  DateTime? get finishAt;
+  @override
+  @JsonKey(name: 'duration')
   @JsonIntConverter()
   int? get duration;
+  @override
+  @JsonKey(name: 'real_duration')
+  String? get realDuration;
   @override
   @JsonKey(name: 'question_ids')
   String? get questionIds;
@@ -486,31 +824,70 @@ abstract class _Exam implements Exam {
   @JsonIntConverter()
   int? get syncQuestion;
   @override
-  @JsonKey(name: 'exam_completed')
-  bool? get examCompleted;
-  @override
-  @JsonKey(name: 'num_of_repeat')
+  @JsonKey(name: 'click_score')
   @JsonIntConverter()
-  int? get numOfRepeat;
+  int? get clickScore;
   @override
-  @JsonKey(name: 'num_of_correct')
+  @JsonKey(name: 'check_score')
   @JsonIntConverter()
-  int? get numOfCorrect;
+  int? get checkScore;
   @override
-  @JsonKey(name: 'num_answered_question')
+  @JsonKey(name: 'questions')
   @JsonIntConverter()
-  int? get numAnsweredQuestion;
+  int? get questionCount;
   @override
-  @JsonKey(name: 'num_of_question')
+  @JsonKey(name: 'answered_count')
   @JsonIntConverter()
-  int? get numOfQuestion;
+  int? get answeredCount;
   @override
-  @JsonDoubleConverter()
-  double? get score;
+  @JsonKey(name: 'r_answered_count')
+  @JsonIntConverter()
+  int? get correctCount;
+  @override
+  @JsonKey(name: 'w_answered_count')
+  @JsonIntConverter()
+  int? get wrongCount;
   @override
   @JsonKey(name: 'passed_grade')
   @JsonDoubleConverter()
   double? get passedGrade;
+  @override
+  @JsonKey(name: 'score')
+  @JsonDoubleConverter()
+  double? get score;
+  @override
+  @JsonKey(name: 'desc1')
+  String? get desc1;
+  @override
+  @JsonKey(name: 'desc2')
+  String? get desc2;
+  @override
+  @JsonKey(name: 'restart')
+  int? get restart;
+  @override
+  @JsonKey(name: 'device')
+  String? get device;
+  @override
+  @JsonKey(name: 'location')
+  String? get location;
+  @override
+  @JsonKey(name: 'ip_address')
+  String? get ipAddress;
+  @override
+  @JsonKey(name: 'photo_start')
+  bool get photoStart;
+  @override
+  @JsonKey(name: 'photo_finish')
+  bool get photoFinish;
+  @override
+  @JsonKey(name: 'state')
+  String? get state;
+  @override
+  List<int> get qids;
+  @override
+  List<String> get opts;
+  @override
+  List<String> get keys;
 
   /// Create a copy of Exam
   /// with the given fields replaced by the non-null parameter values.

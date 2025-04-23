@@ -76,7 +76,7 @@ class MenuCtrl {
   Future goto(String code) async {
     return switch (code) {
       "exam-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamView()),
-      "exam-result-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamResultView()),
+      "exam-result-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamResultView(type: 2)),
       "exam-schedule-01.png" => await ref.read(authCtrlProvider).signInGoto(page: const ExamScheduleView()),
       String() => '',
     };

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:app.rynest.aasi/features/user/model/carousel.dart';
 import 'package:app.rynest.aasi/features/user/service/carousel_service.dart';
 import 'package:app.rynest.aasi/utils/custom_carousel_controller.dart';
@@ -16,7 +14,7 @@ final fetchCarouselProvider = FutureProvider.autoDispose<List<Carousel>>((ref) a
   if (jsonList.isEmpty) return [];
 
   final result = jsonList.map((json) => Carousel.fromJson(json)).toList();
-  log('fetchCarouselProvider | $result', name: 'carousel_controller');
+  // log('fetchCarouselProvider | $result', name: 'CAROUSEL-CTRL');
 
   return result;
 });

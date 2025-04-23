@@ -1,9 +1,7 @@
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
-import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
-import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +17,9 @@ class ExamStageNotRegistered extends ConsumerWidget {
         appBar: AppBar(title: const Text('Ujian')),
         body: RefreshIndicator(
           onRefresh: () async {
-            ref.refresh(fetchProfileProvider);
-            await ref.read(examCtrlProvider).fetchSchedule();
-            await ref.read(examCtrlProvider).fetchPhotos();
-            await ref.read(examCtrlProvider).fetchStatus();
-            // log("$photos");
+            // ref.refresh(fetchProfileProvider);
+            // ref.refresh(fetchExamScheduleProvider);
+            // ref.refresh(fetchExamPhotosProvider);
           },
           child: ListView(
             children: [

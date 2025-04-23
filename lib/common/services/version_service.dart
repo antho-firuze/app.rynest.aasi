@@ -22,12 +22,16 @@ class VersionService {
   final Ref ref;
   VersionService(this.ref);
 
+  final _kLogName = 'VERSION-SERVICE';
+
   Future<bool> newVersionAvailable({
     String? iOSId,
     String? androidId,
     String? iOSAppStoreCountry,
     String? forceAppVersion,
   }) async {
+    log('Check new version ?', name: _kLogName);
+
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     VersionInfo? versionInfo;
     if (Platform.isIOS) {
@@ -49,12 +53,15 @@ class VersionService {
 
     // SHOW DIALOG
     if (versionInfo != null && versionInfo.canUpdate == true) {
+      log("New Apps available [ver.${versionInfo.storeVersion}]!", name: _kLogName);
       if (Platform.isIOS) {
         _showDialogIos(packageInfo: packageInfo, versionInfo: versionInfo);
-        return true;
       } else {
         _showDialogAndroid(packageInfo: packageInfo, versionInfo: versionInfo);
       }
+      return true;
+    } else {
+      log("Your Apps is uptodate !", name: _kLogName);
     }
     return false;
   }

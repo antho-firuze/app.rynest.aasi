@@ -24,17 +24,18 @@ class CustomCard extends StatelessWidget {
       child: SizedBox(
         width: context.screenWidthRatio(.9, .6),
         child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           child: Column(
             children: [
               if (title != null) ...[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
                   decoration: BoxDecoration(
                     color: color,
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
+                      topLeft: Radius.circular(6),
+                      topRight: Radius.circular(6),
                     ),
                   ),
                   child: title,

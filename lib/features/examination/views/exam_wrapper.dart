@@ -1,5 +1,6 @@
 import 'package:app.rynest.aasi/common/views/overlay_container.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
+import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -10,55 +11,63 @@ class ExamWrapper extends ConsumerWidget {
   const ExamWrapper({
     super.key,
     this.child,
+    this.onTap,
   });
 
   final Widget? child;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isShowOverlay = ref.watch(examStageProvider) == ExamStage.ongoing;
+    final user = ref.watch(authUserProvider);
 
     return Scaffold(
       body: Stack(
         children: [
           child ?? const SizedBox(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              OverlayContainer(
-                isShowOverlay: isShowOverlay,
-                backgroundColor: oDarkBlue,
-                offsetY: 3,
-                child: SizedBox(
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+          if (user != null)
+            GestureDetector(
+              onTap: onTap,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OverlayContainer(
+                    isShowOverlay: isShowOverlay,
+                    backgroundColor: oDarkBlue,
+                    offsetY: 3,
+                    child: SizedBox(
+                      height: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Icon(
-                              SuperIcons.bs_exclamation_diamond,
-                              color: oWhite,
+                            Row(
+                              children: [
+                                const Icon(
+                                  SuperIcons.bs_exclamation_diamond,
+                                  color: oWhite,
+                                ),
+                                10.width,
+                                const Text('Ujian masih berjalan !').clr(oWhite),
+                              ],
                             ),
-                            10.width,
-                            const Text('Ujian masih berjalan !').clr(oWhite),
+                            if (ref.watch(remainingTimeProvider).isNotEmpty)
+                              Row(
+                                children: [
+                                  const Text('Waktu tersisa : ').clr(oWhite),
+                                  Text(ref.watch(remainingTimeProvider)).clr(oWhite),
+                                ],
+                              ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            const Text('Waktu tersisa : ').clr(oWhite),
-                            Text(ref.watch(remainingTimeProvider)).clr(oWhite),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
         ],
       ),
     );

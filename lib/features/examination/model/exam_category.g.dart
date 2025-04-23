@@ -16,7 +16,8 @@ _$ExamCategoryImpl _$$ExamCategoryImplFromJson(Map<String, dynamic> json) =>
       passedGrade: json['passed_grade'] == null
           ? 0
           : const JsonIntConverter().fromJson(json['passed_grade']),
-      numOfQuestion: const JsonIntConverter().fromJson(json['num_of_question']),
+      numOfQuestion: const JsonIntConverter().fromJson(json['questions']),
+      minPoint: const JsonIntConverter().fromJson(json['min_point']),
     );
 
 Map<String, dynamic> _$$ExamCategoryImplToJson(_$ExamCategoryImpl instance) =>
@@ -26,8 +27,10 @@ Map<String, dynamic> _$$ExamCategoryImplToJson(_$ExamCategoryImpl instance) =>
       'name': instance.name,
       'duration': const JsonIntConverter().toJson(instance.duration),
       'passed_grade': const JsonIntConverter().toJson(instance.passedGrade),
-      'num_of_question': _$JsonConverterToJson<dynamic, int>(
+      'questions': _$JsonConverterToJson<dynamic, int>(
           instance.numOfQuestion, const JsonIntConverter().toJson),
+      'min_point': _$JsonConverterToJson<dynamic, int>(
+          instance.minPoint, const JsonIntConverter().toJson),
     };
 
 Json? _$JsonConverterToJson<Json, Value>(

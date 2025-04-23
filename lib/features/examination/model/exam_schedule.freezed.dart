@@ -20,9 +20,12 @@ ExamSchedule _$ExamScheduleFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ExamSchedule {
+  @JsonKey(name: 'name')
   String? get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'duration')
   @JsonIntConverter()
   int? get duration => throw _privateConstructorUsedError;
+  @JsonKey(name: 'notes')
   String? get notes => throw _privateConstructorUsedError;
   @JsonKey(name: 'schedule_request_id')
   @JsonIntConverter()
@@ -42,7 +45,14 @@ mixin _$ExamSchedule {
   @JsonKey(name: 'close_registration')
   @JsonDateTimeConverter()
   DateTime? get closeRegistration => throw _privateConstructorUsedError;
+  @JsonKey(name: 'state')
+  String? get state => throw _privateConstructorUsedError;
+  @JsonKey(name: 'category')
   ExamCategory? get category => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photo_start')
+  bool get photoStart => throw _privateConstructorUsedError;
+  @JsonKey(name: 'photo_finish')
+  bool get photoFinish => throw _privateConstructorUsedError;
 
   /// Serializes this ExamSchedule to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -61,9 +71,9 @@ abstract class $ExamScheduleCopyWith<$Res> {
       _$ExamScheduleCopyWithImpl<$Res, ExamSchedule>;
   @useResult
   $Res call(
-      {String? name,
-      @JsonIntConverter() int? duration,
-      String? notes,
+      {@JsonKey(name: 'name') String? name,
+      @JsonKey(name: 'duration') @JsonIntConverter() int? duration,
+      @JsonKey(name: 'notes') String? notes,
       @JsonKey(name: 'schedule_request_id')
       @JsonIntConverter()
       int? scheduleRequestId,
@@ -76,7 +86,10 @@ abstract class $ExamScheduleCopyWith<$Res> {
       @JsonKey(name: 'close_registration')
       @JsonDateTimeConverter()
       DateTime? closeRegistration,
-      ExamCategory? category});
+      @JsonKey(name: 'state') String? state,
+      @JsonKey(name: 'category') ExamCategory? category,
+      @JsonKey(name: 'photo_start') bool photoStart,
+      @JsonKey(name: 'photo_finish') bool photoFinish});
 
   $ExamCategoryCopyWith<$Res>? get category;
 }
@@ -105,7 +118,10 @@ class _$ExamScheduleCopyWithImpl<$Res, $Val extends ExamSchedule>
     Object? categoryId = freezed,
     Object? openRegistration = freezed,
     Object? closeRegistration = freezed,
+    Object? state = freezed,
     Object? category = freezed,
+    Object? photoStart = null,
+    Object? photoFinish = null,
   }) {
     return _then(_value.copyWith(
       name: freezed == name
@@ -144,10 +160,22 @@ class _$ExamScheduleCopyWithImpl<$Res, $Val extends ExamSchedule>
           ? _value.closeRegistration
           : closeRegistration // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      state: freezed == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as String?,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as ExamCategory?,
+      photoStart: null == photoStart
+          ? _value.photoStart
+          : photoStart // ignore: cast_nullable_to_non_nullable
+              as bool,
+      photoFinish: null == photoFinish
+          ? _value.photoFinish
+          : photoFinish // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -175,9 +203,9 @@ abstract class _$$ExamScheduleImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? name,
-      @JsonIntConverter() int? duration,
-      String? notes,
+      {@JsonKey(name: 'name') String? name,
+      @JsonKey(name: 'duration') @JsonIntConverter() int? duration,
+      @JsonKey(name: 'notes') String? notes,
       @JsonKey(name: 'schedule_request_id')
       @JsonIntConverter()
       int? scheduleRequestId,
@@ -190,7 +218,10 @@ abstract class _$$ExamScheduleImplCopyWith<$Res>
       @JsonKey(name: 'close_registration')
       @JsonDateTimeConverter()
       DateTime? closeRegistration,
-      ExamCategory? category});
+      @JsonKey(name: 'state') String? state,
+      @JsonKey(name: 'category') ExamCategory? category,
+      @JsonKey(name: 'photo_start') bool photoStart,
+      @JsonKey(name: 'photo_finish') bool photoFinish});
 
   @override
   $ExamCategoryCopyWith<$Res>? get category;
@@ -218,7 +249,10 @@ class __$$ExamScheduleImplCopyWithImpl<$Res>
     Object? categoryId = freezed,
     Object? openRegistration = freezed,
     Object? closeRegistration = freezed,
+    Object? state = freezed,
     Object? category = freezed,
+    Object? photoStart = null,
+    Object? photoFinish = null,
   }) {
     return _then(_$ExamScheduleImpl(
       name: freezed == name
@@ -257,10 +291,22 @@ class __$$ExamScheduleImplCopyWithImpl<$Res>
           ? _value.closeRegistration
           : closeRegistration // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      state: freezed == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
+              as String?,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as ExamCategory?,
+      photoStart: null == photoStart
+          ? _value.photoStart
+          : photoStart // ignore: cast_nullable_to_non_nullable
+              as bool,
+      photoFinish: null == photoFinish
+          ? _value.photoFinish
+          : photoFinish // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -269,9 +315,9 @@ class __$$ExamScheduleImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExamScheduleImpl implements _ExamSchedule {
   _$ExamScheduleImpl(
-      {this.name,
-      @JsonIntConverter() this.duration,
-      this.notes,
+      {@JsonKey(name: 'name') this.name,
+      @JsonKey(name: 'duration') @JsonIntConverter() this.duration,
+      @JsonKey(name: 'notes') this.notes,
       @JsonKey(name: 'schedule_request_id')
       @JsonIntConverter()
       this.scheduleRequestId,
@@ -284,17 +330,23 @@ class _$ExamScheduleImpl implements _ExamSchedule {
       @JsonKey(name: 'close_registration')
       @JsonDateTimeConverter()
       this.closeRegistration,
-      this.category});
+      @JsonKey(name: 'state') this.state,
+      @JsonKey(name: 'category') this.category,
+      @JsonKey(name: 'photo_start') this.photoStart = false,
+      @JsonKey(name: 'photo_finish') this.photoFinish = false});
 
   factory _$ExamScheduleImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExamScheduleImplFromJson(json);
 
   @override
+  @JsonKey(name: 'name')
   final String? name;
   @override
+  @JsonKey(name: 'duration')
   @JsonIntConverter()
   final int? duration;
   @override
+  @JsonKey(name: 'notes')
   final String? notes;
   @override
   @JsonKey(name: 'schedule_request_id')
@@ -321,11 +373,21 @@ class _$ExamScheduleImpl implements _ExamSchedule {
   @JsonDateTimeConverter()
   final DateTime? closeRegistration;
   @override
+  @JsonKey(name: 'state')
+  final String? state;
+  @override
+  @JsonKey(name: 'category')
   final ExamCategory? category;
+  @override
+  @JsonKey(name: 'photo_start')
+  final bool photoStart;
+  @override
+  @JsonKey(name: 'photo_finish')
+  final bool photoFinish;
 
   @override
   String toString() {
-    return 'ExamSchedule(name: $name, duration: $duration, notes: $notes, scheduleRequestId: $scheduleRequestId, scheduleId: $scheduleId, locationId: $locationId, categoryId: $categoryId, openRegistration: $openRegistration, closeRegistration: $closeRegistration, category: $category)';
+    return 'ExamSchedule(name: $name, duration: $duration, notes: $notes, scheduleRequestId: $scheduleRequestId, scheduleId: $scheduleId, locationId: $locationId, categoryId: $categoryId, openRegistration: $openRegistration, closeRegistration: $closeRegistration, state: $state, category: $category, photoStart: $photoStart, photoFinish: $photoFinish)';
   }
 
   @override
@@ -349,8 +411,13 @@ class _$ExamScheduleImpl implements _ExamSchedule {
                 other.openRegistration == openRegistration) &&
             (identical(other.closeRegistration, closeRegistration) ||
                 other.closeRegistration == closeRegistration) &&
+            (identical(other.state, state) || other.state == state) &&
             (identical(other.category, category) ||
-                other.category == category));
+                other.category == category) &&
+            (identical(other.photoStart, photoStart) ||
+                other.photoStart == photoStart) &&
+            (identical(other.photoFinish, photoFinish) ||
+                other.photoFinish == photoFinish));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -366,7 +433,10 @@ class _$ExamScheduleImpl implements _ExamSchedule {
       categoryId,
       openRegistration,
       closeRegistration,
-      category);
+      state,
+      category,
+      photoStart,
+      photoFinish);
 
   /// Create a copy of ExamSchedule
   /// with the given fields replaced by the non-null parameter values.
@@ -386,9 +456,9 @@ class _$ExamScheduleImpl implements _ExamSchedule {
 
 abstract class _ExamSchedule implements ExamSchedule {
   factory _ExamSchedule(
-      {final String? name,
-      @JsonIntConverter() final int? duration,
-      final String? notes,
+      {@JsonKey(name: 'name') final String? name,
+      @JsonKey(name: 'duration') @JsonIntConverter() final int? duration,
+      @JsonKey(name: 'notes') final String? notes,
       @JsonKey(name: 'schedule_request_id')
       @JsonIntConverter()
       final int? scheduleRequestId,
@@ -401,17 +471,24 @@ abstract class _ExamSchedule implements ExamSchedule {
       @JsonKey(name: 'close_registration')
       @JsonDateTimeConverter()
       final DateTime? closeRegistration,
-      final ExamCategory? category}) = _$ExamScheduleImpl;
+      @JsonKey(name: 'state') final String? state,
+      @JsonKey(name: 'category') final ExamCategory? category,
+      @JsonKey(name: 'photo_start') final bool photoStart,
+      @JsonKey(name: 'photo_finish')
+      final bool photoFinish}) = _$ExamScheduleImpl;
 
   factory _ExamSchedule.fromJson(Map<String, dynamic> json) =
       _$ExamScheduleImpl.fromJson;
 
   @override
+  @JsonKey(name: 'name')
   String? get name;
   @override
+  @JsonKey(name: 'duration')
   @JsonIntConverter()
   int? get duration;
   @override
+  @JsonKey(name: 'notes')
   String? get notes;
   @override
   @JsonKey(name: 'schedule_request_id')
@@ -438,7 +515,17 @@ abstract class _ExamSchedule implements ExamSchedule {
   @JsonDateTimeConverter()
   DateTime? get closeRegistration;
   @override
+  @JsonKey(name: 'state')
+  String? get state;
+  @override
+  @JsonKey(name: 'category')
   ExamCategory? get category;
+  @override
+  @JsonKey(name: 'photo_start')
+  bool get photoStart;
+  @override
+  @JsonKey(name: 'photo_finish')
+  bool get photoFinish;
 
   /// Create a copy of ExamSchedule
   /// with the given fields replaced by the non-null parameter values.

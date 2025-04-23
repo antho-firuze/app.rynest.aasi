@@ -10,16 +10,19 @@ part 'exam_schedule.g.dart';
 @freezed
 class ExamSchedule with _$ExamSchedule {
   factory ExamSchedule({
-    String? name,
-    @JsonIntConverter() int? duration,
-    String? notes,
+    @JsonKey(name: 'name') String? name,
+    @JsonKey(name: 'duration') @JsonIntConverter() int? duration,
+    @JsonKey(name: 'notes') String? notes,
     @JsonKey(name: 'schedule_request_id') @JsonIntConverter() int? scheduleRequestId,
     @JsonKey(name: 'schedule_id') @JsonIntConverter() int? scheduleId,
     @JsonKey(name: 'location_id') @JsonIntConverter() int? locationId,
     @JsonKey(name: 'category_id') @JsonIntConverter() int? categoryId,
     @JsonKey(name: 'open_registration') @JsonDateTimeConverter() DateTime? openRegistration,
     @JsonKey(name: 'close_registration') @JsonDateTimeConverter() DateTime? closeRegistration,
-    ExamCategory? category,
+    @JsonKey(name: 'state') String? state,
+    @JsonKey(name: 'category') ExamCategory? category,
+    @JsonKey(name: 'photo_start') @Default(false) bool photoStart,
+    @JsonKey(name: 'photo_finish') @Default(false) bool photoFinish,
   }) = _ExamSchedule;
 
   factory ExamSchedule.fromJson(Map<String, dynamic> json) => _$ExamScheduleFromJson(json);

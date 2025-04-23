@@ -170,18 +170,10 @@ class SignInView extends ConsumerWidget {
                                       return;
                                     }
 
-                                    ref.read(fetchSignInProvider.future).then((value) {
-                                      if (value && context.mounted) {
-                                        context.pop(true);
-                                      }
-                                    }).whenComplete(() {
-                                      ref.invalidate(fetchSignInProvider);
-                                    });
-
-                                    // bool result = await ref.read(authCtrlProvider).signIn();
-                                    // if (result == true && context.mounted) {
-                                    //   context.pop(true);
-                                    // }
+                                    bool result = await ref.read(authCtrlProvider).signIn();
+                                    if (result == true && context.mounted) {
+                                      context.pop(true);
+                                    }
                                   },
                                 ),
                               ),

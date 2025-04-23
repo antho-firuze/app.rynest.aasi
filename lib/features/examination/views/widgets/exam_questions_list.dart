@@ -14,17 +14,14 @@ class ExamQuestionsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exam = ref.watch(examProvider);
-    final questions = ref.watch(questionsProvider);
-
     final keys = exam?.answerKeys?.split(',');
+    final cIdx = ref.read(questionNumProvider) - 1;
 
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text('List Pertanyaan')),
         body: RefreshIndicator(
-          onRefresh: () async {
-            // log("$photos");
-          },
+          onRefresh: () async {},
           child: ListView(
             children: [
               5.height,
@@ -37,20 +34,29 @@ class ExamQuestionsList extends ConsumerWidget {
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: questions?.length,
+                    itemCount: exam?.qids.length,
                     gridDelegate:
                         SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7.whenLandscape(10)!.toInt()),
                     itemBuilder: (context, index) {
                       final key = keys?[index];
                       return GestureDetector(
                         onTap: () async {
-                          ref.read(examProvider.notifier).state = ref.read(examProvider)?.copyWith(syncQuestion: index);
-                          await ref.read(examCtrlProvider).loadQuestion();
-
                           if (context.mounted) context.pop();
+
+                          if (index == cIdx) return;
+
+                          final qid = exam?.qids[index];
+                          ref.read(examProvider.notifier).state = exam?.copyWith(syncQuestion: qid);
+                          ref.read(examCtrlProvider).loadQuestion();
                         },
                         child: Card(
                           color: key != 'X' ? secondaryLight : null,
+                          shape: index == cIdx
+                              ? RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(color: oRed),
+                                )
+                              : null,
                           child: Center(
                             child: Text("${index + 1}"),
                           ),
@@ -58,6 +64,52 @@ class ExamQuestionsList extends ConsumerWidget {
                       );
                     },
                   ),
+                ),
+              ),
+              15.height,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  spacing: 10,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Keterangan'),
+                    Row(
+                      spacing: 10,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 45, height: 45, child: Card(color: null)),
+                        Text('Pertanyaan belum dijawab'),
+                      ],
+                    ),
+                    Row(
+                      spacing: 10,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 45, height: 45, child: Card(color: secondaryLight)),
+                        Text('Pertanyaan sudah dijawab'),
+                      ],
+                    ),
+                    Row(
+                      spacing: 10,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 45,
+                          height: 45,
+                          child: Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(color: oRed),
+                            ),
+                          ),
+                        ),
+                        Text('Posisi sekarang'),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               60.height,

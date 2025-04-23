@@ -520,7 +520,7 @@ mixin _$Company {
   @JsonIntConverter()
   int? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'kode_company')
+  @JsonKey(name: 'kd')
   String? get code => throw _privateConstructorUsedError;
   @JsonIntConverter()
   int? get type => throw _privateConstructorUsedError;
@@ -542,7 +542,7 @@ abstract class $CompanyCopyWith<$Res> {
   $Res call(
       {@JsonIntConverter() int? id,
       String? name,
-      @JsonKey(name: 'kode_company') String? code,
+      @JsonKey(name: 'kd') String? code,
       @JsonIntConverter() int? type});
 }
 
@@ -597,7 +597,7 @@ abstract class _$$CompanyImplCopyWith<$Res> implements $CompanyCopyWith<$Res> {
   $Res call(
       {@JsonIntConverter() int? id,
       String? name,
-      @JsonKey(name: 'kode_company') String? code,
+      @JsonKey(name: 'kd') String? code,
       @JsonIntConverter() int? type});
 }
 
@@ -646,7 +646,7 @@ class _$CompanyImpl implements _Company {
   _$CompanyImpl(
       {@JsonIntConverter() this.id,
       this.name,
-      @JsonKey(name: 'kode_company') this.code,
+      @JsonKey(name: 'kd') this.code,
       @JsonIntConverter() this.type});
 
   factory _$CompanyImpl.fromJson(Map<String, dynamic> json) =>
@@ -658,7 +658,7 @@ class _$CompanyImpl implements _Company {
   @override
   final String? name;
   @override
-  @JsonKey(name: 'kode_company')
+  @JsonKey(name: 'kd')
   final String? code;
   @override
   @JsonIntConverter()
@@ -704,7 +704,7 @@ abstract class _Company implements Company {
   factory _Company(
       {@JsonIntConverter() final int? id,
       final String? name,
-      @JsonKey(name: 'kode_company') final String? code,
+      @JsonKey(name: 'kd') final String? code,
       @JsonIntConverter() final int? type}) = _$CompanyImpl;
 
   factory _Company.fromJson(Map<String, dynamic> json) = _$CompanyImpl.fromJson;
@@ -715,7 +715,7 @@ abstract class _Company implements Company {
   @override
   String? get name;
   @override
-  @JsonKey(name: 'kode_company')
+  @JsonKey(name: 'kd')
   String? get code;
   @override
   @JsonIntConverter()

@@ -58,7 +58,7 @@ _$CompanyImpl _$$CompanyImplFromJson(Map<String, dynamic> json) =>
     _$CompanyImpl(
       id: const JsonIntConverter().fromJson(json['id']),
       name: json['name'] as String?,
-      code: json['kode_company'] as String?,
+      code: json['kd'] as String?,
       type: const JsonIntConverter().fromJson(json['type']),
     );
 
@@ -67,7 +67,7 @@ Map<String, dynamic> _$$CompanyImplToJson(_$CompanyImpl instance) =>
       'id': _$JsonConverterToJson<dynamic, int>(
           instance.id, const JsonIntConverter().toJson),
       'name': instance.name,
-      'kode_company': instance.code,
+      'kd': instance.code,
       'type': _$JsonConverterToJson<dynamic, int>(
           instance.type, const JsonIntConverter().toJson),
     };

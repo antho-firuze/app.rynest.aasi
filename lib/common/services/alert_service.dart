@@ -3,7 +3,7 @@ import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:flutter/cupertino.dart';
 
 class AlertService {
-  static Future<void> show({
+  static Future show({
     required String body,
     String title = 'Informasi',
     String? noCaption,
@@ -16,7 +16,7 @@ class AlertService {
     bool showOk = false,
     bool showYes = false,
   }) async {
-    showCupertinoModalPopup(
+    return await showCupertinoModalPopup(
       context: rootNavigatorKey.currentContext!,
       builder: (context) => CupertinoAlertDialog(
         title: Text(title),
@@ -27,7 +27,7 @@ class AlertService {
               isDefaultAction: true,
               isDestructiveAction: true,
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
                 if (onOk != null) onOk();
               },
               child: Text(okCaption ?? "Ok".hardcoded),
@@ -37,7 +37,7 @@ class AlertService {
               isDefaultAction: true,
               isDestructiveAction: true,
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
                 if (onYes != null) onYes();
               },
               child: Text(yesCaption ?? "Ya".hardcoded),
@@ -45,7 +45,7 @@ class AlertService {
           if (showNo)
             CupertinoDialogAction(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
                 if (onNo != null) onNo();
               },
               child: Text(noCaption ?? "Tidak".hardcoded),
@@ -55,7 +55,7 @@ class AlertService {
     );
   }
 
-  static Future<void> confirm({
+  static Future<bool> confirm({
     required String body,
     String title = 'Konfirmasi',
     String? noCaption,
@@ -67,7 +67,7 @@ class AlertService {
     bool showNo = true,
     bool showYes = true,
   }) async {
-    await AlertService.show(
+    return await AlertService.show(
       title: title,
       body: body,
       noCaption: noCaption,

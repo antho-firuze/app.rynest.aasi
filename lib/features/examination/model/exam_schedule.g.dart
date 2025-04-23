@@ -20,9 +20,12 @@ _$ExamScheduleImpl _$$ExamScheduleImplFromJson(Map<String, dynamic> json) =>
           const JsonDateTimeConverter().fromJson(json['open_registration']),
       closeRegistration:
           const JsonDateTimeConverter().fromJson(json['close_registration']),
+      state: json['state'] as String?,
       category: json['category'] == null
           ? null
           : ExamCategory.fromJson(json['category'] as Map<String, dynamic>),
+      photoStart: json['photo_start'] as bool? ?? false,
+      photoFinish: json['photo_finish'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$ExamScheduleImplToJson(_$ExamScheduleImpl instance) =>
@@ -43,7 +46,10 @@ Map<String, dynamic> _$$ExamScheduleImplToJson(_$ExamScheduleImpl instance) =>
           const JsonDateTimeConverter().toJson(instance.openRegistration),
       'close_registration':
           const JsonDateTimeConverter().toJson(instance.closeRegistration),
+      'state': instance.state,
       'category': instance.category,
+      'photo_start': instance.photoStart,
+      'photo_finish': instance.photoFinish,
     };
 
 Json? _$JsonConverterToJson<Json, Value>(

@@ -21,7 +21,7 @@ class ExamPhotoView extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(title: const Text('Foto Ujian')),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.read(examCtrlProvider).fetchPhotos(),
+          onRefresh: () async => await ref.refresh(fetchExamPhotosProvider),
           child: context.isLandscape() == false ? viewPortrait(photos) : viewLandscape(context, photos),
         ),
       ),

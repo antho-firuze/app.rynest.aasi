@@ -22,18 +22,24 @@ Question _$QuestionFromJson(Map<String, dynamic> json) {
 mixin _$Question {
   @JsonIntConverter()
   int? get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'question_id')
-  String? get questionId => throw _privateConstructorUsedError;
-  String? get shuffle => throw _privateConstructorUsedError;
+  @JsonKey(name: 'question')
   String? get question => throw _privateConstructorUsedError;
-  @JsonKey(name: 'answer_option_a')
-  String? get answerOptionA => throw _privateConstructorUsedError;
-  @JsonKey(name: 'answer_option_b')
-  String? get answerOptionB => throw _privateConstructorUsedError;
-  @JsonKey(name: 'answer_option_c')
-  String? get answerOptionC => throw _privateConstructorUsedError;
-  @JsonKey(name: 'answer_option_d')
-  String? get answerOptionD => throw _privateConstructorUsedError;
+  @JsonKey(name: 'option_a')
+  String? get optionA => throw _privateConstructorUsedError;
+  @JsonKey(name: 'option_b')
+  String? get optionB => throw _privateConstructorUsedError;
+  @JsonKey(name: 'option_c')
+  String? get optionC => throw _privateConstructorUsedError;
+  @JsonKey(name: 'option_d')
+  String? get optionD => throw _privateConstructorUsedError;
+  @JsonKey(name: 'shuffle_option_a')
+  String? get shuffleOptionA => throw _privateConstructorUsedError;
+  @JsonKey(name: 'shuffle_option_b')
+  String? get shuffleOptionB => throw _privateConstructorUsedError;
+  @JsonKey(name: 'shuffle_option_c')
+  String? get shuffleOptionC => throw _privateConstructorUsedError;
+  @JsonKey(name: 'shuffle_option_d')
+  String? get shuffleOptionD => throw _privateConstructorUsedError;
   @JsonKey(name: 'answer_key')
   String? get answerKey => throw _privateConstructorUsedError;
   @JsonKey(name: 'answered_key')
@@ -56,13 +62,15 @@ abstract class $QuestionCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonIntConverter() int? id,
-      @JsonKey(name: 'question_id') String? questionId,
-      String? shuffle,
-      String? question,
-      @JsonKey(name: 'answer_option_a') String? answerOptionA,
-      @JsonKey(name: 'answer_option_b') String? answerOptionB,
-      @JsonKey(name: 'answer_option_c') String? answerOptionC,
-      @JsonKey(name: 'answer_option_d') String? answerOptionD,
+      @JsonKey(name: 'question') String? question,
+      @JsonKey(name: 'option_a') String? optionA,
+      @JsonKey(name: 'option_b') String? optionB,
+      @JsonKey(name: 'option_c') String? optionC,
+      @JsonKey(name: 'option_d') String? optionD,
+      @JsonKey(name: 'shuffle_option_a') String? shuffleOptionA,
+      @JsonKey(name: 'shuffle_option_b') String? shuffleOptionB,
+      @JsonKey(name: 'shuffle_option_c') String? shuffleOptionC,
+      @JsonKey(name: 'shuffle_option_d') String? shuffleOptionD,
       @JsonKey(name: 'answer_key') String? answerKey,
       @JsonKey(name: 'answered_key') String? answeredKey});
 }
@@ -83,13 +91,15 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
   @override
   $Res call({
     Object? id = freezed,
-    Object? questionId = freezed,
-    Object? shuffle = freezed,
     Object? question = freezed,
-    Object? answerOptionA = freezed,
-    Object? answerOptionB = freezed,
-    Object? answerOptionC = freezed,
-    Object? answerOptionD = freezed,
+    Object? optionA = freezed,
+    Object? optionB = freezed,
+    Object? optionC = freezed,
+    Object? optionD = freezed,
+    Object? shuffleOptionA = freezed,
+    Object? shuffleOptionB = freezed,
+    Object? shuffleOptionC = freezed,
+    Object? shuffleOptionD = freezed,
     Object? answerKey = freezed,
     Object? answeredKey = freezed,
   }) {
@@ -98,33 +108,41 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      questionId: freezed == questionId
-          ? _value.questionId
-          : questionId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shuffle: freezed == shuffle
-          ? _value.shuffle
-          : shuffle // ignore: cast_nullable_to_non_nullable
-              as String?,
       question: freezed == question
           ? _value.question
           : question // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionA: freezed == answerOptionA
-          ? _value.answerOptionA
-          : answerOptionA // ignore: cast_nullable_to_non_nullable
+      optionA: freezed == optionA
+          ? _value.optionA
+          : optionA // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionB: freezed == answerOptionB
-          ? _value.answerOptionB
-          : answerOptionB // ignore: cast_nullable_to_non_nullable
+      optionB: freezed == optionB
+          ? _value.optionB
+          : optionB // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionC: freezed == answerOptionC
-          ? _value.answerOptionC
-          : answerOptionC // ignore: cast_nullable_to_non_nullable
+      optionC: freezed == optionC
+          ? _value.optionC
+          : optionC // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionD: freezed == answerOptionD
-          ? _value.answerOptionD
-          : answerOptionD // ignore: cast_nullable_to_non_nullable
+      optionD: freezed == optionD
+          ? _value.optionD
+          : optionD // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionA: freezed == shuffleOptionA
+          ? _value.shuffleOptionA
+          : shuffleOptionA // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionB: freezed == shuffleOptionB
+          ? _value.shuffleOptionB
+          : shuffleOptionB // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionC: freezed == shuffleOptionC
+          ? _value.shuffleOptionC
+          : shuffleOptionC // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionD: freezed == shuffleOptionD
+          ? _value.shuffleOptionD
+          : shuffleOptionD // ignore: cast_nullable_to_non_nullable
               as String?,
       answerKey: freezed == answerKey
           ? _value.answerKey
@@ -148,13 +166,15 @@ abstract class _$$QuestionImplCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonIntConverter() int? id,
-      @JsonKey(name: 'question_id') String? questionId,
-      String? shuffle,
-      String? question,
-      @JsonKey(name: 'answer_option_a') String? answerOptionA,
-      @JsonKey(name: 'answer_option_b') String? answerOptionB,
-      @JsonKey(name: 'answer_option_c') String? answerOptionC,
-      @JsonKey(name: 'answer_option_d') String? answerOptionD,
+      @JsonKey(name: 'question') String? question,
+      @JsonKey(name: 'option_a') String? optionA,
+      @JsonKey(name: 'option_b') String? optionB,
+      @JsonKey(name: 'option_c') String? optionC,
+      @JsonKey(name: 'option_d') String? optionD,
+      @JsonKey(name: 'shuffle_option_a') String? shuffleOptionA,
+      @JsonKey(name: 'shuffle_option_b') String? shuffleOptionB,
+      @JsonKey(name: 'shuffle_option_c') String? shuffleOptionC,
+      @JsonKey(name: 'shuffle_option_d') String? shuffleOptionD,
       @JsonKey(name: 'answer_key') String? answerKey,
       @JsonKey(name: 'answered_key') String? answeredKey});
 }
@@ -173,13 +193,15 @@ class __$$QuestionImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? questionId = freezed,
-    Object? shuffle = freezed,
     Object? question = freezed,
-    Object? answerOptionA = freezed,
-    Object? answerOptionB = freezed,
-    Object? answerOptionC = freezed,
-    Object? answerOptionD = freezed,
+    Object? optionA = freezed,
+    Object? optionB = freezed,
+    Object? optionC = freezed,
+    Object? optionD = freezed,
+    Object? shuffleOptionA = freezed,
+    Object? shuffleOptionB = freezed,
+    Object? shuffleOptionC = freezed,
+    Object? shuffleOptionD = freezed,
     Object? answerKey = freezed,
     Object? answeredKey = freezed,
   }) {
@@ -188,33 +210,41 @@ class __$$QuestionImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      questionId: freezed == questionId
-          ? _value.questionId
-          : questionId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shuffle: freezed == shuffle
-          ? _value.shuffle
-          : shuffle // ignore: cast_nullable_to_non_nullable
-              as String?,
       question: freezed == question
           ? _value.question
           : question // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionA: freezed == answerOptionA
-          ? _value.answerOptionA
-          : answerOptionA // ignore: cast_nullable_to_non_nullable
+      optionA: freezed == optionA
+          ? _value.optionA
+          : optionA // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionB: freezed == answerOptionB
-          ? _value.answerOptionB
-          : answerOptionB // ignore: cast_nullable_to_non_nullable
+      optionB: freezed == optionB
+          ? _value.optionB
+          : optionB // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionC: freezed == answerOptionC
-          ? _value.answerOptionC
-          : answerOptionC // ignore: cast_nullable_to_non_nullable
+      optionC: freezed == optionC
+          ? _value.optionC
+          : optionC // ignore: cast_nullable_to_non_nullable
               as String?,
-      answerOptionD: freezed == answerOptionD
-          ? _value.answerOptionD
-          : answerOptionD // ignore: cast_nullable_to_non_nullable
+      optionD: freezed == optionD
+          ? _value.optionD
+          : optionD // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionA: freezed == shuffleOptionA
+          ? _value.shuffleOptionA
+          : shuffleOptionA // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionB: freezed == shuffleOptionB
+          ? _value.shuffleOptionB
+          : shuffleOptionB // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionC: freezed == shuffleOptionC
+          ? _value.shuffleOptionC
+          : shuffleOptionC // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shuffleOptionD: freezed == shuffleOptionD
+          ? _value.shuffleOptionD
+          : shuffleOptionD // ignore: cast_nullable_to_non_nullable
               as String?,
       answerKey: freezed == answerKey
           ? _value.answerKey
@@ -233,13 +263,15 @@ class __$$QuestionImplCopyWithImpl<$Res>
 class _$QuestionImpl implements _Question {
   _$QuestionImpl(
       {@JsonIntConverter() this.id,
-      @JsonKey(name: 'question_id') this.questionId,
-      this.shuffle,
-      this.question,
-      @JsonKey(name: 'answer_option_a') this.answerOptionA,
-      @JsonKey(name: 'answer_option_b') this.answerOptionB,
-      @JsonKey(name: 'answer_option_c') this.answerOptionC,
-      @JsonKey(name: 'answer_option_d') this.answerOptionD,
+      @JsonKey(name: 'question') this.question,
+      @JsonKey(name: 'option_a') this.optionA,
+      @JsonKey(name: 'option_b') this.optionB,
+      @JsonKey(name: 'option_c') this.optionC,
+      @JsonKey(name: 'option_d') this.optionD,
+      @JsonKey(name: 'shuffle_option_a') this.shuffleOptionA,
+      @JsonKey(name: 'shuffle_option_b') this.shuffleOptionB,
+      @JsonKey(name: 'shuffle_option_c') this.shuffleOptionC,
+      @JsonKey(name: 'shuffle_option_d') this.shuffleOptionD,
       @JsonKey(name: 'answer_key') this.answerKey,
       @JsonKey(name: 'answered_key') this.answeredKey});
 
@@ -250,24 +282,32 @@ class _$QuestionImpl implements _Question {
   @JsonIntConverter()
   final int? id;
   @override
-  @JsonKey(name: 'question_id')
-  final String? questionId;
-  @override
-  final String? shuffle;
-  @override
+  @JsonKey(name: 'question')
   final String? question;
   @override
-  @JsonKey(name: 'answer_option_a')
-  final String? answerOptionA;
+  @JsonKey(name: 'option_a')
+  final String? optionA;
   @override
-  @JsonKey(name: 'answer_option_b')
-  final String? answerOptionB;
+  @JsonKey(name: 'option_b')
+  final String? optionB;
   @override
-  @JsonKey(name: 'answer_option_c')
-  final String? answerOptionC;
+  @JsonKey(name: 'option_c')
+  final String? optionC;
   @override
-  @JsonKey(name: 'answer_option_d')
-  final String? answerOptionD;
+  @JsonKey(name: 'option_d')
+  final String? optionD;
+  @override
+  @JsonKey(name: 'shuffle_option_a')
+  final String? shuffleOptionA;
+  @override
+  @JsonKey(name: 'shuffle_option_b')
+  final String? shuffleOptionB;
+  @override
+  @JsonKey(name: 'shuffle_option_c')
+  final String? shuffleOptionC;
+  @override
+  @JsonKey(name: 'shuffle_option_d')
+  final String? shuffleOptionD;
   @override
   @JsonKey(name: 'answer_key')
   final String? answerKey;
@@ -277,7 +317,7 @@ class _$QuestionImpl implements _Question {
 
   @override
   String toString() {
-    return 'Question(id: $id, questionId: $questionId, shuffle: $shuffle, question: $question, answerOptionA: $answerOptionA, answerOptionB: $answerOptionB, answerOptionC: $answerOptionC, answerOptionD: $answerOptionD, answerKey: $answerKey, answeredKey: $answeredKey)';
+    return 'Question(id: $id, question: $question, optionA: $optionA, optionB: $optionB, optionC: $optionC, optionD: $optionD, shuffleOptionA: $shuffleOptionA, shuffleOptionB: $shuffleOptionB, shuffleOptionC: $shuffleOptionC, shuffleOptionD: $shuffleOptionD, answerKey: $answerKey, answeredKey: $answeredKey)';
   }
 
   @override
@@ -286,19 +326,20 @@ class _$QuestionImpl implements _Question {
         (other.runtimeType == runtimeType &&
             other is _$QuestionImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.questionId, questionId) ||
-                other.questionId == questionId) &&
-            (identical(other.shuffle, shuffle) || other.shuffle == shuffle) &&
             (identical(other.question, question) ||
                 other.question == question) &&
-            (identical(other.answerOptionA, answerOptionA) ||
-                other.answerOptionA == answerOptionA) &&
-            (identical(other.answerOptionB, answerOptionB) ||
-                other.answerOptionB == answerOptionB) &&
-            (identical(other.answerOptionC, answerOptionC) ||
-                other.answerOptionC == answerOptionC) &&
-            (identical(other.answerOptionD, answerOptionD) ||
-                other.answerOptionD == answerOptionD) &&
+            (identical(other.optionA, optionA) || other.optionA == optionA) &&
+            (identical(other.optionB, optionB) || other.optionB == optionB) &&
+            (identical(other.optionC, optionC) || other.optionC == optionC) &&
+            (identical(other.optionD, optionD) || other.optionD == optionD) &&
+            (identical(other.shuffleOptionA, shuffleOptionA) ||
+                other.shuffleOptionA == shuffleOptionA) &&
+            (identical(other.shuffleOptionB, shuffleOptionB) ||
+                other.shuffleOptionB == shuffleOptionB) &&
+            (identical(other.shuffleOptionC, shuffleOptionC) ||
+                other.shuffleOptionC == shuffleOptionC) &&
+            (identical(other.shuffleOptionD, shuffleOptionD) ||
+                other.shuffleOptionD == shuffleOptionD) &&
             (identical(other.answerKey, answerKey) ||
                 other.answerKey == answerKey) &&
             (identical(other.answeredKey, answeredKey) ||
@@ -310,13 +351,15 @@ class _$QuestionImpl implements _Question {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      questionId,
-      shuffle,
       question,
-      answerOptionA,
-      answerOptionB,
-      answerOptionC,
-      answerOptionD,
+      optionA,
+      optionB,
+      optionC,
+      optionD,
+      shuffleOptionA,
+      shuffleOptionB,
+      shuffleOptionC,
+      shuffleOptionD,
       answerKey,
       answeredKey);
 
@@ -339,13 +382,15 @@ class _$QuestionImpl implements _Question {
 abstract class _Question implements Question {
   factory _Question(
           {@JsonIntConverter() final int? id,
-          @JsonKey(name: 'question_id') final String? questionId,
-          final String? shuffle,
-          final String? question,
-          @JsonKey(name: 'answer_option_a') final String? answerOptionA,
-          @JsonKey(name: 'answer_option_b') final String? answerOptionB,
-          @JsonKey(name: 'answer_option_c') final String? answerOptionC,
-          @JsonKey(name: 'answer_option_d') final String? answerOptionD,
+          @JsonKey(name: 'question') final String? question,
+          @JsonKey(name: 'option_a') final String? optionA,
+          @JsonKey(name: 'option_b') final String? optionB,
+          @JsonKey(name: 'option_c') final String? optionC,
+          @JsonKey(name: 'option_d') final String? optionD,
+          @JsonKey(name: 'shuffle_option_a') final String? shuffleOptionA,
+          @JsonKey(name: 'shuffle_option_b') final String? shuffleOptionB,
+          @JsonKey(name: 'shuffle_option_c') final String? shuffleOptionC,
+          @JsonKey(name: 'shuffle_option_d') final String? shuffleOptionD,
           @JsonKey(name: 'answer_key') final String? answerKey,
           @JsonKey(name: 'answered_key') final String? answeredKey}) =
       _$QuestionImpl;
@@ -357,24 +402,32 @@ abstract class _Question implements Question {
   @JsonIntConverter()
   int? get id;
   @override
-  @JsonKey(name: 'question_id')
-  String? get questionId;
-  @override
-  String? get shuffle;
-  @override
+  @JsonKey(name: 'question')
   String? get question;
   @override
-  @JsonKey(name: 'answer_option_a')
-  String? get answerOptionA;
+  @JsonKey(name: 'option_a')
+  String? get optionA;
   @override
-  @JsonKey(name: 'answer_option_b')
-  String? get answerOptionB;
+  @JsonKey(name: 'option_b')
+  String? get optionB;
   @override
-  @JsonKey(name: 'answer_option_c')
-  String? get answerOptionC;
+  @JsonKey(name: 'option_c')
+  String? get optionC;
   @override
-  @JsonKey(name: 'answer_option_d')
-  String? get answerOptionD;
+  @JsonKey(name: 'option_d')
+  String? get optionD;
+  @override
+  @JsonKey(name: 'shuffle_option_a')
+  String? get shuffleOptionA;
+  @override
+  @JsonKey(name: 'shuffle_option_b')
+  String? get shuffleOptionB;
+  @override
+  @JsonKey(name: 'shuffle_option_c')
+  String? get shuffleOptionC;
+  @override
+  @JsonKey(name: 'shuffle_option_d')
+  String? get shuffleOptionD;
   @override
   @JsonKey(name: 'answer_key')
   String? get answerKey;

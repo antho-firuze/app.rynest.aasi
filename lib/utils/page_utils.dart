@@ -19,6 +19,8 @@ class PageUtils {
         builder: (context) => page,
       ));
 
+  void popz() => Navigator.of(rootNavigatorKey.currentContext!).pop();
+
   // Future replace({required Widget page}) async => await Navigator.of(rootNavigatorKey.currentContext!)
   //     .pushAndRemoveUntil(MaterialPageRoute(builder: (_) => page), (route) => false);
   // await Navigator.of(rootNavigatorKey.currentContext!, rootNavigator: true).pushReplacement(CupertinoPageRoute(

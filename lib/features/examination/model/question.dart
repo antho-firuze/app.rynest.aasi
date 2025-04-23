@@ -10,37 +10,18 @@ part 'question.g.dart';
 class Question with _$Question {
   factory Question({
     @JsonIntConverter() int? id,
-    @JsonKey(name: 'question_id') String? questionId,
-    String? shuffle,
-    String? question,
-    @JsonKey(name: 'answer_option_a') String? answerOptionA,
-    @JsonKey(name: 'answer_option_b') String? answerOptionB,
-    @JsonKey(name: 'answer_option_c') String? answerOptionC,
-    @JsonKey(name: 'answer_option_d') String? answerOptionD,
+    @JsonKey(name: 'question') String? question,
+    @JsonKey(name: 'option_a') String? optionA,
+    @JsonKey(name: 'option_b') String? optionB,
+    @JsonKey(name: 'option_c') String? optionC,
+    @JsonKey(name: 'option_d') String? optionD,
+    @JsonKey(name: 'shuffle_option_a') String? shuffleOptionA,
+    @JsonKey(name: 'shuffle_option_b') String? shuffleOptionB,
+    @JsonKey(name: 'shuffle_option_c') String? shuffleOptionC,
+    @JsonKey(name: 'shuffle_option_d') String? shuffleOptionD,
     @JsonKey(name: 'answer_key') String? answerKey,
     @JsonKey(name: 'answered_key') String? answeredKey,
   }) = _Question;
 
   factory Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
-}
-
-extension QuestionExt on Question {
-  String? shuffledOption([String? letter]) => letter == 'a'
-      ? answerOptionA
-      : letter == 'b'
-          ? answerOptionB
-          : letter == 'c'
-              ? answerOptionC
-              : letter == 'd'
-                  ? answerOptionD
-                  : '';
-
-  get shuffledA => shuffle?.substring(0, 1);
-  get shuffledB => shuffle?.substring(1, 2);
-  get shuffledC => shuffle?.substring(2, 3);
-  get shuffledD => shuffle?.substring(3, 4);
-  get shuffledOptionA => shuffledOption(shuffledA);
-  get shuffledOptionB => shuffledOption(shuffledB);
-  get shuffledOptionC => shuffledOption(shuffledC);
-  get shuffledOptionD => shuffledOption(shuffledD);
 }

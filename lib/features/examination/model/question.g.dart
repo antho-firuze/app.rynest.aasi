@@ -9,13 +9,15 @@ part of 'question.dart';
 _$QuestionImpl _$$QuestionImplFromJson(Map<String, dynamic> json) =>
     _$QuestionImpl(
       id: const JsonIntConverter().fromJson(json['id']),
-      questionId: json['question_id'] as String?,
-      shuffle: json['shuffle'] as String?,
       question: json['question'] as String?,
-      answerOptionA: json['answer_option_a'] as String?,
-      answerOptionB: json['answer_option_b'] as String?,
-      answerOptionC: json['answer_option_c'] as String?,
-      answerOptionD: json['answer_option_d'] as String?,
+      optionA: json['option_a'] as String?,
+      optionB: json['option_b'] as String?,
+      optionC: json['option_c'] as String?,
+      optionD: json['option_d'] as String?,
+      shuffleOptionA: json['shuffle_option_a'] as String?,
+      shuffleOptionB: json['shuffle_option_b'] as String?,
+      shuffleOptionC: json['shuffle_option_c'] as String?,
+      shuffleOptionD: json['shuffle_option_d'] as String?,
       answerKey: json['answer_key'] as String?,
       answeredKey: json['answered_key'] as String?,
     );
@@ -24,13 +26,15 @@ Map<String, dynamic> _$$QuestionImplToJson(_$QuestionImpl instance) =>
     <String, dynamic>{
       'id': _$JsonConverterToJson<dynamic, int>(
           instance.id, const JsonIntConverter().toJson),
-      'question_id': instance.questionId,
-      'shuffle': instance.shuffle,
       'question': instance.question,
-      'answer_option_a': instance.answerOptionA,
-      'answer_option_b': instance.answerOptionB,
-      'answer_option_c': instance.answerOptionC,
-      'answer_option_d': instance.answerOptionD,
+      'option_a': instance.optionA,
+      'option_b': instance.optionB,
+      'option_c': instance.optionC,
+      'option_d': instance.optionD,
+      'shuffle_option_a': instance.shuffleOptionA,
+      'shuffle_option_b': instance.shuffleOptionB,
+      'shuffle_option_c': instance.shuffleOptionC,
+      'shuffle_option_d': instance.shuffleOptionD,
       'answer_key': instance.answerKey,
       'answered_key': instance.answeredKey,
     };

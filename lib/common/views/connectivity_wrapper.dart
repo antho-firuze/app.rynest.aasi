@@ -1,8 +1,6 @@
 import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
 import 'package:app.rynest.aasi/common/services/dialog_service.dart';
 import 'package:app.rynest.aasi/common/views/overlay_container.dart';
-import 'package:app.rynest.aasi/common/widgets/custom_dialog.dart';
-import 'package:app.rynest.aasi/common/widgets/forms/field_list.dart';
 import 'package:app.rynest.aasi/common/widgets/forms/ordered_list.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -61,7 +59,7 @@ class ConnectivityWrapper extends ConsumerWidget {
                 },
                 child: OverlayContainer(
                   isShowOverlay: isShowOverlay,
-                  backgroundColor: oRed.withOpacity(.8),
+                  backgroundColor: oRed.withAlpha(155),
                   child: SizedBox(
                     height: 50,
                     child: Row(

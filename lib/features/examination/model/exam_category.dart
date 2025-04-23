@@ -13,7 +13,8 @@ class ExamCategory with _$ExamCategory {
     String? name,
     @JsonIntConverter() @Default(0) int duration,
     @JsonKey(name: 'passed_grade') @JsonIntConverter() @Default(0) int passedGrade,
-    @JsonKey(name: 'num_of_question') @JsonIntConverter() int? numOfQuestion,
+    @JsonKey(name: 'questions') @JsonIntConverter() int? numOfQuestion,
+    @JsonKey(name: 'min_point') @JsonIntConverter() int? minPoint,
   }) = _ExamCategory;
 
   factory ExamCategory.fromJson(Map<String, dynamic> json) => _$ExamCategoryFromJson(json);
