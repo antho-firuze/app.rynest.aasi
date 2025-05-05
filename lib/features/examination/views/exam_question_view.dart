@@ -1,5 +1,4 @@
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
-import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';

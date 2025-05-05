@@ -5,6 +5,8 @@ part 'env.g.dart';
 @Envied(path: '.env')
 abstract class Env {
   // FOR MAIN APPS
+  @EnviedField(varName: 'ENV_CONFIG', obfuscate: true)
+  static String envConfig = _Env.envConfig;
   @EnviedField(varName: 'LIVE_API_URL', obfuscate: true)
   static String liveApiUrl = _Env.liveApiUrl;
   @EnviedField(varName: 'LOCAL_API_URL', obfuscate: true)

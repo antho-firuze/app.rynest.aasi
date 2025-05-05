@@ -1,8 +1,6 @@
 import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
-import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
 import 'package:app.rynest.aasi/common/exceptions/warning_layout.dart';
-import 'package:app.rynest.aasi/common/services/device_service.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_image.dart';

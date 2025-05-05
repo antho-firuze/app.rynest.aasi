@@ -6,6 +6,7 @@ import 'package:app.rynest.aasi/common/widgets/custom_interactive_viewer.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/features/auth/views/widgets/code_verify.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/views/camera_selfie_view.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
@@ -22,6 +23,10 @@ class AccountView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+
+    if (ref.watch(verifyCodeProvider).isNotEmpty) {
+      return CodeVerify();
+    }
 
     return MyUI(
       child: Scaffold(

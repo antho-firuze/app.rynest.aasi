@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class CodeVerifyView extends ConsumerWidget {
-  const CodeVerifyView({super.key});
+class CodeVerify extends ConsumerWidget {
+  const CodeVerify({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,10 +47,17 @@ class CodeVerifyView extends ConsumerWidget {
                       debugPrint(pin);
                       if (pin!.length >= 6) {
                         if (pin == ref.read(verifyCodeProvider)) {
-                          return context.pop(true);
-                        }
+                          ref.read(verifyCodeProvider.notifier).state = '';
 
-                        SnackBarService.show(message: 'Kode yang anda masukkan salah !'.hardcoded);
+                          if (ref.read(verifyTypeProvider) == 'forgot_password') {
+                            await ref.read(authCtrlProvider).resetPwd();
+                          } else {
+                            await ref.read(authCtrlProvider).closingAccount();
+                          }
+                          if (context.mounted) context.pop(true);
+                        } else {
+                          SnackBarService.show(message: 'Kode yang anda masukkan salah !'.hardcoded);
+                        }
                       }
                     },
                   ),
@@ -85,7 +92,7 @@ class CodeVerifyView extends ConsumerWidget {
                               text: 'Kirim ulang !',
                               style: tsBodyM().link(),
                               recognizer: TapGestureRecognizer()
-                                ..onTapDown = (details) async => await ref.read(authCtrlProvider).resendCode(),
+                                ..onTapDown = (details) async => await ref.read(authCtrlProvider).sendForgotCode(),
                             )
                           ],
                         ),

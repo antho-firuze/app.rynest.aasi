@@ -3,6 +3,7 @@ import 'package:app.rynest.aasi/common/widgets/custom_input.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/features/auth/views/widgets/code_verify.dart';
 import 'package:app.rynest.aasi/localization/string_hardcoded.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -15,6 +16,11 @@ class PwdForgotView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formStateKey = GlobalKey<FormState>();
+
+    if (ref.watch(verifyCodeProvider).isNotEmpty) {
+      return CodeVerify();
+    }
+
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: Text('Lupa Kode Sandi'.hardcoded)),
@@ -30,7 +36,10 @@ class PwdForgotView extends ConsumerWidget {
                   children: [
                     const LogoArtWork(child: LogoApp()),
                     10.height,
-                    Text('Masukkan email yang terkait dengan akun Anda !'.hardcoded).tsBodyM(),
+                    Text('Masukkan email yang terkait dengan akun Anda, berikut sandi baru yang anda kehendaki !'
+                            .hardcoded)
+                        .tsBodyM()
+                        .center(),
                     20.height,
                     CustomInput(
                       onChanged: (val) => ref.read(textEmailProvider.notifier).state = val,
@@ -38,6 +47,26 @@ class PwdForgotView extends ConsumerWidget {
                       keyboardType: TextInputType.emailAddress,
                       prefixIcon: const Icon(Icons.email_outlined),
                       validator: (p0) => p0!.isEmpty ? 'Kolom email harap di isi'.hardcoded : null,
+                    ),
+                    20.height,
+                    CustomInput(
+                      onChanged: (val) => ref.read(textPasswordProvider.notifier).state = val,
+                      hintText: 'Sandi Baru'.hardcoded,
+                      isPassword: true,
+                      validator: (p0) => p0!.isEmpty ? 'Kolom sandi harap di isi'.hardcoded : null,
+                      prefixIcon: const Icon(Icons.lock_outline),
+                    ),
+                    20.height,
+                    CustomInput(
+                      onChanged: (val) => ref.read(textPasswordConfirmProvider.notifier).state = val,
+                      hintText: 'Ulangi Sandi Baru'.hardcoded,
+                      isPassword: true,
+                      validator: (p0) => p0!.isEmpty
+                          ? 'Kolom sandi harap di isi'.hardcoded
+                          : p0 != ref.read(textPasswordProvider)
+                              ? "Konfirmasi harus sama dengan Sandi Baru"
+                              : null,
+                      prefixIcon: const Icon(Icons.lock_outline),
                     ),
                     20.height,
                     Center(
@@ -49,9 +78,9 @@ class PwdForgotView extends ConsumerWidget {
                           if (formStateKey.currentState!.validate() == false) {
                             return;
                           }
-                      
-                          ref.read(authCtrlProvider).sendCode();
-                      
+
+                          await ref.read(authCtrlProvider).sendForgotCode();
+
                           // var result = await context.push('/code_verify');
                           // if (result == true) {
                           //   // ignore: use_build_context_synchronously

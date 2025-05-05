@@ -16,6 +16,12 @@ import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+enum SendVia { email, sms, wa, telegram }
+
+enum VerificationFor { email, phone, unregister }
+
+final countDownExpired = 60 * 3;
+
 final authTokenProvider = StateProvider<JwtToken?>((ref) => null);
 final authUserProvider = StateProvider<User?>((ref) => null);
 
@@ -164,6 +170,7 @@ class AuthCtrl {
       "fullname": ref.read(textFullNameProvider),
       "phone": ref.read(textPhoneProvider),
       "need_verify": false,
+      "is_testing": false,
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
@@ -172,80 +179,44 @@ class AuthCtrl {
     return true;
   }
 
-  Future<void> sendCode() async {
-    final reqs = Reqs(path: '/api/v1/auth/send_code', data: {
+  Future<void> sendForgotCode({SendVia sendVia = SendVia.email}) async {
+    final reqs = Reqs(path: '/api/v1/auth/send_forgot_code', data: {
       "email": ref.read(textEmailProvider),
-      "send_via": "email",
+      "phone": ref.read(textPhoneProvider),
+      "send_via": sendVia.name,
+      "is_testing": false,
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
     if (state.hasError) return;
 
     // log(state.value['verification_code']);
-    // ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
+    ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
     ref.read(verifyTypeProvider.notifier).state = 'forgot_password';
     ref.read(isCountdownExpiredProvider.notifier).state = false;
-    ref.read(countdownTimerProvider.notifier).state = 60 * 3;
+    ref.read(countdownTimerProvider.notifier).state = countDownExpired;
 
     await AlertService.showOk(
       body: 'Kode verifikasi telah dikirimkan silahkan anda cek !',
-      onOk: () async {
-        final result = await ref.read(goRouterProvider).push('/code_verify');
-        if (result == true) {
-          ref.read(goRouterProvider).pop(true);
-        }
-      },
     );
   }
 
-  Future<void> resendCode() async {
-    if (ref.read(isCountdownExpiredProvider) == false) {
-      return SnackBarService.show(message: 'Hitung mundur masih berlaku !');
-    }
+  Future<void> sendVerificationCode() async {
+    final reqs = Reqs(path: '/api/v1/auth/send_verification_code', data: {
+      "type": ref.read(verifyTypeProvider),
+      "is_testing": false,
+    });
+    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
-    switch (ref.read(verifyTypeProvider)) {
-      case 'email':
-        final reqs = Reqs(path: '/api/v1/auth/send_verification_code', data: {
-          "type": "email",
-          "is_testing": AppConfig.isTesting,
-        });
-        final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    if (state.hasError) return;
 
-        if (state.hasError) return;
-
-        log("resendCode => verification_code : ${state.value['verification_code']}", name: 'AUTH-CTRL');
-        ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
-        break;
-      case 'phone':
-        final reqs = Reqs(path: '/api/v1/auth/send_verification_code', data: {
-          "type": "phone",
-          "is_testing": AppConfig.isTesting,
-        });
-        final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
-
-        if (state.hasError) return;
-
-        log("resendCode => verification_code : ${state.value['verification_code']}", name: 'AUTH-CTRL');
-        ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
-        break;
-      default:
-        final reqs = Reqs(path: '/api/v1/auth/send_code', data: {
-          "email": ref.read(textEmailProvider),
-          "send_via": "sms",
-        });
-        final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
-
-        if (state.hasError) return;
-
-        log("resendCode => verification_code : ${state.value['verification_code']}", name: 'AUTH-CTRL');
-        ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
-    }
+    // log("resendCode => verification_code : ${state.value['verification_code']}", name: 'AUTH-CTRL');
+    ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
+    ref.read(isCountdownExpiredProvider.notifier).state = false;
+    ref.read(countdownTimerProvider.notifier).state = countDownExpired;
 
     await AlertService.showOk(
-      body: 'Kode verifikasi telah dikirimkan ulang silahkan anda cek kembali !',
-      onOk: () async {
-        ref.read(isCountdownExpiredProvider.notifier).state = false;
-      },
+      body: 'Kode verifikasi telah dikirimkan silahkan anda cek !',
     );
   }
 
@@ -253,7 +224,8 @@ class AuthCtrl {
     final reqs = Reqs(path: '/api/v1/auth/reset_pwd', data: {
       "email": ref.read(textEmailProvider),
       "password": ref.read(textPasswordProvider),
-      "need_confirm": false,
+      "need_confirm": true,
+      "is_testing": false,
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
@@ -272,6 +244,7 @@ class AuthCtrl {
       "old_password": ref.read(textPasswordOldProvider),
       "new_password": ref.read(textPasswordProvider),
       "need_confirm": false,
+      "is_testing": false,
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
@@ -301,26 +274,32 @@ class AuthCtrl {
     );
   }
 
+  Future<void> closingAccount() async {
+    final reqs = Reqs(path: '/api/v1/auth/closing_account', data: {
+      "is_send_email_info": true,
+      "is_testing": false,
+    });
+    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+
+    if (state.hasError) return;
+
+    await AlertService.showOk(
+      body:
+          'Akun Anda telah berhasil di non-aktifkan, silahkan cek email anda untuk informasi lebih lanjut !'.hardcoded,
+      onOk: () {
+        setUser(null);
+        setToken(null);
+        ref.read(pageUtilsProvider).popz();
+      },
+    );
+  }
+
   Future<void> removeAccount() async {
     await AlertService.confirm(
       body: "Anda yakin ingin menon-aktifkan Akun Anda ?",
       onYes: () async {
-        final reqs = Reqs(path: '/api/v1/auth/closing_account', data: {
-          "is_send_email_info": true,
-          "is_testing": false,
-        });
-        final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
-
-        if (state.hasError) return;
-
-        await AlertService.showOk(
-          body: 'Akun Anda telah berhasil di non-aktifkan, silahkan cek email anda untuk informasi lebih lanjut !'
-              .hardcoded,
-          onOk: () {
-            setUser(null);
-            setToken(null);
-          },
-        );
+        ref.read(verifyTypeProvider.notifier).state = 'unregister';
+        await sendVerificationCode();
       },
     );
   }
