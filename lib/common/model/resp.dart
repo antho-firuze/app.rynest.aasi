@@ -4,29 +4,12 @@ part 'resp.freezed.dart';
 part 'resp.g.dart';
 
 @freezed
-class Resp with _$Resp {
-  factory Resp({
-    bool? status,
-    String? message,
-    dynamic result,
-    Err? error,
-  }) = _Resp;
+class RespError with _$RespError {
 
-  factory Resp.fromJson(Map<String, dynamic> json) => _$RespFromJson(json);
-}
-
-@freezed
-class Err with _$Err {
-  factory Err({
-    String? message,
+  factory RespError({
     int? code,
-  }) = _Err;
+    String? message,
+  }) = _RespError;
 
-  factory Err.fromJson(Map<String, dynamic> json) => _$ErrFromJson(json);
-}
-
-extension RespX on Resp {
-  bool hasResult() => result != null;
-
-  bool hasError() => status == false;
+  factory RespError.fromJson(Map<String, dynamic> json) => _$RespErrorFromJson(json);
 }

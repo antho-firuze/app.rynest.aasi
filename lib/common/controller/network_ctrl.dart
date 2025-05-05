@@ -36,6 +36,7 @@ class NetworkCtrl {
     log('Initialize Network Info & Connection !');
 
     networkConnectivityListen();
+    getNetworkInfo();
   }
 
   void networkConnectivityListen() async {

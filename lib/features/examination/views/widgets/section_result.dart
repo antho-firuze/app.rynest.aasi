@@ -125,6 +125,8 @@ class SectionResult extends StatelessWidget {
                                   caption: Text('Restart'), value: Text("${exam?.restart} kali").bold().clr(oBlack)),
                               FieldList(caption: Text('Device'), value: Text(exam?.device ?? '-').bold().clr(oBlack)),
                               FieldList(caption: Text('Lokasi'), value: Text(exam?.location ?? '-').bold().clr(oBlack)),
+                              FieldList(
+                                  caption: Text('IP Address'), value: Text(exam?.ipAddress ?? '-').bold().clr(oBlack)),
                             ],
                           ),
                         ),

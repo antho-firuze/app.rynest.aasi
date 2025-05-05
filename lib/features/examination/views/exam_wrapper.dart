@@ -19,7 +19,7 @@ class ExamWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool isShowOverlay = ref.watch(examStageProvider) == ExamStage.ongoing;
+    bool isShowOverlay = ref.watch(examStillGoingProvider);
     final user = ref.watch(authUserProvider);
 
     return Scaffold(
@@ -53,11 +53,11 @@ class ExamWrapper extends ConsumerWidget {
                                 const Text('Ujian masih berjalan !').clr(oWhite),
                               ],
                             ),
-                            if (ref.watch(remainingTimeProvider).isNotEmpty)
+                            if (ref.watch(remainingTimeStrProvider).isNotEmpty)
                               Row(
                                 children: [
                                   const Text('Waktu tersisa : ').clr(oWhite),
-                                  Text(ref.watch(remainingTimeProvider)).clr(oWhite),
+                                  Text(ref.watch(remainingTimeStrProvider)).clr(oWhite),
                                 ],
                               ),
                           ],

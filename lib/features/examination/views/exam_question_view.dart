@@ -1,4 +1,5 @@
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
+import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
@@ -6,19 +7,46 @@ import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/bottom_navigation.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/top_navigation.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
+import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
-class ExamQuestion extends ConsumerWidget {
-  const ExamQuestion({super.key});
+class ExamQuestionView extends ConsumerWidget {
+  const ExamQuestionView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fontSize = ref.watch(fontSizeProvider);
 
     debugPrint('Exam Question Re/Build');
+
+    // CHECK #1: on start exam, examStillGoingProvider default is [false]. Then must check the exam state <> ON-GOING
+    // CHECK #2: on going exam, when timer stop & hit examStillGoingProvider to false. Then check the exam state <> ON-GOING
+    if (ref.watch(examStillGoingProvider) == false) {
+      debugPrint('1Exam State : ${ref.read(examProvider)?.state}');
+      if (ref.read(examProvider)?.state != 'ON-GOING') {
+        if (context.mounted) context.popz();
+      }
+    }
+
+    // CHECK #1: on going exam, when any interruption & exam state == ON-GOING, then force exam question to close.
+    if (ref.watch(examInterruptionProvider) == true) {
+      debugPrint('2Exam State : ${ref.read(examProvider)?.state}');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (ref.read(examProvider)?.state == 'ON-GOING') {
+          if (context.mounted) context.popz();
+        }
+      });
+    }
+
+    if (ref.watch(isRemainingTimeStillGoingProvider) == false) {
+      debugPrint('3Exam State : ${ref.read(examProvider)?.state}');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) context.popz();
+      });
+    }
 
     return PopScope(
       canPop: false,
@@ -64,7 +92,7 @@ class ExamQuestion extends ConsumerWidget {
                           const LogoApp(width: 100),
                           Consumer(
                             builder: (context, ref, child) {
-                              return Text(ref.watch(remainingTimeProvider)).tsTitleL().bold();
+                              return Text(ref.watch(remainingTimeStrProvider)).tsTitleL().bold();
                             },
                           ),
                         ],

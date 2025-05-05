@@ -1,13 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:math' hide log;
 
+import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
+import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
 import 'package:app.rynest.aasi/common/model/reqs.dart';
+import 'package:app.rynest.aasi/common/model/resp.dart';
 import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/services/api_service.dart';
 import 'package:app.rynest.aasi/common/services/camera_service.dart';
+import 'package:app.rynest.aasi/common/services/device_service.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
 import 'package:app.rynest.aasi/common/services/snackbar_service.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
@@ -15,31 +18,29 @@ import 'package:app.rynest.aasi/features/examination/model/exam.dart';
 import 'package:app.rynest.aasi/features/examination/model/exam_photo.dart';
 import 'package:app.rynest.aasi/features/examination/model/exam_schedule.dart';
 import 'package:app.rynest.aasi/features/examination/model/question.dart';
-import 'package:app.rynest.aasi/features/examination/views/exam_question.dart';
+import 'package:app.rynest.aasi/features/examination/views/exam_question_view.dart';
 import 'package:app.rynest.aasi/features/examination/views/exam_result_view.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final _kLogName = 'EXAM-CTRL';
+
 enum Go { next, previous, first, last }
 
 enum FontSize { increase, decrease }
-
-enum ExamStage { start, ongoing, finish }
 
 final fontSizeProvider = StateProvider<double>((ref) => 16);
 final autoNextQuestionProvider = StateProvider<bool>((ref) => false);
 
 final examProvider = StateProvider<Exam?>((ref) => null);
 final examScheduleProvider = StateProvider<ExamSchedule?>((ref) => null);
-
 final examPhotosProvider = StateProvider<ExamPhotos?>((ref) => null);
-final examStageProvider = StateProvider<ExamStage>((ref) => ExamStage.start);
-final examStatusProvider = StateProvider<String>((ref) => 'READY');
 
-final questionsProvider = StateProvider<List<Question>?>((ref) => null);
-final questionProvider = StateProvider<Question?>((ref) => null);
-final remainingTimeProvider = StateProvider<String>((ref) => '');
+final examStillGoingProvider = StateProvider<bool>((ref) => false);
+final examInterruptionProvider = StateProvider<bool>((ref) => false);
+final remainingTimeStrProvider = StateProvider<String>((ref) => '');
+final isRemainingTimeStillGoingProvider = StateProvider<bool?>((ref) => null);
 
 final questionNumProvider = StateProvider<int>((ref) => 1);
 
@@ -53,8 +54,7 @@ final fetchExamScheduleProvider = FutureProvider<ExamSchedule?>((ref) async {
   if (state.value == null) return null;
 
   final schedule = ExamSchedule.fromJson(state.value);
-  ref.read(examCtrlProvider).saveExamSchedule(schedule);
-  ref.read(examCtrlProvider).checkIfExamStillOnGoing(examSchedule: schedule);
+  ref.read(examScheduleProvider.notifier).state = schedule;
   return schedule;
 });
 
@@ -66,6 +66,7 @@ final fetchExamResultProvider = FutureProvider<Exam?>((ref) async {
 
   final reqs = Reqs(path: '/api/v1/exam/result', data: {
     "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+    "device_id": ref.read(deviceIdProvider),
   });
   final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
 
@@ -100,10 +101,18 @@ final fetchQuestionProvider = FutureProvider<Question?>((ref) async {
     "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
     "question_id": qid,
     "shuffle": opt,
+    "device_id": ref.read(deviceIdProvider),
   });
   final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
 
-  if (state.hasError) return null;
+  if (state.hasError) {
+    RespError err = state.error as RespError;
+    log('question error : ${err.code} - ${err.message}', name: _kLogName);
+    if (err.code == 409) {
+      ref.read(examInterruptionProvider.notifier).state = true;
+    }
+    return null;
+  }
   if (state.value == null) return null;
 
   final question = Question.fromJson(state.value);
@@ -114,6 +123,7 @@ final fetchExamInfoProvider = FutureProvider<Exam?>((ref) async {
   final reqs = Reqs(path: '/api/v1/exam/info', data: {
     "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
     "category_id": ref.read(examScheduleProvider)?.categoryId,
+    "device_id": ref.read(deviceIdProvider),
   });
   final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
 
@@ -129,11 +139,8 @@ class ExamCtrl {
   final Ref ref;
   ExamCtrl(this.ref);
 
-  final _kLogName = 'EXAM-CTRL';
-
   final _fontSizeKey = 'COOKIE_FONT_SIZE';
   final _autoNextQuestionKey = 'COOKIE_AUTO_NEXT_QUESTION';
-  final _examScheduleKey = 'COOKIE_EXAM_SCHEDULE';
 
   final _maxFontSize = 24.0;
   final _minFontSize = 16.0;
@@ -141,27 +148,17 @@ class ExamCtrl {
   Timer? _mainTimer;
   List<int> randomPages = [];
 
-  List<int> qids = [];
-  List<String> opts = [];
-
   void initialize() async {
     log('Initialize Examination !');
 
     loadSetting();
 
-    ref.listen(authUserProvider, (previous, next) async {
-      if (next != null) {
-        // ignore: unused_result
-        ref.refresh(fetchExamScheduleProvider);
-      } else {
-        saveExamSchedule(null);
-      }
-    });
-
     ref.listen(examScheduleProvider, (previous, next) {
       if (next != null) {
         if (next.state == 'ON-GOING') {
           checkIfExamStillOnGoing(examSchedule: next, exam: ref.read(examProvider));
+        } else {
+          ref.read(examStillGoingProvider.notifier).state = false;
         }
       }
     });
@@ -170,39 +167,31 @@ class ExamCtrl {
       if (next != null) {
         if (next.state == 'ON-GOING') {
           checkIfExamStillOnGoing(examSchedule: ref.read(examScheduleProvider), exam: next);
+        } else {
+          ref.read(examStillGoingProvider.notifier).state = false;
         }
       }
     });
 
-    loadExamSchedule();
+    ref.listen(authUserProvider, (previous, next) async {
+      if (next != null) {
+        // ignore: unused_result
+        ref.refresh(fetchExamScheduleProvider);
+      } else {
+        ref.read(examScheduleProvider.notifier).state = null;
+      }
+    });
+
+    if (ref.read(authUserProvider) != null) {
+      // ignore: unused_result
+      ref.refresh(fetchExamScheduleProvider);
+    }
   }
 
   void loadSetting() {
     ref.read(fontSizeProvider.notifier).state = ref.read(sharedPrefProvider).getDouble(_fontSizeKey) ?? 16;
     ref.read(autoNextQuestionProvider.notifier).state =
         ref.read(sharedPrefProvider).getBool(_autoNextQuestionKey) ?? false;
-  }
-
-  void loadExamSchedule({bool showLog = false}) {
-    final data = ref.read(sharedPrefProvider).getString(_examScheduleKey);
-    if (data != null) {
-      if (showLog) log("data = $data", name: _kLogName);
-      final examSchedule = ExamSchedule.fromJson(jsonDecode(data));
-      ref.read(examScheduleProvider.notifier).state = examSchedule;
-    } else {
-      if (showLog) log("data = null", name: _kLogName);
-      ref.read(examScheduleProvider.notifier).state = null;
-    }
-  }
-
-  void saveExamSchedule(ExamSchedule? examSchedule) {
-    if (examSchedule == null) {
-      ref.read(examScheduleProvider.notifier).state = null;
-      ref.read(sharedPrefProvider).remove(_examScheduleKey);
-    } else {
-      ref.read(examScheduleProvider.notifier).state = examSchedule;
-      ref.read(sharedPrefProvider).setString(_examScheduleKey, jsonEncode(examSchedule.toJson()));
-    }
   }
 
   void checkIfExamStillOnGoing({ExamSchedule? examSchedule, Exam? exam, bool showLog = false}) async {
@@ -212,9 +201,14 @@ class ExamCtrl {
         // ignore: unused_result
         ref.refresh(fetchExamInfoProvider);
       } else {
-        _startTimer();
+        if (ref.read(isRemainingTimeStillGoingProvider) == null) {
+          _startTimer();
+        } else if (ref.read(isRemainingTimeStillGoingProvider) == true) {
+          ref.read(examStillGoingProvider.notifier).state = true;
+        } else {
+          ref.read(examStillGoingProvider.notifier).state = false;
+        }
       }
-      ref.read(examStageProvider.notifier).state = ExamStage.ongoing;
     }
   }
 
@@ -259,17 +253,27 @@ class ExamCtrl {
     if (showLog) log('durationInMinutes : ${exam?.duration}', name: _kLogName);
     int durationInMinutes = exam?.duration ?? 90;
 
+    // Check remaining duration before start the TIMER.
+    DateTime? finishPredictiction = exam?.startAt?.add(Duration(minutes: durationInMinutes));
+    Duration? duration = finishPredictiction?.difference(DateTime.now());
+    if (duration!.inSeconds < 1) {
+      ref.read(isRemainingTimeStillGoingProvider.notifier).state = false;
+      return;
+    }
+
     _cancelTimer();
+    ref.read(isRemainingTimeStillGoingProvider.notifier).state = true;
 
     _mainTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
       final finishPredictiction = exam?.startAt?.add(Duration(minutes: durationInMinutes));
 
       final duration = finishPredictiction?.difference(DateTime.now());
-      ref.read(remainingTimeProvider.notifier).state = duration!.toHHNNSS();
+      ref.read(remainingTimeStrProvider.notifier).state = duration!.toHHNNSS();
 
       // Check if duration has reached
       if (duration.inSeconds < 1) {
         _cancelTimer();
+        ref.read(isRemainingTimeStillGoingProvider.notifier).state = false;
         await callFinish(force: true);
       }
     });
@@ -285,9 +289,10 @@ class ExamCtrl {
       "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
       "category_id": ref.read(examScheduleProvider)?.categoryId,
       "start_at": DateTime.now().dbDateTime(),
-      "ip_address": "",
-      "location": "",
-      "device": "",
+      "device_id": ref.read(deviceIdProvider),
+      "device_name": ref.read(deviceNameProvider),
+      "ip_address": ref.read(wifiIPv4Provider),
+      "location": ref.read(locationProvider),
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
@@ -300,6 +305,8 @@ class ExamCtrl {
     // Set random page for getting silent picture
     randomPages = _getRandomCount();
     if (showLog) log("randomPages : $randomPages", name: _kLogName);
+
+    ref.read(examInterruptionProvider.notifier).state = false;
 
     loadQuestion();
     _startTimer();
@@ -314,25 +321,41 @@ class ExamCtrl {
       if (result == false) return;
     }
 
+    ref.read(examStillGoingProvider.notifier).state = false;
+    ref.read(examInterruptionProvider.notifier).state = false;
+
     final reqs = Reqs(path: '/api/v1/exam/finish', data: {
       "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
       "finish_at": DateTime.now().dbDateTime(),
+      "device_id": ref.read(deviceIdProvider),
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
 
-    if (state.hasError) return;
-    if (state.value == null) return;
+    if (state.hasError) {
+      // This conditionally executed if network is not connected
+      if (showLog) log('callFinish : network is not connected', name: _kLogName);
+      final examSchedule = ref.read(examScheduleProvider);
+      ref.read(examScheduleProvider.notifier).state = examSchedule?.copyWith(state: 'COMPLETED');
+      final exam = ref.read(examProvider);
+      ref.read(examProvider.notifier).state = exam?.copyWith(state: 'COMPLETED');
+      
+      // RespError err = state.error as RespError;
+      // if (err.code == 409) {
+      //   ref.read(examInterruptionProvider.notifier).state = true;
+      // }
+      return;
+    }
 
+    // ref.read(examStillGoingProvider.notifier).state = false;
+    // ref.read(examInterruptionProvider.notifier).state = false;
+    _cancelTimer();
     // ignore: unused_result
     ref.refresh(fetchExamScheduleProvider);
-    _cancelTimer();
-    ref.read(examStageProvider.notifier).state = ExamStage.finish;
     // ignore: unused_result
     ref.refresh(fetchExamResultProvider);
-    ref.read(pageUtilsProvider).popz();
   }
 
-  Future<void> callAnswer(int idx, String answer, {bool showLog = false}) async {
+  Future<void> callAnswer(int idx, String answer, {bool showLog = true}) async {
     final exam = ref.read(examProvider);
     String? oldKey = exam?.keys[idx];
     answer = answer.toUpperCase();
@@ -352,10 +375,18 @@ class ExamCtrl {
       "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
       "question_id": qIdOpt,
       "answered_key": answer,
+      "device_id": ref.read(deviceIdProvider),
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
 
-    if (state.hasError) return;
+    if (state.hasError) {
+      RespError err = state.error as RespError;
+      if (showLog) log('answer error : ${err.code} - ${err.message}', name: _kLogName);
+      if (err.code == 409) {
+        ref.read(examInterruptionProvider.notifier).state = true;
+      }
+      return;
+    }
     if (state.value == null) return;
 
     final examR = exam?.afterAnswer(idx, answer);
@@ -385,10 +416,18 @@ class ExamCtrl {
 
     final reqs = Reqs(path: '/api/v1/exam/check_score', data: {
       "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+      "device_id": ref.read(deviceIdProvider),
     });
     final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
 
-    if (state.hasError) return;
+    if (state.hasError) {
+      RespError err = state.error as RespError;
+      if (showLog) log('check_score error : ${err.code} - ${err.message}', name: _kLogName);
+      if (err.code == 409) {
+        ref.read(examInterruptionProvider.notifier).state = true;
+      }
+      return;
+    }
     if (state.value == null) return;
 
     final examR = Exam.fromJson(state.value);
@@ -447,10 +486,17 @@ class ExamCtrl {
 
       ref.read(questionNumProvider.notifier).state = pageNum;
       // GOTO Question Page
-      ref.read(pageUtilsProvider).goto(page: ExamQuestion());
+      ref.read(pageUtilsProvider).goto(page: ExamQuestionView());
       // ignore: unused_result
       ref.refresh(fetchQuestionProvider);
     }
+  }
+
+  void callThatsMe() {
+    ref.read(examInterruptionProvider.notifier).state = false;
+    ref.read(pageUtilsProvider).popz();
+    // ignore: unused_result
+    ref.refresh(fetchExamScheduleProvider);
   }
 
   Future updatePhotoExamStart(File file, {bool showLog = false}) async {
@@ -565,7 +611,7 @@ class ExamCtrl {
     }
   }
 
-  void _getSilentPic(int pageNum, {bool showLog = true}) {
+  void _getSilentPic(int pageNum, {bool showLog = false}) {
     // index += 1;
     if (showLog) log('get_pic => index : $pageNum | rnd : $randomPages', name: _kLogName);
     if (pageNum == randomPages[0]) {
@@ -612,6 +658,7 @@ final examCtrlProvider = Provider(ExamCtrl.new);
 // EXAM STATE TEST - FINISH
 // ===============================
 // [ok] test finish button
-// [ok] test auto finish timeout
+// [ok] test auto finish timeout (data conected)
+// [ok] test auto finish timeout (data not connected)
 // [ok] check photo (finishExam)
 // [ok] check exam result (final)

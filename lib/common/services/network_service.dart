@@ -10,20 +10,23 @@ class NetworkService {
   final Ref ref;
   NetworkService(this.ref);
 
+  final _kLogName = 'NETWORK-SERVICE';
+  final _showLog = false;
+
   final NetworkInfo _networkInfo = NetworkInfo();
 
   Future<bool> checkDataAvailable() async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        log(':: checkDataAvailable => true', name: 'NETWORK-SERVICE');
+        if (_showLog) log(':: checkDataAvailable => true', name: _kLogName);
         return true;
       }
 
-      log(':: checkDataAvailable => false', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: checkDataAvailable => false', name: _kLogName);
       return false;
     } catch (e) {
-      log(':: checkDataAvailable => false', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: checkDataAvailable => false', name: _kLogName);
       return false;
     }
   }
@@ -31,10 +34,10 @@ class NetworkService {
   Future<String> getWifiIP() async {
     try {
       var result = await _networkInfo.getWifiIP() ?? '*.*.*.*';
-      log(':: getWifiIP => $result', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiIP => $result', name: _kLogName);
       return result;
     } on PlatformException catch (e) {
-      log(':: getWifiIP => Failed to get Wifi Name', error: e, name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiIP => Failed to get Wifi Name', error: e, name: _kLogName);
       return e.toString();
     }
   }
@@ -42,10 +45,10 @@ class NetworkService {
   Future<String> getWifiName() async {
     try {
       var result = await _networkInfo.getWifiName() ?? '';
-      log(':: getWifiName => $result', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiName => $result', name: _kLogName);
       return result;
     } on PlatformException catch (e) {
-      log(':: getWifiName => Failed to get Wifi Name', error: e, name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiName => Failed to get Wifi Name', error: e, name: _kLogName);
       return e.toString();
     }
   }
@@ -53,10 +56,10 @@ class NetworkService {
   Future<String> getWifiBSSID() async {
     try {
       var result = await _networkInfo.getWifiBSSID() ?? '';
-      log(':: getWifiBSSID => $result', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiBSSID => $result', name: _kLogName);
       return result;
     } on PlatformException catch (e) {
-      log(':: getWifiBSSID => Failed to get Wifi BSSID', error: e, name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiBSSID => Failed to get Wifi BSSID', error: e, name: _kLogName);
       return e.toString();
     }
   }
@@ -64,10 +67,10 @@ class NetworkService {
   Future<String> getWifiSubmask() async {
     try {
       var result = await _networkInfo.getWifiSubmask() ?? '';
-      log(':: getWifiSubmask => $result', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiSubmask => $result', name: _kLogName);
       return result;
     } on PlatformException catch (e) {
-      log(':: getWifiSubmask => Failed to get Wifi Submask', error: e, name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiSubmask => Failed to get Wifi Submask', error: e, name: _kLogName);
       return e.toString();
     }
   }
@@ -75,10 +78,10 @@ class NetworkService {
   Future<String> getWifiBroadcast() async {
     try {
       var result = await _networkInfo.getWifiBroadcast() ?? '';
-      log(':: getWifiBroadcast => $result', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiBroadcast => $result', name: _kLogName);
       return result;
     } on PlatformException catch (e) {
-      log(':: getWifiBroadcast => Failed to get Wifi Broadcast', error: e, name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiBroadcast => Failed to get Wifi Broadcast', error: e, name: _kLogName);
       return e.toString();
     }
   }
@@ -86,10 +89,10 @@ class NetworkService {
   Future<String> getWifiGatewayIP() async {
     try {
       var result = await _networkInfo.getWifiGatewayIP() ?? '';
-      log(':: getWifiGatewayIP => $result', name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiGatewayIP => $result', name: _kLogName);
       return result;
     } on PlatformException catch (e) {
-      log(':: getWifiGatewayIP => Failed to get Wifi Gateway IP', error: e, name: 'NETWORK-SERVICE');
+      if (_showLog) log(':: getWifiGatewayIP => Failed to get Wifi Gateway IP', error: e, name: _kLogName);
       return e.toString();
     }
   }
@@ -114,11 +117,11 @@ class NetworkService {
   //   }).firstWhere((InternetAddress a) => a != null);
 
   //   dgSocket.send([code], InternetAddress("255.255.255.255"), dgSocket.port);
-  //   // log('IP Address = ${ret}');
+  //   // if (_showLog) log('IP Address = ${ret}');
   //   ret.then((value) {
-  //     log(value.address);
+  //     if (_showLog) log(value.address);
   //   });
-  //   log('Port = ${dgSocket.port}');
+  //   if (_showLog) log('Port = ${dgSocket.port}');
   //   return ret;
   // }
 }

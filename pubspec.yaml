@@ -44,6 +44,9 @@ dependencies:
   flutter_widget_from_html: ^0.15.3
   shimmer: ^3.0.0
   html: ^0.15.4
+  permission_handler: ^11.1.0
+  geolocator: ^13.0.2
+  geocoding: ^3.0.0
   pusher_webman: 
     git:
       url: https://github.com/antho-firuze/pusher_webman.git

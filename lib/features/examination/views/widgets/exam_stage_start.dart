@@ -1,3 +1,8 @@
+import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
+import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
+import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
+import 'package:app.rynest.aasi/common/exceptions/warning_layout.dart';
+import 'package:app.rynest.aasi/common/services/device_service.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_image.dart';
@@ -5,6 +10,7 @@ import 'package:app.rynest.aasi/common/widgets/forms/field_list.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
+import 'package:app.rynest.aasi/core/app_string.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/views/camera_exam_start_view.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
@@ -23,9 +29,48 @@ class ExamStageStart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
-
     bool? photo = profile?.photo != null;
     bool? idcard = profile?.photoIdCard != null;
+
+    if (!ref.watch(isGpsEnableProvider)) {
+      return MyUI(
+        child: Scaffold(
+          appBar: AppBar(title: Text('Ujian')),
+          body: ListView(
+            children: [
+              WarningLayout(
+                title: PermissionString2.gpsDeviceTitle,
+                subTitle: PermissionString2.gpsDeviceSubTitle,
+                child: ElevatedButton(
+                  onPressed: () async => await ref.read(locationCtrlProvider).openLocationSettings(),
+                  child: Text('Aktifkan GPS'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (!ref.watch(allowGpsProvider)) {
+      return MyUI(
+        child: Scaffold(
+          appBar: AppBar(title: Text('Ujian')),
+          body: ListView(
+            children: [
+              WarningLayout(
+                title: PermissionString2.gpsPermissionTitle,
+                subTitle: PermissionString2.gpsPermissionSubTitle,
+                child: ElevatedButton(
+                  onPressed: () async => await ref.read(locationCtrlProvider).requestGpsPermission(),
+                  child: Text('Izinkan Akses'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return MyUI(
       child: Scaffold(
@@ -44,7 +89,10 @@ class ExamStageStart extends ConsumerWidget {
                 skipLoadingOnRefresh: false,
                 data: (data) {
                   if (data == null) {
-                    return Container();
+                    return WarningException(
+                      title: 'Gagal memuat jadwal ujian !',
+                      onRefresh: () => ref.refresh(fetchExamScheduleProvider),
+                    );
                   }
 
                   final examSchedule = data;
@@ -166,6 +214,9 @@ class ExamStageStart extends ConsumerWidget {
                               : const Text('Lanjutkan Ujian'),
                         ),
                       ),
+                      // Center(child: Text("${ref.read(deviceIdProvider)} - ${ref.read(deviceNameProvider)}")),
+                      // Center(child: Text(ref.watch(wifiIPv4Provider))),
+                      // Center(child: Text(ref.watch(locationProvider))),
                       60.height,
                     ],
                   );

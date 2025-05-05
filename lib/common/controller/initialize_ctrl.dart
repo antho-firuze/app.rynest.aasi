@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
 import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
+import 'package:app.rynest.aasi/common/services/device_service.dart';
 import 'package:app.rynest.aasi/common/services/version_service.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/auth/model/jwt_token.dart';
@@ -36,6 +38,12 @@ class InitCtrl {
 
     // Initialize Network
     ref.read(networkCtrlProvider).initialize();
+
+    // Initialize Location/GPS
+    await ref.read(locationCtrlProvider).initialize();
+
+    // Get Device Info
+    ref.read(deviceServiceProvider).getDeviceInfo();
 
     // Check User & token
     ref.read(authCtrlProvider).initialize();

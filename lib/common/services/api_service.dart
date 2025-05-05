@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:app.rynest.aasi/common/model/reqs.dart';
+import 'package:app.rynest.aasi/common/model/resp.dart';
 import 'package:app.rynest.aasi/common/services/loading_service.dart';
 import 'package:app.rynest.aasi/common/services/snackbar_service.dart';
 import 'package:app.rynest.aasi/core/app_base.dart';
@@ -58,6 +59,9 @@ class ApiService {
       if (showError) {
         SnackBarService.show(message: "[$errCode] $errMessage");
       }
+
+      final respError = RespError(code: errCode, message: errMessage);
+      throw respError;
     }
 
     if (state.value?.data == null) {
@@ -94,8 +98,10 @@ class ApiService {
         errMessage = errDio.message ?? '';
       }
       final errCode = errDio.response?.statusCode;
-
       if (showLog) log("[$errCode] $errMessage", name: _kLogName);
+
+      final respError = RespError(code: errCode, message: errMessage);
+      throw respError;
     }
 
     if (state.value?.data == null) {

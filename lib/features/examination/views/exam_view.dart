@@ -1,5 +1,7 @@
+import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
+import 'package:app.rynest.aasi/features/examination/views/widgets/exam_interruption.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_expired.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_finish.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/exam_stage_kicked_out.dart';
@@ -15,33 +17,52 @@ class ExamView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     if (ref.watch(authUserProvider) == null) {
       return ExamStageKickedOut();
     }
 
+    if (ref.watch(examInterruptionProvider) == true) {
+      return ExamInterruption();
+    }
+
+    final examSchedule = ref.watch(examScheduleProvider);
     return MyUI(
-      child: ref.watch(fetchExamScheduleProvider).when(
-            data: (data) {
-              if (data == null) {
-                return Container();
-              }
-
-              final examSchedule = data;
-
-              return switch (examSchedule.state) {
-                'NOT-YET-OPEN' => const ExamStageTooEarlier(),
-                'IN-SCHEDULE' => const ExamStageStart(),
-                'ON-GOING' => const ExamStageStart(),
-                'COMPLETED' => const ExamStageFinish(),
-                'EXPIRED' => const ExamStageExpired(),
-                String() => const ExamStageNotRegistered(),
-                null => const ExamStageNotRegistered(),
-              };
-            },
-            error: (error, stackTrace) => Container(),
-            loading: () => Center(child: CircularProgressIndicator()),
-          ),
+      child: switch (examSchedule?.state) {
+        'NOT-YET-OPEN' => const ExamStageTooEarlier(),
+        'IN-SCHEDULE' => const ExamStageStart(),
+        'ON-GOING' => const ExamStageStart(),
+        'COMPLETED' => const ExamStageFinish(),
+        'EXPIRED' => const ExamStageExpired(),
+        String() => const ExamStageNotRegistered(),
+        null => const ExamStageNotRegistered(),
+      },
     );
+
+    // return MyUI(
+    //   child: ref.watch(fetchExamScheduleProvider).when(
+    //         data: (data) {
+    //           if (data == null) {
+    //             return WarningException(
+    //               title: 'Gagal memuat data ujian !',
+    //               onRefresh: () => ref.refresh(fetchExamScheduleProvider),
+    //             );
+    //           }
+
+    //           final examSchedule = data;
+
+    //           return switch (examSchedule.state) {
+    //             'NOT-YET-OPEN' => const ExamStageTooEarlier(),
+    //             'IN-SCHEDULE' => const ExamStageStart(),
+    //             'ON-GOING' => const ExamStageStart(),
+    //             'COMPLETED' => const ExamStageFinish(),
+    //             'EXPIRED' => const ExamStageExpired(),
+    //             String() => const ExamStageNotRegistered(),
+    //             null => const ExamStageNotRegistered(),
+    //           };
+    //         },
+    //         error: (error, stackTrace) => Container(),
+    //         loading: () => Center(child: CircularProgressIndicator()),
+    //       ),
+    // );
   }
 }
