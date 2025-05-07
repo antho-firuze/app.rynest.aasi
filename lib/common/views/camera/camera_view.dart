@@ -375,7 +375,9 @@ class _CameraViewState extends State<CameraView> {
     // log("image.format: $format", name: "CAMERA-VIEW");
     if (format == null ||
         (Platform.isAndroid && format != InputImageFormat.nv21) ||
-        (Platform.isIOS && format != InputImageFormat.bgra8888)) return null;
+        (Platform.isIOS && format != InputImageFormat.bgra8888)) {
+      return null;
+    }
 
     // since format is constraint to nv21 or bgra8888, both only have one plane
     // log("image.planes.length: ${image.planes.length}", name: "CAMERA-VIEW");

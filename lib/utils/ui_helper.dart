@@ -45,7 +45,7 @@ Widget divider({
       child: Container(
         width: isHorizontal ? null : thick,
         height: isHorizontal ? thick : null,
-        color: color ?? Colors.grey.withOpacity(0.5),
+        color: color ?? Colors.grey.withAlpha(125),
       ),
     );
 
@@ -215,7 +215,7 @@ Widget bumperBottom(BuildContext context) => SizedBox(
     );
 
 Color getRandomColor() {
-  return Color((math.Random().nextDouble() * 0xFFFFFF).toInt() << 0).withOpacity(1.0);
+  return Color((math.Random().nextDouble() * 0xFFFFFF).toInt() << 0).withAlpha(125);
 }
 
 String countryCodeToEmoji(String? countryCode) {

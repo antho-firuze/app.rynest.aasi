@@ -6,14 +6,13 @@ part 'exam_photo.freezed.dart';
 part 'exam_photo.g.dart';
 
 @freezed
-class ExamPhotos with _$ExamPhotos {
+class ExamPhoto with _$ExamPhoto {
 
-  factory ExamPhotos({
-    String? selfie,
-    String? idCard,
-    @JsonKey(name: 'exam_finish') String? examFinish,
-    @JsonKey(name: 'exam_start') String? examStart,
-  }) = _ExamPhotos;
+  factory ExamPhoto({
+    @JsonKey(name: 'id') int? id,
+    @JsonKey(name: 'type') String? type,
+    @JsonKey(name: 'image_url') String? imageUrl,
+  }) = _ExamPhoto;
 
-  factory ExamPhotos.fromJson(Map<String, dynamic> json) => _$ExamPhotosFromJson(json);
+  factory ExamPhoto.fromJson(Map<String, dynamic> json) => _$ExamPhotoFromJson(json);
 }

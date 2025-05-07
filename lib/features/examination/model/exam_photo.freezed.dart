@@ -14,132 +14,119 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-ExamPhotos _$ExamPhotosFromJson(Map<String, dynamic> json) {
-  return _ExamPhotos.fromJson(json);
+ExamPhoto _$ExamPhotoFromJson(Map<String, dynamic> json) {
+  return _ExamPhoto.fromJson(json);
 }
 
 /// @nodoc
-mixin _$ExamPhotos {
-  String? get selfie => throw _privateConstructorUsedError;
-  String? get idCard => throw _privateConstructorUsedError;
-  @JsonKey(name: 'exam_finish')
-  String? get examFinish => throw _privateConstructorUsedError;
-  @JsonKey(name: 'exam_start')
-  String? get examStart => throw _privateConstructorUsedError;
+mixin _$ExamPhoto {
+  @JsonKey(name: 'id')
+  int? get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'type')
+  String? get type => throw _privateConstructorUsedError;
+  @JsonKey(name: 'image_url')
+  String? get imageUrl => throw _privateConstructorUsedError;
 
-  /// Serializes this ExamPhotos to a JSON map.
+  /// Serializes this ExamPhoto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of ExamPhotos
+  /// Create a copy of ExamPhoto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ExamPhotosCopyWith<ExamPhotos> get copyWith =>
+  $ExamPhotoCopyWith<ExamPhoto> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ExamPhotosCopyWith<$Res> {
-  factory $ExamPhotosCopyWith(
-          ExamPhotos value, $Res Function(ExamPhotos) then) =
-      _$ExamPhotosCopyWithImpl<$Res, ExamPhotos>;
+abstract class $ExamPhotoCopyWith<$Res> {
+  factory $ExamPhotoCopyWith(ExamPhoto value, $Res Function(ExamPhoto) then) =
+      _$ExamPhotoCopyWithImpl<$Res, ExamPhoto>;
   @useResult
   $Res call(
-      {String? selfie,
-      String? idCard,
-      @JsonKey(name: 'exam_finish') String? examFinish,
-      @JsonKey(name: 'exam_start') String? examStart});
+      {@JsonKey(name: 'id') int? id,
+      @JsonKey(name: 'type') String? type,
+      @JsonKey(name: 'image_url') String? imageUrl});
 }
 
 /// @nodoc
-class _$ExamPhotosCopyWithImpl<$Res, $Val extends ExamPhotos>
-    implements $ExamPhotosCopyWith<$Res> {
-  _$ExamPhotosCopyWithImpl(this._value, this._then);
+class _$ExamPhotoCopyWithImpl<$Res, $Val extends ExamPhoto>
+    implements $ExamPhotoCopyWith<$Res> {
+  _$ExamPhotoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of ExamPhotos
+  /// Create a copy of ExamPhoto
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? selfie = freezed,
-    Object? idCard = freezed,
-    Object? examFinish = freezed,
-    Object? examStart = freezed,
+    Object? id = freezed,
+    Object? type = freezed,
+    Object? imageUrl = freezed,
   }) {
     return _then(_value.copyWith(
-      selfie: freezed == selfie
-          ? _value.selfie
-          : selfie // ignore: cast_nullable_to_non_nullable
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String?,
-      idCard: freezed == idCard
-          ? _value.idCard
-          : idCard // ignore: cast_nullable_to_non_nullable
-              as String?,
-      examFinish: freezed == examFinish
-          ? _value.examFinish
-          : examFinish // ignore: cast_nullable_to_non_nullable
-              as String?,
-      examStart: freezed == examStart
-          ? _value.examStart
-          : examStart // ignore: cast_nullable_to_non_nullable
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$ExamPhotosImplCopyWith<$Res>
-    implements $ExamPhotosCopyWith<$Res> {
-  factory _$$ExamPhotosImplCopyWith(
-          _$ExamPhotosImpl value, $Res Function(_$ExamPhotosImpl) then) =
-      __$$ExamPhotosImplCopyWithImpl<$Res>;
+abstract class _$$ExamPhotoImplCopyWith<$Res>
+    implements $ExamPhotoCopyWith<$Res> {
+  factory _$$ExamPhotoImplCopyWith(
+          _$ExamPhotoImpl value, $Res Function(_$ExamPhotoImpl) then) =
+      __$$ExamPhotoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {String? selfie,
-      String? idCard,
-      @JsonKey(name: 'exam_finish') String? examFinish,
-      @JsonKey(name: 'exam_start') String? examStart});
+      {@JsonKey(name: 'id') int? id,
+      @JsonKey(name: 'type') String? type,
+      @JsonKey(name: 'image_url') String? imageUrl});
 }
 
 /// @nodoc
-class __$$ExamPhotosImplCopyWithImpl<$Res>
-    extends _$ExamPhotosCopyWithImpl<$Res, _$ExamPhotosImpl>
-    implements _$$ExamPhotosImplCopyWith<$Res> {
-  __$$ExamPhotosImplCopyWithImpl(
-      _$ExamPhotosImpl _value, $Res Function(_$ExamPhotosImpl) _then)
+class __$$ExamPhotoImplCopyWithImpl<$Res>
+    extends _$ExamPhotoCopyWithImpl<$Res, _$ExamPhotoImpl>
+    implements _$$ExamPhotoImplCopyWith<$Res> {
+  __$$ExamPhotoImplCopyWithImpl(
+      _$ExamPhotoImpl _value, $Res Function(_$ExamPhotoImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ExamPhotos
+  /// Create a copy of ExamPhoto
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? selfie = freezed,
-    Object? idCard = freezed,
-    Object? examFinish = freezed,
-    Object? examStart = freezed,
+    Object? id = freezed,
+    Object? type = freezed,
+    Object? imageUrl = freezed,
   }) {
-    return _then(_$ExamPhotosImpl(
-      selfie: freezed == selfie
-          ? _value.selfie
-          : selfie // ignore: cast_nullable_to_non_nullable
+    return _then(_$ExamPhotoImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String?,
-      idCard: freezed == idCard
-          ? _value.idCard
-          : idCard // ignore: cast_nullable_to_non_nullable
-              as String?,
-      examFinish: freezed == examFinish
-          ? _value.examFinish
-          : examFinish // ignore: cast_nullable_to_non_nullable
-              as String?,
-      examStart: freezed == examStart
-          ? _value.examStart
-          : examStart // ignore: cast_nullable_to_non_nullable
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -147,91 +134,84 @@ class __$$ExamPhotosImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ExamPhotosImpl implements _ExamPhotos {
-  _$ExamPhotosImpl(
-      {this.selfie,
-      this.idCard,
-      @JsonKey(name: 'exam_finish') this.examFinish,
-      @JsonKey(name: 'exam_start') this.examStart});
+class _$ExamPhotoImpl implements _ExamPhoto {
+  _$ExamPhotoImpl(
+      {@JsonKey(name: 'id') this.id,
+      @JsonKey(name: 'type') this.type,
+      @JsonKey(name: 'image_url') this.imageUrl});
 
-  factory _$ExamPhotosImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ExamPhotosImplFromJson(json);
+  factory _$ExamPhotoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ExamPhotoImplFromJson(json);
 
   @override
-  final String? selfie;
+  @JsonKey(name: 'id')
+  final int? id;
   @override
-  final String? idCard;
+  @JsonKey(name: 'type')
+  final String? type;
   @override
-  @JsonKey(name: 'exam_finish')
-  final String? examFinish;
-  @override
-  @JsonKey(name: 'exam_start')
-  final String? examStart;
+  @JsonKey(name: 'image_url')
+  final String? imageUrl;
 
   @override
   String toString() {
-    return 'ExamPhotos(selfie: $selfie, idCard: $idCard, examFinish: $examFinish, examStart: $examStart)';
+    return 'ExamPhoto(id: $id, type: $type, imageUrl: $imageUrl)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ExamPhotosImpl &&
-            (identical(other.selfie, selfie) || other.selfie == selfie) &&
-            (identical(other.idCard, idCard) || other.idCard == idCard) &&
-            (identical(other.examFinish, examFinish) ||
-                other.examFinish == examFinish) &&
-            (identical(other.examStart, examStart) ||
-                other.examStart == examStart));
+            other is _$ExamPhotoImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, selfie, idCard, examFinish, examStart);
+  int get hashCode => Object.hash(runtimeType, id, type, imageUrl);
 
-  /// Create a copy of ExamPhotos
+  /// Create a copy of ExamPhoto
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ExamPhotosImplCopyWith<_$ExamPhotosImpl> get copyWith =>
-      __$$ExamPhotosImplCopyWithImpl<_$ExamPhotosImpl>(this, _$identity);
+  _$$ExamPhotoImplCopyWith<_$ExamPhotoImpl> get copyWith =>
+      __$$ExamPhotoImplCopyWithImpl<_$ExamPhotoImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ExamPhotosImplToJson(
+    return _$$ExamPhotoImplToJson(
       this,
     );
   }
 }
 
-abstract class _ExamPhotos implements ExamPhotos {
-  factory _ExamPhotos(
-      {final String? selfie,
-      final String? idCard,
-      @JsonKey(name: 'exam_finish') final String? examFinish,
-      @JsonKey(name: 'exam_start') final String? examStart}) = _$ExamPhotosImpl;
+abstract class _ExamPhoto implements ExamPhoto {
+  factory _ExamPhoto(
+      {@JsonKey(name: 'id') final int? id,
+      @JsonKey(name: 'type') final String? type,
+      @JsonKey(name: 'image_url') final String? imageUrl}) = _$ExamPhotoImpl;
 
-  factory _ExamPhotos.fromJson(Map<String, dynamic> json) =
-      _$ExamPhotosImpl.fromJson;
+  factory _ExamPhoto.fromJson(Map<String, dynamic> json) =
+      _$ExamPhotoImpl.fromJson;
 
   @override
-  String? get selfie;
+  @JsonKey(name: 'id')
+  int? get id;
   @override
-  String? get idCard;
+  @JsonKey(name: 'type')
+  String? get type;
   @override
-  @JsonKey(name: 'exam_finish')
-  String? get examFinish;
-  @override
-  @JsonKey(name: 'exam_start')
-  String? get examStart;
+  @JsonKey(name: 'image_url')
+  String? get imageUrl;
 
-  /// Create a copy of ExamPhotos
+  /// Create a copy of ExamPhoto
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ExamPhotosImplCopyWith<_$ExamPhotosImpl> get copyWith =>
+  _$$ExamPhotoImplCopyWith<_$ExamPhotoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

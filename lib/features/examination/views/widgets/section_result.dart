@@ -6,7 +6,9 @@ import 'package:app.rynest.aasi/common/widgets/forms/field_list.dart';
 import 'package:app.rynest.aasi/common/widgets/forms/ordered_list.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/examination/model/exam.dart';
+import 'package:app.rynest.aasi/features/examination/views/widgets/restart_history.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
+import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -78,6 +80,7 @@ class SectionResult extends StatelessWidget {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
+                      // HEADER
                       Stack(
                         children: [
                           Align(
@@ -94,7 +97,9 @@ class SectionResult extends StatelessWidget {
                         ],
                       ),
                       divider(),
+                      // BODY
                       20.height,
+                      // SlideTransition(position: position),
                       CustomCard(
                         title: Padding(
                           padding: const EdgeInsets.only(left: 20),
@@ -122,7 +127,15 @@ class SectionResult extends StatelessWidget {
                                   caption: Text('Cek Score'),
                                   value: Text("${exam?.checkScore} kali").bold().clr(oBlack)),
                               FieldList(
-                                  caption: Text('Restart'), value: Text("${exam?.restart} kali").bold().clr(oBlack)),
+                                  caption: Text('Restart'),
+                                  value: GestureDetector(
+                                    onTap: () {
+                                      debugPrint("exam?.session.length: ${exam?.session.length}");
+                                      if (context.mounted) context.pop();
+                                      context.goto(page: RestartHistory(exam));
+                                    },
+                                    child: Text("${exam?.restart} kali").bold().clr(oBlack),
+                                  )),
                               FieldList(caption: Text('Device'), value: Text(exam?.device ?? '-').bold().clr(oBlack)),
                               FieldList(caption: Text('Lokasi'), value: Text(exam?.location ?? '-').bold().clr(oBlack)),
                               FieldList(

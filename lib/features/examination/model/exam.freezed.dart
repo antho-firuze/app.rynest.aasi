@@ -85,6 +85,7 @@ mixin _$Exam {
   List<int> get qids => throw _privateConstructorUsedError;
   List<String> get opts => throw _privateConstructorUsedError;
   List<String> get keys => throw _privateConstructorUsedError;
+  List<ExamSession> get session => throw _privateConstructorUsedError;
 
   /// Serializes this Exam to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -128,7 +129,8 @@ abstract class $ExamCopyWith<$Res> {
       @JsonKey(name: 'state') String? state,
       List<int> qids,
       List<String> opts,
-      List<String> keys});
+      List<String> keys,
+      List<ExamSession> session});
 }
 
 /// @nodoc
@@ -174,6 +176,7 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
     Object? qids = null,
     Object? opts = null,
     Object? keys = null,
+    Object? session = null,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -288,6 +291,10 @@ class _$ExamCopyWithImpl<$Res, $Val extends Exam>
           ? _value.keys
           : keys // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      session: null == session
+          ? _value.session
+          : session // ignore: cast_nullable_to_non_nullable
+              as List<ExamSession>,
     ) as $Val);
   }
 }
@@ -327,7 +334,8 @@ abstract class _$$ExamImplCopyWith<$Res> implements $ExamCopyWith<$Res> {
       @JsonKey(name: 'state') String? state,
       List<int> qids,
       List<String> opts,
-      List<String> keys});
+      List<String> keys,
+      List<ExamSession> session});
 }
 
 /// @nodoc
@@ -370,6 +378,7 @@ class __$$ExamImplCopyWithImpl<$Res>
     Object? qids = null,
     Object? opts = null,
     Object? keys = null,
+    Object? session = null,
   }) {
     return _then(_$ExamImpl(
       id: freezed == id
@@ -484,6 +493,10 @@ class __$$ExamImplCopyWithImpl<$Res>
           ? _value._keys
           : keys // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      session: null == session
+          ? _value._session
+          : session // ignore: cast_nullable_to_non_nullable
+              as List<ExamSession>,
     ));
   }
 }
@@ -519,10 +532,12 @@ class _$ExamImpl implements _Exam {
       @JsonKey(name: 'state') this.state,
       final List<int> qids = const [],
       final List<String> opts = const [],
-      final List<String> keys = const []})
+      final List<String> keys = const [],
+      final List<ExamSession> session = const []})
       : _qids = qids,
         _opts = opts,
-        _keys = keys;
+        _keys = keys,
+        _session = session;
 
   factory _$ExamImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExamImplFromJson(json);
@@ -641,9 +656,18 @@ class _$ExamImpl implements _Exam {
     return EqualUnmodifiableListView(_keys);
   }
 
+  final List<ExamSession> _session;
+  @override
+  @JsonKey()
+  List<ExamSession> get session {
+    if (_session is EqualUnmodifiableListView) return _session;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_session);
+  }
+
   @override
   String toString() {
-    return 'Exam(id: $id, startAt: $startAt, finishAt: $finishAt, duration: $duration, realDuration: $realDuration, questionIds: $questionIds, answerKeys: $answerKeys, syncQuestion: $syncQuestion, clickScore: $clickScore, checkScore: $checkScore, questionCount: $questionCount, answeredCount: $answeredCount, correctCount: $correctCount, wrongCount: $wrongCount, passedGrade: $passedGrade, score: $score, desc1: $desc1, desc2: $desc2, restart: $restart, device: $device, location: $location, ipAddress: $ipAddress, photoStart: $photoStart, photoFinish: $photoFinish, state: $state, qids: $qids, opts: $opts, keys: $keys)';
+    return 'Exam(id: $id, startAt: $startAt, finishAt: $finishAt, duration: $duration, realDuration: $realDuration, questionIds: $questionIds, answerKeys: $answerKeys, syncQuestion: $syncQuestion, clickScore: $clickScore, checkScore: $checkScore, questionCount: $questionCount, answeredCount: $answeredCount, correctCount: $correctCount, wrongCount: $wrongCount, passedGrade: $passedGrade, score: $score, desc1: $desc1, desc2: $desc2, restart: $restart, device: $device, location: $location, ipAddress: $ipAddress, photoStart: $photoStart, photoFinish: $photoFinish, state: $state, qids: $qids, opts: $opts, keys: $keys, session: $session)';
   }
 
   @override
@@ -695,7 +719,8 @@ class _$ExamImpl implements _Exam {
             (identical(other.state, state) || other.state == state) &&
             const DeepCollectionEquality().equals(other._qids, _qids) &&
             const DeepCollectionEquality().equals(other._opts, _opts) &&
-            const DeepCollectionEquality().equals(other._keys, _keys));
+            const DeepCollectionEquality().equals(other._keys, _keys) &&
+            const DeepCollectionEquality().equals(other._session, _session));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -729,7 +754,8 @@ class _$ExamImpl implements _Exam {
         state,
         const DeepCollectionEquality().hash(_qids),
         const DeepCollectionEquality().hash(_opts),
-        const DeepCollectionEquality().hash(_keys)
+        const DeepCollectionEquality().hash(_keys),
+        const DeepCollectionEquality().hash(_session)
       ]);
 
   /// Create a copy of Exam
@@ -791,7 +817,8 @@ abstract class _Exam implements Exam {
       @JsonKey(name: 'state') final String? state,
       final List<int> qids,
       final List<String> opts,
-      final List<String> keys}) = _$ExamImpl;
+      final List<String> keys,
+      final List<ExamSession> session}) = _$ExamImpl;
 
   factory _Exam.fromJson(Map<String, dynamic> json) = _$ExamImpl.fromJson;
 
@@ -888,6 +915,8 @@ abstract class _Exam implements Exam {
   List<String> get opts;
   @override
   List<String> get keys;
+  @override
+  List<ExamSession> get session;
 
   /// Create a copy of Exam
   /// with the given fields replaced by the non-null parameter values.

@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target
 
+import 'package:app.rynest.aasi/features/examination/model/exam_session.dart';
 import 'package:app.rynest.aasi/utils/json_converter_utils.dart';
 import 'package:app.rynest.aasi/utils/string_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -38,6 +39,7 @@ class Exam with _$Exam {
     @Default([]) List<int> qids,
     @Default([]) List<String> opts,
     @Default([]) List<String> keys,
+    @Default([]) List<ExamSession> session,
   }) = _Exam;
 
   factory Exam.fromJson(Map<String, dynamic> json) => _$ExamFromJson(json);

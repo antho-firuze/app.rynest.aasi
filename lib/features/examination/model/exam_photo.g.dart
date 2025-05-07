@@ -6,18 +6,16 @@ part of 'exam_photo.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ExamPhotosImpl _$$ExamPhotosImplFromJson(Map<String, dynamic> json) =>
-    _$ExamPhotosImpl(
-      selfie: json['selfie'] as String?,
-      idCard: json['idCard'] as String?,
-      examFinish: json['exam_finish'] as String?,
-      examStart: json['exam_start'] as String?,
+_$ExamPhotoImpl _$$ExamPhotoImplFromJson(Map<String, dynamic> json) =>
+    _$ExamPhotoImpl(
+      id: (json['id'] as num?)?.toInt(),
+      type: json['type'] as String?,
+      imageUrl: json['image_url'] as String?,
     );
 
-Map<String, dynamic> _$$ExamPhotosImplToJson(_$ExamPhotosImpl instance) =>
+Map<String, dynamic> _$$ExamPhotoImplToJson(_$ExamPhotoImpl instance) =>
     <String, dynamic>{
-      'selfie': instance.selfie,
-      'idCard': instance.idCard,
-      'exam_finish': instance.examFinish,
-      'exam_start': instance.examStart,
+      'id': instance.id,
+      'type': instance.type,
+      'image_url': instance.imageUrl,
     };

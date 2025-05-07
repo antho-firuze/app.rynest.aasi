@@ -5,13 +5,13 @@ part 'env.g.dart';
 @Envied(path: '.env')
 abstract class Env {
   // FOR MAIN APPS
-  @EnviedField(varName: 'ENV_CONFIG', obfuscate: true)
+  @EnviedField(varName: 'ENV_CONFIG', obfuscate: false)
   static String envConfig = _Env.envConfig;
-  @EnviedField(varName: 'LIVE_API_URL', obfuscate: true)
+  @EnviedField(varName: 'LIVE_API_URL', obfuscate: false)
   static String liveApiUrl = _Env.liveApiUrl;
-  @EnviedField(varName: 'LOCAL_API_URL', obfuscate: true)
+  @EnviedField(varName: 'LOCAL_API_URL', obfuscate: false)
   static String localApiUrl = _Env.localApiUrl;
-  @EnviedField(varName: 'LIVE_CDN_URL', obfuscate: true)
+  @EnviedField(varName: 'LIVE_CDN_URL', obfuscate: false)
   static String liveCDNUrl = _Env.liveCDNUrl;
   @EnviedField(varName: 'FCM_API_URL', obfuscate: true)
   static String fcmApiUrl = _Env.fcmApiUrl;

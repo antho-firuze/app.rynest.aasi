@@ -5,8 +5,6 @@ import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/services/api_service.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
-import 'package:app.rynest.aasi/common/services/snackbar_service.dart';
-import 'package:app.rynest.aasi/core/app_config.dart';
 import 'package:app.rynest.aasi/features/auth/model/jwt_token.dart';
 import 'package:app.rynest.aasi/features/auth/model/user.dart';
 import 'package:app.rynest.aasi/features/auth/views/signin_view.dart';

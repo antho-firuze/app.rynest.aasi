@@ -104,8 +104,12 @@ class ExamStageStart extends ConsumerWidget {
                       if (photo == false || idcard == false || photoExamStart == false) ...[
                         CustomCard(
                           title: const Text('Persiapan').tsTitleL().center().clr(oWhite),
-                          subTitle:
-                              const Text('Mohon lengkapi terlebih dahulu point-point berikut ini:').tsBodyM().center(),
+                          subTitle: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: const Text('Mohon lengkapi terlebih dahulu point-point berikut ini:')
+                                .tsBodyM()
+                                .center(),
+                          ),
                           child: Column(
                             children: [
                               if (photo == false)

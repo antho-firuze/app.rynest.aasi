@@ -42,6 +42,10 @@ _$ExamImpl _$$ExamImplFromJson(Map<String, dynamic> json) => _$ExamImpl(
       keys:
           (json['keys'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
+      session: (json['session'] as List<dynamic>?)
+              ?.map((e) => ExamSession.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$ExamImplToJson(_$ExamImpl instance) =>
@@ -84,6 +88,7 @@ Map<String, dynamic> _$$ExamImplToJson(_$ExamImpl instance) =>
       'qids': instance.qids,
       'opts': instance.opts,
       'keys': instance.keys,
+      'session': instance.session,
     };
 
 Json? _$JsonConverterToJson<Json, Value>(

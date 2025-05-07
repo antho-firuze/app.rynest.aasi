@@ -55,13 +55,17 @@ atau jika itu bukan anda silahkan anda klik tombol
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomButton(
-                            onPressed: () => ref.read(examCtrlProvider).callThatsMe(),
-                            child: Text('Iya, itu perangkat Saya'),
+                          Flexible(
+                            child: CustomButton(
+                              onPressed: () => ref.read(examCtrlProvider).callThatsMe(),
+                              child: Text('Iya, itu perangkat Saya').center(),
+                            ),
                           ),
-                          CustomButton(
-                            onPressed: () async => await ref.read(examCtrlProvider).callStart(),
-                            child: Text('Lanjutkan Ujian'),
+                          Flexible(
+                            child: CustomButton(
+                              onPressed: () async => await ref.read(examCtrlProvider).callStart(),
+                              child: Text('Lanjutkan Ujian').center(),
+                            ),
                           ),
                         ],
                       ),

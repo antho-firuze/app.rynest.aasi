@@ -35,7 +35,7 @@ final autoNextQuestionProvider = StateProvider<bool>((ref) => false);
 
 final examProvider = StateProvider<Exam?>((ref) => null);
 final examScheduleProvider = StateProvider<ExamSchedule?>((ref) => null);
-final examPhotosProvider = StateProvider<ExamPhotos?>((ref) => null);
+final examPhotosProvider = StateProvider<List<ExamPhoto>>((ref) => []);
 
 final examStillGoingProvider = StateProvider<bool>((ref) => false);
 final examInterruptionProvider = StateProvider<bool>((ref) => false);
@@ -77,7 +77,7 @@ final fetchExamResultProvider = FutureProvider<Exam?>((ref) async {
   return exam;
 });
 
-final fetchExamPhotosProvider = FutureProvider<ExamPhotos?>((ref) async {
+final fetchExamPhotosProvider = FutureProvider<List<ExamPhoto>?>((ref) async {
   final reqs = Reqs(path: '/api/v1/exam/photos', data: {
     "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
   });
@@ -86,7 +86,10 @@ final fetchExamPhotosProvider = FutureProvider<ExamPhotos?>((ref) async {
   if (state.hasError) return null;
   if (state.value == null) return null;
 
-  final examPhotos = ExamPhotos.fromJson(state.value);
+  final examPhotos = (state.value as List<dynamic>)
+      .map((json) => ExamPhoto.fromJson(json))
+      .toList(); // ExamPhoto.fromJson(state.value)
+  log("examPhotos.length: ${examPhotos.length}");
   ref.read(examPhotosProvider.notifier).state = examPhotos;
   return examPhotos;
 });
@@ -157,6 +160,13 @@ class ExamCtrl {
       if (next != null) {
         if (next.state == 'ON-GOING') {
           checkIfExamStillOnGoing(examSchedule: next, exam: ref.read(examProvider));
+        }
+        if (next.state == 'COMPLETED') {
+          // ignore: unused_result
+          ref.refresh(fetchExamResultProvider);
+          // ignore: unused_result
+          ref.refresh(fetchExamPhotosProvider);
+          ref.read(examStillGoingProvider.notifier).state = false;
         } else {
           ref.read(examStillGoingProvider.notifier).state = false;
         }
@@ -300,6 +310,12 @@ class ExamCtrl {
     if (state.value == null) return;
 
     final exam = Exam.fromJson(state.value);
+    if (exam.state == 'COMPLETED') {
+      // ignore: unused_result
+      ref.refresh(fetchExamScheduleProvider);
+      return;
+    }
+
     ref.read(examProvider.notifier).state = exam.afterStart();
 
     // Set random page for getting silent picture
@@ -308,17 +324,21 @@ class ExamCtrl {
 
     ref.read(examInterruptionProvider.notifier).state = false;
 
+    // GOTO Question Page
+    ref.read(pageUtilsProvider).goto(page: ExamQuestionView());
     loadQuestion();
     _startTimer();
   }
 
-  Future<void> callFinish({bool force = false, bool showLog = false}) async {
+  Future<void> callFinish({bool force = false, bool showLog = true}) async {
     if (force == false) {
       bool result = await AlertService.confirm(
         body: 'Anda sudah yakin ingin menyelesaikan ujian ini ?',
       );
       if (showLog) log('result : $result', name: _kLogName);
       if (result == false) return;
+
+      ref.read(pageUtilsProvider).popz();
     }
 
     ref.read(examStillGoingProvider.notifier).state = false;
@@ -338,16 +358,9 @@ class ExamCtrl {
       ref.read(examScheduleProvider.notifier).state = examSchedule?.copyWith(state: 'COMPLETED');
       final exam = ref.read(examProvider);
       ref.read(examProvider.notifier).state = exam?.copyWith(state: 'COMPLETED');
-      
-      // RespError err = state.error as RespError;
-      // if (err.code == 409) {
-      //   ref.read(examInterruptionProvider.notifier).state = true;
-      // }
       return;
     }
 
-    // ref.read(examStillGoingProvider.notifier).state = false;
-    // ref.read(examInterruptionProvider.notifier).state = false;
     _cancelTimer();
     // ignore: unused_result
     ref.refresh(fetchExamScheduleProvider);
@@ -398,7 +411,7 @@ class ExamCtrl {
     }
   }
 
-  Future<void> callCheckScore({bool showLog = false}) async {
+  Future<void> callCheckScore({bool showLog = true}) async {
     final exam = ref.read(examProvider);
     int clickScore = exam?.clickScore ?? 0;
     int checkScore = exam?.checkScore ?? 0;
@@ -431,7 +444,13 @@ class ExamCtrl {
     if (state.value == null) return;
 
     final examR = Exam.fromJson(state.value);
-    ref.read(examProvider.notifier).state = exam?.copyWith(checkScore: examR.checkScore);
+
+    ref.read(examProvider.notifier).state = exam?.copyWith(checkScore: examR.checkScore, state: examR.state);
+    if (examR.state == 'COMPLETED') {
+      // ignore: unused_result
+      ref.refresh(fetchExamScheduleProvider);
+      return;
+    }
 
     // ignore: unused_result
     ref.refresh(fetchExamResultProvider);
@@ -485,8 +504,8 @@ class ExamCtrl {
       _getSilentPic(pageNum);
 
       ref.read(questionNumProvider.notifier).state = pageNum;
-      // GOTO Question Page
-      ref.read(pageUtilsProvider).goto(page: ExamQuestionView());
+      // // GOTO Question Page
+      // ref.read(pageUtilsProvider).goto(page: ExamQuestionView());
       // ignore: unused_result
       ref.refresh(fetchQuestionProvider);
     }
