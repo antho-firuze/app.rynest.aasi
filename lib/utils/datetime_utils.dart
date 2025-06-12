@@ -107,8 +107,8 @@ extension DateTimeExtension on DateTime {
   /// 'EEEE, d MMM yyyy'       -> Selasa, 7 Okt 1996
   /// 'HH:mm'                  -> 17:08
   /// 'HH:mm:ss'               -> 17:08:01
-  /// 'HH:mm a'                -> 05:08 PM
-  /// 'HH:mm:ss a'             -> 05:08:01 PM
+  /// 'hh:mm a'                -> 05:08 PM
+  /// 'hh:mm:ss a'             -> 05:08:01 PM
   /// ```
   String custom(String pattern, [String locale = 'id']) =>
       DateFormat(pattern, locale).format(this);

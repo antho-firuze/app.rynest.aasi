@@ -6,7 +6,6 @@ import 'package:app.rynest.aasi/common/model/resp.dart';
 import 'package:app.rynest.aasi/common/services/loading_service.dart';
 import 'package:app.rynest.aasi/common/services/snackbar_service.dart';
 import 'package:app.rynest.aasi/core/app_base.dart';
-import 'package:app.rynest.aasi/utils/dio_logger_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +22,7 @@ class ApiService {
   final _kLogName = 'API-SERVICE';
 
   Future call({required Reqs reqs, bool showBusy = true, bool showError = true, bool showLog = false}) async {
-    final dio = ref.read(dioApiProvider);
+    final dio = ref.read(dioJWTTokenProvider);
 
     final url =
         Uri.parse(reqs.url ?? AppBase.url).replace(path: reqs.path, queryParameters: reqs.queryParameters).toString();
@@ -72,7 +71,7 @@ class ApiService {
   }
 
   Future fetch({required Reqs reqs, bool showLog = false}) async {
-    final dio = ref.read(dioApiProvider);
+    final dio = ref.read(dioJWTTokenProvider);
 
     final url =
         Uri.parse(reqs.url ?? AppBase.url).replace(path: reqs.path, queryParameters: reqs.queryParameters).toString();
@@ -142,8 +141,6 @@ class ApiService {
 
   Future refreshToken({required Reqs reqs, String? refreshToken, bool showLog = false}) async {
     final dio = ref.read(dioProvider);
-
-    dio.interceptors.add(DioLoggerInterceptor());
 
     final url =
         Uri.parse(reqs.url ?? AppBase.url).replace(path: reqs.path, queryParameters: reqs.queryParameters).toString();

@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
 import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
+import 'package:app.rynest.aasi/common/controller/notification_ctrl.dart';
+import 'package:app.rynest.aasi/common/controller/pusher_ctrl.dart';
 import 'package:app.rynest.aasi/common/services/device_service.dart';
+import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/common/services/version_service.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/auth/model/jwt_token.dart';
@@ -36,6 +39,9 @@ class InitCtrl {
       }
     });
 
+    // Initialize Notification
+    ref.read(notificationCtrlProvider).initialize();
+
     // Initialize Network
     ref.read(networkCtrlProvider).initialize();
 
@@ -54,6 +60,9 @@ class InitCtrl {
     // Initialize Examination
     ref.read(examCtrlProvider).initialize();
 
+    // Initialize Pusher
+    ref.read(pusherCtrlProvider).initialize();
+
     // Check Is Token Expired
     log("Check token ?", name: _kLogName);
     var token = ref.read(authTokenProvider);
@@ -61,6 +70,7 @@ class InitCtrl {
       if (token.hasExpired()) {
         log("Token has expired", name: _kLogName);
         log("Request refresh token", name: _kLogName);
+        ref.read(talkerProvider).info("Request refresh token");
         token = await ref.read(authCtrlProvider).refreshToken();
         if (token == null) {
           log("Refresh token has expired too, need re-sign in again", name: _kLogName);
@@ -70,6 +80,7 @@ class InitCtrl {
         }
       } else {
         log("Token still valid", name: _kLogName);
+        ref.read(talkerProvider).info("Token still valid");
       }
     } else {
       log("Token is null, need sign in", name: _kLogName);

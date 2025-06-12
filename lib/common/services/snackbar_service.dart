@@ -14,31 +14,6 @@ class SnackBarService {
   final Duration duration;
   final Color backgroundColor;
 
-  void confirm() {
-    final context = rootNavigatorKey.currentContext!;
-    scaffoldKey.currentState!.clearSnackBars();
-    scaffoldKey.currentState!.showSnackBar(
-      SnackBar(
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(10)),
-              child: Text(message).family('Roboto').clr(oWhite),
-            ),
-          ],
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        duration: duration,
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(bottom: context.screenHeight / 3),
-      ),
-    );
-  }
-
   void shown({double? bottom}) {
     final context = rootNavigatorKey.currentContext!;
     scaffoldKey.currentState!.clearSnackBars();

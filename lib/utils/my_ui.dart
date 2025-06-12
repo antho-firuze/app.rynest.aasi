@@ -38,12 +38,30 @@ class MyUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanCancel: () => _timer?.cancel(),
-      onPanDown: (details) {
+      onPanCancel: () {
+        debugPrint('My_UI: onPanCancel');
+        _timer?.cancel();
+        _timer = null;
+      },
+      onPanEnd: (details) {
+        debugPrint('My_UI: onPanEnd');
+        _timer?.cancel();
+        _timer = null;
+      },
+      onPanDown: (details) async {
+        debugPrint('My_UI: onPanDown');
+        _timer?.cancel();
+        _timer = null;
         _timer = Timer(Duration(seconds: 5), () {
           context.goto(page: DevInfoView());
+          _timer?.cancel();
+          _timer = null;
         });
       },
+      // onLongPress: () {
+      //   // SnackBarService.show(message: 'it is a long press');
+      //   showFlutterNotification(title: 'Ini title', message: 'Ini hanya sebuah pesan !');
+      // },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: customUiOverlayStyle ?? (isDark ? SystemUIOverlay.darkColorOverlay : SystemUIOverlay.lightColorOverlay),
         child: MediaQuery(

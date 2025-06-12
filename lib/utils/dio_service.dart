@@ -1,46 +1,92 @@
+import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/utils/dio_auth_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_busy_interceptor.dart';
-import 'package:app.rynest.aasi/utils/dio_logger_interceptor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
 
+// DIO WITHOUT TOKEN
+// =======================
 final dioProvider = Provider.autoDispose((ref) {
   final dio = Dio();
 
   // ref.onDispose(dio.close);
-  dio.options.connectTimeout = const Duration(seconds: 10);
-
-  return dio;
-});
-
-final dioApiProvider = Provider.autoDispose((ref) {
-  final dio = ref.read(dioProvider);
-
   dio.options.connectTimeout = const Duration(seconds: 60);
-  dio.interceptors.add(DioLoggerInterceptor());
-  // dio.interceptors.add(DioJsonRpcInterceptor(ref));
-  dio.interceptors.add(DioAuthInterceptor(ref));
+  dio.interceptors.add(
+    TalkerDioLogger(
+      talker: ref.read(talkerProvider),
+      settings: TalkerDioLoggerSettings(
+        printResponseTime: true,
+      ),
+    ),
+  );
+
   return dio;
 });
 
-final dioApiFileUploadProvider = Provider.autoDispose((ref) {
+// DIO WITH JWT-TOKEN
+// ==================================
+final dioJWTTokenProvider = Provider.autoDispose((ref) {
   final dio = Dio();
 
   // ref.onDispose(dio.close);
+  dio.options.connectTimeout = const Duration(seconds: 60);
+  dio.interceptors.add(DioAuthInterceptor(ref));
+  dio.interceptors.add(
+    TalkerDioLogger(
+      talker: ref.read(talkerProvider),
+      settings: TalkerDioLoggerSettings(
+        // printRequestHeaders: true,
+        // printResponseHeaders: true,
+        printResponseTime: true,
+      ),
+    ),
+  );
 
-  dio.interceptors.add(DioLoggerInterceptor());
+  return dio;
+});
+
+// DIO FOR API FILE UPLOAD WITH JWT-TOKEN
+// ======================================
+final dioJWTTokenUploadProvider = Provider.autoDispose((ref) {
+  final dio = Dio();
+
+  // ref.onDispose(dio.close);
   dio.interceptors.add(DioBusyInterceptor(ref));
   dio.interceptors.add(DioAuthInterceptor(ref));
+  dio.interceptors.add(
+    TalkerDioLogger(
+      talker: ref.read(talkerProvider),
+      settings: TalkerDioLoggerSettings(
+        // printRequestHeaders: true,
+        // printResponseHeaders: true,
+        printResponseTime: true,
+      ),
+    ),
+  );
 
   dio.options.headers['Content-Type'] = 'multipart/form-data';
 
   return dio;
 });
 
+// DIO FOR FILE DOWNLOAD
+// =======================
 final dioFileDownloadProvider = Provider.autoDispose((ref) {
   final dio = Dio();
 
-  dio.interceptors.add(DioLoggerInterceptor());
+  // ref.onDispose(dio.close);
+  dio.interceptors.add(
+    TalkerDioLogger(
+      talker: ref.read(talkerProvider),
+      settings: TalkerDioLoggerSettings(
+        // printRequestHeaders: true,
+        // printResponseHeaders: true,
+        printResponseData: false,
+        printResponseTime: true,
+      ),
+    ),
+  );
   dio.options.responseType = ResponseType.bytes;
   dio.options.followRedirects = false;
   dio.options.validateStatus = (status) => status! < 500;
@@ -48,27 +94,22 @@ final dioFileDownloadProvider = Provider.autoDispose((ref) {
   return dio;
 });
 
-// final dioOptionBytesProvider = Provider((ref) {
-//   return Options(
-//     responseType: ResponseType.bytes,
-//     followRedirects: false,
-//     validateStatus: (status) => status! < 500,
-//   );
-// });
-
-// final dioOptionRefreshTokenProvider = Provider.autoDispose((ref) {
-//   final options = Options();
-//   JwtToken? token = ref.watch(authTokenProvider);
-//   options.headers = {HttpHeaders.authorizationHeader: "Bearer ${token?.refreshToken}"};
-//   return options;
-// });
-
-final dioStreamProvider = Provider.autoDispose((ref) {
+// DIO FOR WEBSOCKET CONNECTION WITH JWT-TOKEN
+// ===========================================
+final dioJWTTokenStreamProvider = Provider.autoDispose((ref) {
   final dio = Dio();
 
   // ref.onDispose(dio.close);
-
-  dio.interceptors.add(DioLoggerInterceptor());
+  dio.interceptors.add(
+    TalkerDioLogger(
+      talker: ref.read(talkerProvider),
+      settings: TalkerDioLoggerSettings(
+        // printRequestHeaders: true,
+        // printResponseHeaders: true,
+        printResponseTime: true,
+      ),
+    ),
+  );
   dio.interceptors.add(DioAuthInterceptor(ref));
 
   dio.options.headers['Cache-Control'] = 'no-cache';
@@ -78,6 +119,8 @@ final dioStreamProvider = Provider.autoDispose((ref) {
   return dio;
 });
 
+// DIO FOR CHECK LINK/URL VALIDITY
+// ======================================
 final dioIsValidUrlProvider = FutureProvider.autoDispose.family<bool, String?>((ref, url) async {
   final dio = Dio();
 

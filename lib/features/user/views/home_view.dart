@@ -1,4 +1,6 @@
 import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
+import 'package:app.rynest.aasi/common/controller/notification_ctrl.dart';
+import 'package:app.rynest.aasi/common/services/permission_service.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
@@ -31,6 +33,14 @@ class _HomeViewState extends ConsumerState<HomeView> with WidgetsBindingObserver
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!ref.read(allowNotificationProvider)) {
+        final result = await ref.read(permissionServiceProvider).requestNotificationPermission();
+        if (result == true) {
+          debugPrint('yes');
+        }
+      }
+    });
     super.initState();
   }
 

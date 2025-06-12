@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app.rynest.aasi/common/services/notification_service.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
+import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/core/app_theme.dart';
 import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:app.rynest.aasi/utils/theme_utils.dart';
@@ -9,21 +10,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setupFlutterNotifications();
+  await initializeFlutterLocalNotifications();
   await initializeDateFormatting('id');
   HttpOverrides.global = MyHttpOverrides();
 
   final pref = await SharedPreferences.getInstance();
+  final talker = TalkerFlutter.init();
 
   runApp(
     ProviderScope(
       overrides: [
         sharedPrefProvider.overrideWithValue(pref),
+        talkerProvider.overrideWithValue(talker),
       ],
       child: const MyApp(),
     ),

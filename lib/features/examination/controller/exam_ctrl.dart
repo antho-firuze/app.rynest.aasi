@@ -89,7 +89,7 @@ final fetchExamPhotosProvider = FutureProvider<List<ExamPhoto>?>((ref) async {
   final examPhotos = (state.value as List<dynamic>)
       .map((json) => ExamPhoto.fromJson(json))
       .toList(); // ExamPhoto.fromJson(state.value)
-  log("examPhotos.length: ${examPhotos.length}");
+  // log("examPhotos.length: ${examPhotos.length}");
   ref.read(examPhotosProvider.notifier).state = examPhotos;
   return examPhotos;
 });

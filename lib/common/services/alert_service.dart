@@ -25,7 +25,7 @@ class AlertService {
           if (showOk)
             CupertinoDialogAction(
               isDefaultAction: true,
-              isDestructiveAction: true,
+              // isDestructiveAction: true,
               onPressed: () {
                 Navigator.of(context).pop(true);
                 if (onOk != null) onOk();
@@ -35,7 +35,7 @@ class AlertService {
           if (showYes)
             CupertinoDialogAction(
               isDefaultAction: true,
-              isDestructiveAction: true,
+              // isDestructiveAction: true,
               onPressed: () {
                 Navigator.of(context).pop(true);
                 if (onYes != null) onYes();
