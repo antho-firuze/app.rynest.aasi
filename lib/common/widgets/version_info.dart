@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/controller/developer_ctrl.dart';
 import 'package:app.rynest.aasi/common/controller/version_ctrl.dart';
 import 'package:app.rynest.aasi/common/widgets/skelton.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -17,7 +18,10 @@ class VersionInfo extends ConsumerWidget {
     return ref.watch(fetchVersionProvider).when(
           loading: () => const Skelton(),
           error: (Object error, StackTrace stackTrace) => Container(),
-          data: (String data) => Text('Version $data').tsTitleM().clr(color).center(),
+          data: (String data) => GestureDetector(
+            onTap: () => ref.read(developerCtrlProvider).devModeProcess(),
+            child: Text('Version $data').tsTitleM().clr(color).center(),
+          ),
         );
   }
 }

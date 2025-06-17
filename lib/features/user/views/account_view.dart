@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_image.dart';
@@ -9,6 +10,7 @@ import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/auth/views/widgets/code_verify.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/views/camera_selfie_view.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/string_utils.dart';
@@ -23,6 +25,7 @@ class AccountView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: "${profile?.id}-selfie")));
 
     if (ref.watch(verifyCodeProvider).isNotEmpty) {
       return CodeVerify();
@@ -32,21 +35,48 @@ class AccountView extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(title: const Text('Profil Member')),
         body: RefreshIndicator(
-          onRefresh: () async => ref.refresh(fetchProfileProvider),
+          onRefresh: () async {
+            await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
+            return ref.refresh(fetchProfileProvider);
+          },
           child: ListView(
             shrinkWrap: true,
             children: [
               20.height,
               LogoArtWork(
-                child: CustomAvatar(
-                  image: profile?.photo,
-                  initial: profile?.fullName?.toInitial(),
-                  width: 115,
-                  height: 115,
-                  onTap: () => context.goto(page: CustomInteractiveViewer(child: CustomImage(src: profile?.photo))),
-                  onTapUpdate: () async => await context.goto(page: const CameraSelfieView()),
+                child: fetchPhotoSelfie.when(
+                  skipLoadingOnRefresh: false,
+                  data: (data) => CustomAvatar(
+                    image: data,
+                    initial: profile?.fullName?.toInitial(),
+                    width: 115,
+                    height: 115,
+                    onTap: () => context.goto(page: CustomInteractiveViewer(child: CustomImage(src: data))),
+                    onTapUpdate: () async => await context.goto(page: const CameraSelfieView()),
+                  ),
+                  error: (error, stackTrace) => CustomAvatar(
+                    initial: profile?.fullName?.toInitial(),
+                    width: 115,
+                    height: 115,
+                    onTapUpdate: () async => await context.goto(page: const CameraSelfieView()),
+                  ),
+                  loading: () => Center(child: CircularProgressIndicator()),
                 ),
               ),
+              // LogoArtWork(
+              //   child: CustomAvatar(
+              //     image: profile?.photo,
+              //     initial: profile?.fullName?.toInitial(),
+              //     width: 115,
+              //     height: 115,
+              //     onTap: () {
+              //       if (profile?.photo != null) {
+              //         context.goto(page: CustomInteractiveViewer(child: CustomImage(src: profile?.photo)));
+              //       }
+              //     },
+              //     onTapUpdate: () async => await context.goto(page: const CameraSelfieView()),
+              //   ),
+              // ),
               15.height,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -56,7 +86,7 @@ class AccountView extends ConsumerWidget {
                       readOnly: true,
                       hintText: 'Perusahaan',
                       prefixIcon: const Icon(SuperIcons.is_building_outline),
-                      initialValue: profile?.company!.name?.toUpperCase(),
+                      initialValue: profile?.company?.name?.toUpperCase(),
                     ),
                     15.height,
                     CustomInput(

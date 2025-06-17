@@ -1,10 +1,11 @@
-import 'package:app.rynest.aasi/common/exceptions/data_exeception_layout.dart';
+import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/views/widgets/image_card.dart';
 import 'package:app.rynest.aasi/features/user/views/camera_idcard_view.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -16,52 +17,101 @@ class PhotoCardView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(profileProvider);
+
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text('Foto KTP')),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.refresh(fetchProfileProvider),
+          onRefresh: () async {
+            await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-idCard");
+            return ref.refresh(
+              fetchImageProvider(Reqs(url: profile?.photoIdCard, fileKey: "${profile?.id}-idCard")),
+            );
+          },
           child: ListView(
             children: [
               5.height,
               const LogoArtWork(child: LogoApp()),
               5.height,
-              ref.watch(fetchProfileProvider).when(
-                    skipLoadingOnRefresh: false,
-                    data: (data) {
-                      final profile = data;
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: 250,
-                              child: ImageCard(image: profile?.photoIdCard),
-                            ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 250,
+                      child: ref
+                          .watch(fetchImageProvider(
+                            Reqs(url: profile?.photoIdCard, fileKey: "${profile?.id}-idCard"),
+                          ))
+                          .when(
+                            skipLoadingOnRefresh: false,
+                            data: (data) => ImageCard(image: data),
+                            error: (error, stackTrace) => ImageCard(),
+                            loading: () => Center(child: CircularProgressIndicator()),
                           ),
-                          20.height,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(
-                              child: CustomButton(
-                                child: profile?.photoIdCard == null
-                                    ? const Text('Ambil Foto KTP')
-                                    : const Text('Update Foto KTP'),
-                                onPressed: () => context.goto(page: const CameraIdCardView()),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                    error: (error, stackTrace) => DataExceptionLayout(
-                      error: error,
-                      child: Container(),
-                      onTap: () => ref.refresh(fetchProfileProvider),
                     ),
-                    loading: () => Center(child: CircularProgressIndicator()),
                   ),
+                  20.height,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Center(
+                      child: CustomButton(
+                        child:
+                            profile?.photoIdCard == null ? const Text('Ambil Foto KTP') : const Text('Update Foto KTP'),
+                        onPressed: () => context.goto(page: const CameraIdCardView()),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // ref.watch(fetchProfileProvider).when(
+              //       skipLoadingOnRefresh: false,
+              //       data: (data) {
+              //         final profile = data;
+              //         return Column(
+              //           children: [
+              //             Padding(
+              //               padding: const EdgeInsets.symmetric(horizontal: 20),
+              //               child: SizedBox(
+              //                 width: double.infinity,
+              //                 height: 250,
+              //                 child: ref
+              //                     .watch(fetchImageProvider(Reqs(
+              //                       url: profile?.photoIdCard,
+              //                       fileKey: "${profile?.idMember}-idCard",
+              //                     )))
+              //                     .when(
+              //                       skipLoadingOnRefresh: false,
+              //                       data: (data) => ImageCard(image: data),
+              //                       error: (error, stackTrace) => ImageCard(),
+              //                       loading: () => Center(child: CircularProgressIndicator()),
+              //                     ),
+              //               ),
+              //             ),
+              //             20.height,
+              //             Padding(
+              //               padding: const EdgeInsets.symmetric(horizontal: 20),
+              //               child: Center(
+              //                 child: CustomButton(
+              //                   child: profile?.photoIdCard == null
+              //                       ? const Text('Ambil Foto KTP')
+              //                       : const Text('Update Foto KTP'),
+              //                   onPressed: () => context.goto(page: const CameraIdCardView()),
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         );
+              //       },
+              //       error: (error, stackTrace) => DataExceptionLayout(
+              //         error: error,
+              //         child: Container(),
+              //         onTap: () => ref.refresh(fetchProfileProvider),
+              //       ),
+              //       loading: () => Center(child: CircularProgressIndicator()),
+              //     ),
               60.height,
             ],
           ),

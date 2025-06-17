@@ -1,4 +1,5 @@
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
+import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/common/widgets/forms/field_list.dart';
@@ -9,7 +10,9 @@ import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
+import 'package:app.rynest.aasi/utils/string_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +23,7 @@ class ExamScheduleView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: "${profile?.id}-selfie")));
 
     return MyUI(
       child: Scaffold(
@@ -38,11 +42,20 @@ class ExamScheduleView extends ConsumerWidget {
             children: [
               5.height,
               LogoArtWork(
-                child: CustomAvatar(
-                  width: 120,
-                  height: 120,
-                  image: profile?.photo,
-                  initial: profile?.fullName,
+                child: fetchPhotoSelfie.when(
+                  skipLoadingOnRefresh: false,
+                  data: (data) => CustomAvatar(
+                    image: data,
+                    initial: profile?.fullName?.toInitial(),
+                    width: 120,
+                    height: 120,
+                  ),
+                  error: (error, stackTrace) => CustomAvatar(
+                    initial: profile?.fullName?.toInitial(),
+                    width: 120,
+                    height: 120,
+                  ),
+                  loading: () => Center(child: CircularProgressIndicator()),
                 ),
               ),
               10.height,

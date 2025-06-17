@@ -26,22 +26,24 @@ final dioProvider = Provider.autoDispose((ref) {
 
 // DIO WITH JWT-TOKEN
 // ==================================
-final dioJWTTokenProvider = Provider.autoDispose((ref) {
+final dioJWTTokenProvider = Provider.family.autoDispose<Dio, bool>((ref, showLog) {
   final dio = Dio();
 
   // ref.onDispose(dio.close);
   dio.options.connectTimeout = const Duration(seconds: 60);
   dio.interceptors.add(DioAuthInterceptor(ref));
-  dio.interceptors.add(
-    TalkerDioLogger(
-      talker: ref.read(talkerProvider),
-      settings: TalkerDioLoggerSettings(
-        // printRequestHeaders: true,
-        // printResponseHeaders: true,
-        printResponseTime: true,
+  if (showLog) {
+    dio.interceptors.add(
+      TalkerDioLogger(
+        talker: ref.read(talkerProvider),
+        settings: TalkerDioLoggerSettings(
+          // printRequestHeaders: true,
+          // printResponseHeaders: true,
+          printResponseTime: true,
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   return dio;
 });

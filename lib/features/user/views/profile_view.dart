@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/views/about_view.dart';
 import 'package:app.rynest.aasi/common/views/contact_us_view.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
@@ -13,6 +14,7 @@ import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/views/account_view.dart';
 import 'package:app.rynest.aasi/features/user/views/photo_card_view.dart';
 import 'package:app.rynest.aasi/features/examination/views/exam_photo_view.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/string_utils.dart';
@@ -30,13 +32,17 @@ class ProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: "${profile?.id}-selfie")));
 
     return MyUI(
       child: ExamWrapper(
         child: Scaffold(
           appBar: AppBar(title: const Text("Akun Saya"), centerTitle: true),
           body: RefreshIndicator(
-            onRefresh: () async => ref.refresh(fetchProfileProvider),
+            onRefresh: () async {
+              await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
+              return ref.refresh(fetchProfileProvider);
+            },
             child: ListView(
               shrinkWrap: true,
               children: [
@@ -46,10 +52,7 @@ class ProfileView extends ConsumerWidget {
                     pressedOverflow: true,
                     child: Column(
                       children: [
-                        const CustomAvatar(
-                          width: 115,
-                          height: 115,
-                        ),
+                        const CustomAvatar(width: 115, height: 115),
                         15.height,
                         const Text("Anda belum login !").tsTitleM().bold(),
                         const Text("Silahkan login terlebih dahulu").tsLabelM(),
@@ -63,12 +66,22 @@ class ProfileView extends ConsumerWidget {
                     pressedOverflow: true,
                     child: Column(
                       children: [
-                        CustomAvatar(
-                          width: 115,
-                          height: 115,
-                          image: profile.photo,
-                          initial: profile.fullName?.toInitial(),
-                          onTap: () => context.goto(page: const AccountView()),
+                        fetchPhotoSelfie.when(
+                          skipLoadingOnRefresh: false,
+                          data: (data) => CustomAvatar(
+                            image: profile.photo,
+                            initial: profile.fullName?.toInitial(),
+                            width: 115,
+                            height: 115,
+                            onTap: () => context.goto(page: const AccountView()),
+                          ),
+                          error: (error, stackTrace) => CustomAvatar(
+                            initial: profile.fullName?.toInitial(),
+                            width: 115,
+                            height: 115,
+                            onTap: () => context.goto(page: const AccountView()),
+                          ),
+                          loading: () => Center(child: CircularProgressIndicator()),
                         ),
                         15.height,
                         Text(profile.fullName ?? 'Unknown Profile').tsTitleM().bold(),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app.rynest.aasi/common/widgets/custom_icon.dart';
@@ -11,17 +12,15 @@ class CustomImage extends StatelessWidget {
   const CustomImage({
     super.key,
     required this.src,
-    this.fit,
-    this.onTap,
+    this.fit = BoxFit.cover,
     this.errorTitle = "Foto belum tersedia !",
     this.color,
   });
 
   final dynamic src;
-  final BoxFit? fit;
+  final BoxFit fit;
   final Color? color;
   final String errorTitle;
-  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +36,14 @@ class CustomImage extends StatelessWidget {
         type = src.substring(0, 6).toLowerCase();
         if (type == 'assets') {
           return imageAsset();
-        }
+        } else {
+          type = src.substring(0, 5).toLowerCase();
+          if (type == '/data') {
+            return imageFile();
+          }
 
-        return imageEncoder();
+          return imageEncoder();
+        }
       }
     }
 
@@ -47,58 +51,52 @@ class CustomImage extends StatelessWidget {
   }
 
   Widget imageNetwork() {
-    return GestureDetector(
-      onTap: onTap,
-      child: Image.network(
-        src,
-        color: color,
-        fit: fit ?? BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) => loadingProgress == null
-            ? child
-            : Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(),
-                    5.height,
-                    Text('loading...').center(),
-                  ],
-                ),
+    return Image.network(
+      src,
+      color: color,
+      fit: fit,
+      loadingBuilder: (context, child, loadingProgress) => loadingProgress == null
+          ? child
+          : Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  5.height,
+                  Text('loading...').center(),
+                ],
               ),
-        errorBuilder: (context, error, stackTrace) => ImageFailed(
-          title: errorTitle,
-        ),
+            ),
+      errorBuilder: (context, error, stackTrace) => ImageFailed(
+        title: errorTitle,
       ),
     );
   }
 
-  Widget imageFile() => GestureDetector(
-        onTap: onTap,
-        child: Image.file(
-          src,
-          color: color,
-          fit: fit ?? BoxFit.cover,
+  Widget imageFile() => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: FileImage(File(src)),
+            fit: fit,
+            onError: (exception, stackTrace) => ImageFailed(
+              title: errorTitle,
+            ),
+          ),
         ),
       );
 
-  Widget imageAsset() => GestureDetector(
-        onTap: onTap,
-        child: Image.asset(
-          src,
-          color: color,
-          fit: fit ?? BoxFit.fill,
-          errorBuilder: (context, error, stackTrace) => ImageFailed(
-            title: errorTitle,
-          ),
+  Widget imageAsset() => Image.asset(
+        src,
+        color: color,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => ImageFailed(
+          title: errorTitle,
         ),
       );
 
   Widget imageEncoder() {
     Uint8List bytes = base64.decode(src);
-    return Image.memory(
-      bytes,
-      fit: fit ?? BoxFit.cover,
-    );
+    return Image.memory(bytes, fit: fit);
   }
 }
 

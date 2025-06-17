@@ -10,8 +10,8 @@ import 'package:go_router/go_router.dart';
 // Private Navigators
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
-final _messageNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'message');
-final _alertNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'alert');
+// final _messageNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'message');
+// final _alertNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'alert');
 final _profileNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'profile');
 
 final goRouterProvider = Provider<GoRouter>((ref) => router);

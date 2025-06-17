@@ -1,3 +1,4 @@
+import 'package:app.rynest.aasi/common/controller/developer_ctrl.dart';
 import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
 import 'package:app.rynest.aasi/common/controller/network_ctrl.dart';
 import 'package:app.rynest.aasi/common/services/device_service.dart';
@@ -34,6 +35,19 @@ class DevInfoView extends ConsumerWidget {
               child: Column(
                 spacing: 10,
                 children: [
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final devMode = ref.watch(devModeProvider);
+                      return ListTile(
+                        title: Text(devMode ? 'On' : 'Off').bold(),
+                        trailing: Switch(
+                          padding: EdgeInsets.zero,
+                          value: devMode,
+                          onChanged: ref.read(developerCtrlProvider).devModeOnOff,
+                        ),
+                      );
+                    },
+                  ),
                   GroupList(
                     title: Text("Main Config").center().bold(),
                     children: [
@@ -41,7 +55,7 @@ class DevInfoView extends ConsumerWidget {
                         spacing: 5,
                         children: [
                           FieldList(caption: Text('Environment'), value: Text(Env.envConfig)),
-                          FieldList(caption: Text('End Point Url'), value: Text(AppBase.url)),
+                          FieldList(caption: Text('End Point Url'), value: Text(AppBase.apiUrl)),
                           FieldList(caption: Text('Pusher Url'), value: Text(Env.pusherUrl)),
                           FieldList(caption: Text('Pusher Auth Url'), value: Text(Env.pusherAuthUrl)),
                         ],
@@ -99,7 +113,7 @@ class DevInfoView extends ConsumerWidget {
                 ],
               ),
             ),
-            Container(),
+            60.height,
           ],
         ),
       ),

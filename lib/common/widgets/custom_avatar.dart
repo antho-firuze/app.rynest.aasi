@@ -42,13 +42,16 @@ class CustomAvatar extends StatelessWidget {
           fit: StackFit.passthrough,
           children: [
             Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: image == null && initial == null
-                    ? CustomImage(src: 'assets/images/avatar.png', onTap: onTap)
-                    : image != null
-                        ? CustomImage(src: image, onTap: onTap)
-                        : LogoInitial(initial: initial!),
+              child: GestureDetector(
+                onTap: onTap,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: image == null && initial == null
+                      ? CustomImage(src: 'assets/images/avatar.png')
+                      : image != null
+                          ? CustomImage(src: image)
+                          : LogoInitial(initial: initial!),
+                ),
               ),
             ),
             if (onTapUpdate != null)

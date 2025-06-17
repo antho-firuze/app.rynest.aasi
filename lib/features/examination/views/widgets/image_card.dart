@@ -30,11 +30,11 @@ class ImageCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(15),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: CustomImage(
-          src: image,
-          onTap: () => context.goto(page: CustomInteractiveViewer(child: CustomImage(src: image!))),
+      child: GestureDetector(
+        onTap: () => context.goto(page: CustomInteractiveViewer(child: CustomImage(src: image!))),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: CustomImage(src: image),
         ),
       ),
     );

@@ -22,6 +22,7 @@ import 'package:app.rynest.aasi/features/examination/views/exam_question_view.da
 import 'package:app.rynest.aasi/features/examination/views/exam_result_view.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final _kLogName = 'EXAM-CTRL';
@@ -70,7 +71,6 @@ final fetchExamResultProvider = FutureProvider<Exam?>((ref) async {
   });
   final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
 
-  if (state.hasError) return null;
   if (state.value == null) return null;
 
   final exam = Exam.fromJson(state.value);
@@ -230,21 +230,21 @@ class ExamCtrl {
       double newSize = oldSize + 1;
       if (showLog) log("newSize : $newSize", name: _kLogName);
       if (newSize > _maxFontSize) {
-        SnackBarService(message: 'Ukuran font sudah maksimal').shown(bottom: 50);
+        SnackBarService(message: Text('Ukuran font sudah maksimal')).shown(bottom: 50);
       } else {
         ref.read(fontSizeProvider.notifier).state = newSize;
         ref.read(sharedPrefProvider).setDouble(_fontSizeKey, newSize);
-        SnackBarService(message: 'Zoom In').shown(bottom: 50);
+        SnackBarService(message: Text('Zoom In')).shown(bottom: 50);
       }
     } else {
       double newSize = oldSize - 1;
       if (showLog) log("newSize : $newSize", name: _kLogName);
       if (newSize < _minFontSize) {
-        SnackBarService(message: 'Ukuran font sudah minimal').shown(bottom: 50);
+        SnackBarService(message: Text('Ukuran font sudah minimal')).shown(bottom: 50);
       } else {
         ref.read(fontSizeProvider.notifier).state = newSize;
         ref.read(sharedPrefProvider).setDouble(_fontSizeKey, newSize);
-        SnackBarService(message: 'Zoom Out').shown(bottom: 50);
+        SnackBarService(message: Text('Zoom Out')).shown(bottom: 50);
       }
     }
   }
@@ -254,7 +254,7 @@ class ExamCtrl {
     ref.read(autoNextQuestionProvider.notifier).state = autoNext;
     ref.read(sharedPrefProvider).setBool(_autoNextQuestionKey, ref.read(autoNextQuestionProvider));
     if (showLog) log("AutoNext : $autoNext", name: _kLogName);
-    SnackBarService(message: "Auto Next : ${autoNext ? 'ON' : 'OFF'}").shown(bottom: 50);
+    SnackBarService(message: Text("Auto Next : ${autoNext ? 'ON' : 'OFF'}")).shown(bottom: 50);
   }
 
   void _startTimer({bool showLog = false}) {
@@ -417,7 +417,8 @@ class ExamCtrl {
     int checkScore = exam?.checkScore ?? 0;
 
     if (checkScore >= clickScore) {
-      SnackBarService(message: "Cek score sudah mencapai batas maksimal (maks: $checkScore kali)").shown(bottom: 50);
+      SnackBarService(message: Text("Cek score sudah mencapai batas maksimal (maks: $checkScore kali)"))
+          .shown(bottom: 50);
       return;
     }
     bool result = await AlertService.confirm(
@@ -484,9 +485,9 @@ class ExamCtrl {
 
       if (newIndex == index) {
         if ([Go.previous, Go.first].contains(go)) {
-          SnackBarService(message: 'Ini soal yang pertama !').shown(bottom: 50);
+          SnackBarService(message: Text('Ini soal yang pertama !')).shown(bottom: 50);
         } else {
-          SnackBarService(message: 'Ini soal yang terakhir !').shown(bottom: 50);
+          SnackBarService(message: Text('Ini soal yang terakhir !')).shown(bottom: 50);
         }
       } else {
         ref.read(examProvider.notifier).state = exam.copyWith(syncQuestion: exam.qids[newIndex]);

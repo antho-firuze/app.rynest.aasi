@@ -9,9 +9,9 @@ part 'profile.g.dart';
 @freezed
 class Profile with _$Profile {
   factory Profile({
-    @JsonKey(name: 'id_user') @JsonIntConverter() int? idUser,
-    @JsonKey(name: 'id_member') @JsonIntConverter() int? idMember,
+    @JsonKey(name: 'id') @JsonIntConverter() int? id,
     @JsonKey(name: 'member_id') String? memberId,
+    @JsonKey(name: 'user_id') @JsonIntConverter() int? idUser,
     @JsonKey(name: 'identity_card') String? cardNo,
     @JsonKey(name: 'fullname') String? fullName,
     @JsonKey(name: 'place_of_birth') String? placeOfBirth,

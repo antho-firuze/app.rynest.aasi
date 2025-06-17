@@ -3,8 +3,11 @@ import 'dart:developer';
 import 'package:app.rynest.aasi/common/services/device_service.dart';
 import 'package:app.rynest.aasi/common/services/notification_service.dart';
 import 'package:app.rynest.aasi/common/services/talker_service.dart';
+import 'package:app.rynest.aasi/core/app_base.dart';
 import 'package:app.rynest.aasi/env/env.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
+import 'package:app.rynest.aasi/utils/string_utils.dart';
+import 'package:app.rynest.aasi/utils/talker_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pusher_webman/pusher_webman.dart';
 
@@ -46,39 +49,35 @@ class PusherCtrl {
   }
 
   void connect() async {
-    _pusher = Pusher(
-      url: Env.pusherUrl,
-      key: Env.pusherKey,
-      auth: PusherAuth(Env.pusherAuthUrl),
-      connectionState: (state) {
-        if (state.name == 'connected') {
-          final msg = "Pusher Connected to ${Env.pusherUrl}";
-          log(msg, name: _kLogName);
-          ref.read(talkerProvider).info(msg);
-        }
-      },
-      onSubscribed: (channelName) {
-        final msg = "Subscribed to [$channelName]";
-        log(msg, name: _kLogName);
-        ref.read(talkerProvider).info(msg);
-      },
-      onError: (data) {
-        log("Error: $data", name: _kLogName);
-      },
-    );
-
     try {
-      _pusher.connect();
+      _pusher = Pusher(
+        url: Env.pusherUrl,
+        key: Env.pusherKey,
+        auth: PusherAuth(Env.pusherAuthUrl),
+        connectionState: (state) {
+          ref.read(talkerProvider).logx("${state.name.toCamelCase()} to ${AppBase.pusherUrl}", name: _kLogName);
+        },
+        onSubscribed: (channelName) {
+          ref.read(talkerProvider).logx("Subscribed to [$channelName]", name: _kLogName);
+        },
+        onError: (data) {
+          ref.read(talkerProvider).logx("Error: $data", name: _kLogName);
+        },
+      );
+      await _pusher.connect();
       _publicChannel();
     } catch (e) {
-      log("Error: $e", name: _kLogName);
+      ref.read(talkerProvider).logx("$e", name: _kLogName);
     }
   }
 
   void _publicChannel({bool showLog = true}) {
-    final channel = _pusher.subscribe('public-channel');
+    final channelName = 'public-channel';
+    if (showLog) ref.read(talkerProvider).logx("Subscribe to Channel : $channelName", name: _kLogName);
+
+    final channel = _pusher.subscribe(channelName);
     channel.bind('message', (event) {
-      if (showLog) log("public-channel:message: $event", name: _kLogName);
+      if (showLog) ref.read(talkerProvider).logx("$channelName:message: $event", name: _kLogName);
 
       if (event != null) {
         String? title = event['title'].toString().isEmpty ? null : event['title'];
@@ -90,7 +89,7 @@ class PusherCtrl {
       }
     });
     channel.bind('promotion', (event) {
-      if (showLog) log("public-channel:promotion: $event", name: _kLogName);
+      if (showLog) ref.read(talkerProvider).logx("$channelName:promotion: $event", name: _kLogName);
 
       if (event != null) {
         String? title = event['title'].toString().isEmpty ? null : event['title'];

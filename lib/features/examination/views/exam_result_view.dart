@@ -1,4 +1,5 @@
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
+import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
 import 'package:app.rynest.aasi/common/widgets/forms/field_list.dart';
@@ -10,8 +11,10 @@ import 'package:app.rynest.aasi/features/examination/views/camera_exam_finish_vi
 import 'package:app.rynest.aasi/features/examination/views/widgets/section_point.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/section_result.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
+import 'package:app.rynest.aasi/utils/string_utils.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +28,7 @@ class ExamResultView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: "${profile?.id}-selfie")));
 
     return MyUI(
       child: Scaffold(
@@ -43,13 +47,12 @@ class ExamResultView extends ConsumerWidget {
                 skipLoadingOnRefresh: false,
                 data: (data) {
                   if (data == null) {
-                    return ListView(
+                    return Column(
                       children: [
                         5.height,
                         const LogoArtWork(child: LogoApp()),
                         10.height,
                         const WarningException(title: 'Hasil ujian Anda belum tersedia.'),
-                        60.height,
                       ],
                     );
                   }
@@ -60,9 +63,7 @@ class ExamResultView extends ConsumerWidget {
                     return ListView(
                       children: [
                         5.height,
-                        const LogoArtWork(
-                          child: LogoApp(),
-                        ),
+                        const LogoArtWork(child: LogoApp()),
                         10.height,
                         CustomCard(
                           title: const Text('Pasca Ujian').tsTitleL().center().clr(oWhite),
@@ -98,11 +99,20 @@ class ExamResultView extends ConsumerWidget {
                     children: [
                       5.height,
                       LogoArtWork(
-                        child: CustomAvatar(
-                          width: 120,
-                          height: 120,
-                          image: profile?.photo,
-                          initial: profile?.fullName,
+                        child: fetchPhotoSelfie.when(
+                          skipLoadingOnRefresh: false,
+                          data: (data) => CustomAvatar(
+                            image: data,
+                            initial: profile?.fullName?.toInitial(),
+                            width: 120,
+                            height: 120,
+                          ),
+                          error: (error, stackTrace) => CustomAvatar(
+                            initial: profile?.fullName?.toInitial(),
+                            width: 120,
+                            height: 120,
+                          ),
+                          loading: () => Center(child: CircularProgressIndicator()),
                         ),
                       ),
                       10.height,
@@ -162,7 +172,21 @@ class ExamResultView extends ConsumerWidget {
                     ],
                   );
                 },
-                error: (error, stackTrace) => Container(),
+                error: (error, stackTrace) => Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Column(
+                    children: [
+                      5.height,
+                      const LogoArtWork(child: LogoApp()),
+                      10.height,
+                      WarningException(
+                        title: 'Hasil ujian Anda belum tersedia.',
+                        subTitle: error.toString(),
+                        onRefresh: () async => ref.refresh(fetchExamResultProvider),
+                      ),
+                    ],
+                  ),
+                ),
                 loading: () => Center(child: CircularProgressIndicator()),
               ),
         ),

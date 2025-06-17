@@ -20,14 +20,14 @@ Profile _$ProfileFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Profile {
-  @JsonKey(name: 'id_user')
+  @JsonKey(name: 'id')
   @JsonIntConverter()
-  int? get idUser => throw _privateConstructorUsedError;
-  @JsonKey(name: 'id_member')
-  @JsonIntConverter()
-  int? get idMember => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'member_id')
   String? get memberId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'user_id')
+  @JsonIntConverter()
+  int? get idUser => throw _privateConstructorUsedError;
   @JsonKey(name: 'identity_card')
   String? get cardNo => throw _privateConstructorUsedError;
   @JsonKey(name: 'fullname')
@@ -64,9 +64,9 @@ abstract class $ProfileCopyWith<$Res> {
       _$ProfileCopyWithImpl<$Res, Profile>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'id_user') @JsonIntConverter() int? idUser,
-      @JsonKey(name: 'id_member') @JsonIntConverter() int? idMember,
+      {@JsonKey(name: 'id') @JsonIntConverter() int? id,
       @JsonKey(name: 'member_id') String? memberId,
+      @JsonKey(name: 'user_id') @JsonIntConverter() int? idUser,
       @JsonKey(name: 'identity_card') String? cardNo,
       @JsonKey(name: 'fullname') String? fullName,
       @JsonKey(name: 'place_of_birth') String? placeOfBirth,
@@ -99,9 +99,9 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? idUser = freezed,
-    Object? idMember = freezed,
+    Object? id = freezed,
     Object? memberId = freezed,
+    Object? idUser = freezed,
     Object? cardNo = freezed,
     Object? fullName = freezed,
     Object? placeOfBirth = freezed,
@@ -115,18 +115,18 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? company = freezed,
   }) {
     return _then(_value.copyWith(
-      idUser: freezed == idUser
-          ? _value.idUser
-          : idUser // ignore: cast_nullable_to_non_nullable
-              as int?,
-      idMember: freezed == idMember
-          ? _value.idMember
-          : idMember // ignore: cast_nullable_to_non_nullable
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as int?,
       memberId: freezed == memberId
           ? _value.memberId
           : memberId // ignore: cast_nullable_to_non_nullable
               as String?,
+      idUser: freezed == idUser
+          ? _value.idUser
+          : idUser // ignore: cast_nullable_to_non_nullable
+              as int?,
       cardNo: freezed == cardNo
           ? _value.cardNo
           : cardNo // ignore: cast_nullable_to_non_nullable
@@ -197,9 +197,9 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'id_user') @JsonIntConverter() int? idUser,
-      @JsonKey(name: 'id_member') @JsonIntConverter() int? idMember,
+      {@JsonKey(name: 'id') @JsonIntConverter() int? id,
       @JsonKey(name: 'member_id') String? memberId,
+      @JsonKey(name: 'user_id') @JsonIntConverter() int? idUser,
       @JsonKey(name: 'identity_card') String? cardNo,
       @JsonKey(name: 'fullname') String? fullName,
       @JsonKey(name: 'place_of_birth') String? placeOfBirth,
@@ -231,9 +231,9 @@ class __$$ProfileImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? idUser = freezed,
-    Object? idMember = freezed,
+    Object? id = freezed,
     Object? memberId = freezed,
+    Object? idUser = freezed,
     Object? cardNo = freezed,
     Object? fullName = freezed,
     Object? placeOfBirth = freezed,
@@ -247,18 +247,18 @@ class __$$ProfileImplCopyWithImpl<$Res>
     Object? company = freezed,
   }) {
     return _then(_$ProfileImpl(
-      idUser: freezed == idUser
-          ? _value.idUser
-          : idUser // ignore: cast_nullable_to_non_nullable
-              as int?,
-      idMember: freezed == idMember
-          ? _value.idMember
-          : idMember // ignore: cast_nullable_to_non_nullable
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as int?,
       memberId: freezed == memberId
           ? _value.memberId
           : memberId // ignore: cast_nullable_to_non_nullable
               as String?,
+      idUser: freezed == idUser
+          ? _value.idUser
+          : idUser // ignore: cast_nullable_to_non_nullable
+              as int?,
       cardNo: freezed == cardNo
           ? _value.cardNo
           : cardNo // ignore: cast_nullable_to_non_nullable
@@ -311,9 +311,9 @@ class __$$ProfileImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ProfileImpl implements _Profile {
   _$ProfileImpl(
-      {@JsonKey(name: 'id_user') @JsonIntConverter() this.idUser,
-      @JsonKey(name: 'id_member') @JsonIntConverter() this.idMember,
+      {@JsonKey(name: 'id') @JsonIntConverter() this.id,
       @JsonKey(name: 'member_id') this.memberId,
+      @JsonKey(name: 'user_id') @JsonIntConverter() this.idUser,
       @JsonKey(name: 'identity_card') this.cardNo,
       @JsonKey(name: 'fullname') this.fullName,
       @JsonKey(name: 'place_of_birth') this.placeOfBirth,
@@ -330,16 +330,16 @@ class _$ProfileImpl implements _Profile {
       _$$ProfileImplFromJson(json);
 
   @override
-  @JsonKey(name: 'id_user')
+  @JsonKey(name: 'id')
   @JsonIntConverter()
-  final int? idUser;
-  @override
-  @JsonKey(name: 'id_member')
-  @JsonIntConverter()
-  final int? idMember;
+  final int? id;
   @override
   @JsonKey(name: 'member_id')
   final String? memberId;
+  @override
+  @JsonKey(name: 'user_id')
+  @JsonIntConverter()
+  final int? idUser;
   @override
   @JsonKey(name: 'identity_card')
   final String? cardNo;
@@ -374,7 +374,7 @@ class _$ProfileImpl implements _Profile {
 
   @override
   String toString() {
-    return 'Profile(idUser: $idUser, idMember: $idMember, memberId: $memberId, cardNo: $cardNo, fullName: $fullName, placeOfBirth: $placeOfBirth, dateOfBirth: $dateOfBirth, gender: $gender, email: $email, phone: $phone, photo: $photo, photoIdCard: $photoIdCard, status: $status, company: $company)';
+    return 'Profile(id: $id, memberId: $memberId, idUser: $idUser, cardNo: $cardNo, fullName: $fullName, placeOfBirth: $placeOfBirth, dateOfBirth: $dateOfBirth, gender: $gender, email: $email, phone: $phone, photo: $photo, photoIdCard: $photoIdCard, status: $status, company: $company)';
   }
 
   @override
@@ -382,11 +382,10 @@ class _$ProfileImpl implements _Profile {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ProfileImpl &&
-            (identical(other.idUser, idUser) || other.idUser == idUser) &&
-            (identical(other.idMember, idMember) ||
-                other.idMember == idMember) &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.memberId, memberId) ||
                 other.memberId == memberId) &&
+            (identical(other.idUser, idUser) || other.idUser == idUser) &&
             (identical(other.cardNo, cardNo) || other.cardNo == cardNo) &&
             (identical(other.fullName, fullName) ||
                 other.fullName == fullName) &&
@@ -408,9 +407,9 @@ class _$ProfileImpl implements _Profile {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      idUser,
-      idMember,
+      id,
       memberId,
+      idUser,
       cardNo,
       fullName,
       placeOfBirth,
@@ -441,9 +440,9 @@ class _$ProfileImpl implements _Profile {
 
 abstract class _Profile implements Profile {
   factory _Profile(
-      {@JsonKey(name: 'id_user') @JsonIntConverter() final int? idUser,
-      @JsonKey(name: 'id_member') @JsonIntConverter() final int? idMember,
+      {@JsonKey(name: 'id') @JsonIntConverter() final int? id,
       @JsonKey(name: 'member_id') final String? memberId,
+      @JsonKey(name: 'user_id') @JsonIntConverter() final int? idUser,
       @JsonKey(name: 'identity_card') final String? cardNo,
       @JsonKey(name: 'fullname') final String? fullName,
       @JsonKey(name: 'place_of_birth') final String? placeOfBirth,
@@ -461,16 +460,16 @@ abstract class _Profile implements Profile {
   factory _Profile.fromJson(Map<String, dynamic> json) = _$ProfileImpl.fromJson;
 
   @override
-  @JsonKey(name: 'id_user')
+  @JsonKey(name: 'id')
   @JsonIntConverter()
-  int? get idUser;
-  @override
-  @JsonKey(name: 'id_member')
-  @JsonIntConverter()
-  int? get idMember;
+  int? get id;
   @override
   @JsonKey(name: 'member_id')
   String? get memberId;
+  @override
+  @JsonKey(name: 'user_id')
+  @JsonIntConverter()
+  int? get idUser;
   @override
   @JsonKey(name: 'identity_card')
   String? get cardNo;

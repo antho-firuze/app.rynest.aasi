@@ -50,19 +50,19 @@ class MenuCtrl {
     return appMenus;
   }
 
-  List<AppMenu> _filterMenuByRole(List<AppMenu> menus) {
-    // Role 1 => Jama'ah
-    // if (ref.read(authUserProvider)?.roleId == 1) {
-    //   menus.removeWhere((element) => element.code == 'liveLocation');
-    //   menus.removeWhere((element) => element.code == 'presenter');
-    //   menus.removeWhere((element) => element.code == 'agenda');
-    // }
-    // Role 2 => Muthowwif
-    // if (ref.read(authUserProvider)?.roleId == 2) {
-    //   menus.removeWhere((element) => element.code == 'listener');
-    // }
-    return menus;
-  }
+  // List<AppMenu> _filterMenuByRole(List<AppMenu> menus) {
+  //   // Role 1 => Jama'ah
+  //   // if (ref.read(authUserProvider)?.roleId == 1) {
+  //   //   menus.removeWhere((element) => element.code == 'liveLocation');
+  //   //   menus.removeWhere((element) => element.code == 'presenter');
+  //   //   menus.removeWhere((element) => element.code == 'agenda');
+  //   // }
+  //   // Role 2 => Muthowwif
+  //   // if (ref.read(authUserProvider)?.roleId == 2) {
+  //   //   menus.removeWhere((element) => element.code == 'listener');
+  //   // }
+  //   return menus;
+  // }
 
   String getIconPath(String code) {
     return switch (code) {

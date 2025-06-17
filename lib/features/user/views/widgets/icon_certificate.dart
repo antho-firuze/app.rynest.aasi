@@ -20,14 +20,14 @@ class IconCertificate extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: SizedBox(
-            width: 60,
-            height: 40,
-            child: CustomImage(
-              src: 'assets/images/ic_certificate.png',
-              onTap: onTap,
+        child: GestureDetector(
+          onTap: onTap,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: SizedBox(
+              width: 60,
+              height: 40,
+              child: CustomImage(src: 'assets/images/ic_certificate.png'),
             ),
           ),
         ),

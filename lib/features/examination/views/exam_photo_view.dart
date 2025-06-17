@@ -1,9 +1,12 @@
+import 'package:app.rynest.aasi/common/controller/developer_ctrl.dart';
 import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
+import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/widgets/forms/group_list.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/views/widgets/image_card.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/my_ui.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +17,13 @@ class ExamPhotoView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // final examPhotos = ref.watch(examPhotosProvider);
+
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text('Foto Ujian')),
         body: RefreshIndicator(
-          onRefresh: () async => await ref.refresh(fetchExamPhotosProvider),
+          onRefresh: () async => ref.refresh(fetchExamPhotosProvider),
           // child: context.isLandscape() == false ? viewPortrait(photos) : viewLandscape(context, photos),
           child: ListView(
             children: [
@@ -28,15 +33,10 @@ class ExamPhotoView extends ConsumerWidget {
               ref.watch(fetchExamPhotosProvider).when(
                     skipLoadingOnRefresh: false,
                     data: (data) {
-                      // debugPrint("data: ${data?.length}");
-                      // return context.isLandscape() == false ? viewPortrait(data) : viewLandscape(context, data);
-                      if (data == null) {
-                        return ListView(
-                          children: [
-                            10.height,
-                            const WarningException(title: 'Foto Ujian Anda belum tersedia.'),
-                            60.height,
-                          ],
+                      if (data == null || data.isEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: const WarningException(title: 'Foto Ujian Anda belum tersedia.'),
                         );
                       }
 
@@ -57,7 +57,14 @@ class ExamPhotoView extends ConsumerWidget {
                                   child: SizedBox(
                                     width: double.infinity,
                                     height: 250,
-                                    child: ImageCard(image: item.imageUrl),
+                                    child: ref
+                                        .watch(fetchImageProvider(
+                                            Reqs(url: item.imageUrl, fileKey: "${item.id}-examPhotos")))
+                                        .when(
+                                          data: (data) => ImageCard(image: item.imageUrl),
+                                          error: (error, stackTrace) => ImageCard(),
+                                          loading: () => Center(child: CircularProgressIndicator()),
+                                        ),
                                   ),
                                 ),
                               ],
@@ -79,6 +86,44 @@ class ExamPhotoView extends ConsumerWidget {
                                 ),
                               ],
                             );
+                          } else if (item.type == 'exam_rnd-1') {
+                            return ref.watch(devModeProvider)
+                                ? GroupList(
+                                    title: Padding(
+                                      padding: const EdgeInsets.only(left: 10, top: 10),
+                                      child: Text('Foto Random #1'),
+                                    ),
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 250,
+                                          child: ImageCard(image: item.imageUrl),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Container();
+                          } else if (item.type == 'exam_rnd-2') {
+                            return ref.watch(devModeProvider)
+                                ? GroupList(
+                                    title: Padding(
+                                      padding: const EdgeInsets.only(left: 10, top: 10),
+                                      child: Text('Foto Random #2'),
+                                    ),
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 20, top: 10, right: 20),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 250,
+                                          child: ImageCard(image: item.imageUrl),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Container();
                           } else {
                             return Container();
                           }
@@ -87,7 +132,11 @@ class ExamPhotoView extends ConsumerWidget {
                         itemCount: data.length,
                       );
                     },
-                    error: (error, stackTrace) => Container(),
+                    error: (error, stackTrace) => WarningException(
+                      title: 'Foto Ujian Anda belum tersedia.',
+                      subTitle: error.toString(),
+                      onRefresh: () async => ref.refresh(fetchExamPhotosProvider),
+                    ),
                     loading: () => Center(child: CircularProgressIndicator()),
                   ),
               60.height,

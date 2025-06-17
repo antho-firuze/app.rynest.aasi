@@ -1,24 +1,20 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:app.rynest.aasi/common/model/reqs.dart';
+import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/utils/dio_service.dart';
 import 'package:app.rynest.aasi/utils/path_service.dart';
+import 'package:app.rynest.aasi/utils/talker_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
-final downloadAndSaveFile = FutureProvider.autoDispose.family<String, List<String>>((ref, args) async {
-  // log(":: url => ${args[0]}");
-  // log(":: fileName => ${args[1]}");
-  return await ref.read(downloadUtilsProvider).downloadAndSaveImage(args[0], args[1]);
-});
+final _kLogName = "DOWNLOAD-UTILS";
 
-final getImageProvider = FutureProvider.autoDispose.family<String, String>((ref, arguments) async {
-  final args = arguments.split('|');
-  // log(":: url => ${args[0]}");
-  // log(":: fileName => ${args[1]}");
-  return await ref.read(downloadUtilsProvider).downloadAndSaveImage(args[0], args[1]);
-});
+final fetchImageProvider = FutureProvider.autoDispose.family<String, Reqs>((ref, arguments) async =>
+    await ref.read(downloadUtilsProvider).downloadAndSaveImage(arguments.url!, arguments.fileKey));
 
 class DownloadUtils {
   final Ref ref;
@@ -37,36 +33,89 @@ class DownloadUtils {
     return filePath;
   }
 
-  Future<String> downloadAndSaveImage(String repoUrl, String fileName) async {
-    var directory = await ref.read(pathServiceProvider).getAppFileDirectory();
-    var file = File('$directory/$fileName');
+  Future deleteImageOndisk(String fileName, {bool showLog = true}) async {
+    try {
+      var directory = await ref.read(pathServiceProvider).getAppFileDirectory();
+      var file = File('$directory/$fileName');
 
-    if (await file.exists()) {
-      log(':: downloadAndSaveImage => file.exists : ${file.path}');
+      if (await file.exists()) {
+        if (showLog) log('deleteImageOndisk [file.path] : ${file.path}', name: _kLogName);
+        await file.delete();
+      } else {
+        if (showLog) log('deleteImageOndisk [$fileName] : not exist !', name: _kLogName);
+      }
+    } catch (e) {
+      ref.read(talkerProvider).errx("Error: deleteImageOndisk", exception: e, name: _kLogName);
+      rethrow;
+    }
+  }
+
+  Future<String> downloadAndSaveImage(String repoUrl, String fileName, {bool showLog = false}) async {
+    try {
+      var directory = await ref.read(pathServiceProvider).getAppFileDirectory();
+      var file = File('$directory/$fileName');
+
+      if (await file.exists()) {
+        if (showLog) log('downloadAndSaveImage [file.path] : ${file.path}', name: _kLogName);
+        return file.path;
+      }
+
+      if (showLog) log('downloadAndSaveImage [$fileName] : downloading...!', name: _kLogName);
+      final url = Uri.parse(repoUrl);
+      final response =
+          await ref.read(dioFileDownloadProvider).getUri(url, onReceiveProgress: showLog ? showDownloadProgress : null);
+
+      if (response.statusCode != 200) {
+        throw Exception('Image not available !');
+      }
+
+      var fo = file.openSync(mode: FileMode.write);
+      fo.writeFromSync(response.data);
+      await fo.close();
+      if (showLog) log('downloadAndSaveImage [$fileName] : download complete !', name: _kLogName);
       return file.path;
+      
+    } catch (e, st) {
+      if (e is DioException) {
+        final errCode = e.response?.statusCode;
+        final errMsg = e.response?.statusMessage;
+
+        ref.read(talkerProvider).errx("[$errCode] $errMsg", exception: e, stackTrace: st, name: _kLogName);
+      } else {
+        ref.read(talkerProvider).errx("Error: downloadAndSaveImage", exception: e, stackTrace: st, name: _kLogName);
+      }
+      rethrow;
     }
 
-    final url = Uri.parse(repoUrl);
+    // var directory = await ref.read(pathServiceProvider).getAppFileDirectory();
+    // var file = File('$directory/$fileName');
 
-    return await ref
-        .read(dioFileDownloadProvider)
-        .getUri(
-          url,
-          // onReceiveProgress: (count, total) => log("Download $fileName: ${(count / total * 100).toStringAsFixed(0)} %"),
-        )
-        .then((res) async {
-      if (res.statusCode == 200) {
-        // log('===> downloadAndSaveFile ===> get from repo !');
-        var fo = file.openSync(mode: FileMode.write);
-        fo.writeFromSync(res.data);
-        await fo.close();
-        log(':: downloadAndSaveImage => completed : ${file.path}');
-        return file.path;
-      } else {
-        var errString = 'Image not available !';
-        return Future.error(errString);
-      }
-    }).onError((error, stackTrace) => Future.error(error!));
+    // if (await file.exists()) {
+    //   log(':: downloadAndSaveImage => file.exists : ${file.path}');
+    //   return file.path;
+    // }
+
+    // final url = Uri.parse(repoUrl);
+
+    // return await ref
+    //     .read(dioFileDownloadProvider)
+    //     .getUri(
+    //       url,
+    //       // onReceiveProgress: (count, total) => log("Download $fileName: ${(count / total * 100).toStringAsFixed(0)} %"),
+    //     )
+    //     .then((res) async {
+    //   if (res.statusCode == 200) {
+    //     // log('===> downloadAndSaveFile ===> get from repo !');
+    //     var fo = file.openSync(mode: FileMode.write);
+    //     fo.writeFromSync(res.data);
+    //     await fo.close();
+    //     log(':: downloadAndSaveImage => completed : ${file.path}');
+    //     return file.path;
+    //   } else {
+    //     var errString = 'Image not available !';
+    //     return Future.error(errString);
+    //   }
+    // }).onError((error, stackTrace) => Future.error(error!));
   }
 
   // Future<String> downloadAndSaveFile(String url, String fileName) async {
@@ -103,7 +152,10 @@ class DownloadUtils {
 
   void showDownloadProgress(received, total) {
     if (total != -1) {
-      log((received / total * 100).toStringAsFixed(0) + "%");
+      final percentage = (received / total * 100).toStringAsFixed(0);
+      if ([10, 20, 30, 40, 50, 60, 70, 80, 90, 100].contains(percentage)) {
+        log("Download progress : $percentage%", name: _kLogName);
+      }
     }
   }
 

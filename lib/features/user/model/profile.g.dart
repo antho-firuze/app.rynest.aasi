@@ -8,9 +8,9 @@ part of 'profile.dart';
 
 _$ProfileImpl _$$ProfileImplFromJson(Map<String, dynamic> json) =>
     _$ProfileImpl(
-      idUser: const JsonIntConverter().fromJson(json['id_user']),
-      idMember: const JsonIntConverter().fromJson(json['id_member']),
+      id: const JsonIntConverter().fromJson(json['id']),
       memberId: json['member_id'] as String?,
+      idUser: const JsonIntConverter().fromJson(json['user_id']),
       cardNo: json['identity_card'] as String?,
       fullName: json['fullname'] as String?,
       placeOfBirth: json['place_of_birth'] as String?,
@@ -28,11 +28,11 @@ _$ProfileImpl _$$ProfileImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$ProfileImplToJson(_$ProfileImpl instance) =>
     <String, dynamic>{
-      'id_user': _$JsonConverterToJson<dynamic, int>(
-          instance.idUser, const JsonIntConverter().toJson),
-      'id_member': _$JsonConverterToJson<dynamic, int>(
-          instance.idMember, const JsonIntConverter().toJson),
+      'id': _$JsonConverterToJson<dynamic, int>(
+          instance.id, const JsonIntConverter().toJson),
       'member_id': instance.memberId,
+      'user_id': _$JsonConverterToJson<dynamic, int>(
+          instance.idUser, const JsonIntConverter().toJson),
       'identity_card': instance.cardNo,
       'fullname': instance.fullName,
       'place_of_birth': instance.placeOfBirth,

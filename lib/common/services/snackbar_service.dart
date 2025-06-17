@@ -1,4 +1,3 @@
-import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/main.dart';
 import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
@@ -10,7 +9,7 @@ class SnackBarService {
     this.duration = const Duration(seconds: 2),
     this.backgroundColor = Colors.black54,
   });
-  final String message;
+  final Widget message;
   final Duration duration;
   final Color backgroundColor;
 
@@ -27,7 +26,7 @@ class SnackBarService {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(10)),
-                child: Text(message).family('Roboto').clr(oWhite),
+                child: message,
               ),
             ),
           ],

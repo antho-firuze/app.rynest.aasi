@@ -1,15 +1,12 @@
-import 'dart:async';
 
 import 'package:app.rynest.aasi/common/views/connectivity_wrapper.dart';
-import 'package:app.rynest.aasi/common/views/dev_info_view.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
-import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/system_ui_overlay.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Timer? _timer;
+// Timer? _timer;
 
 class MyUI extends StatelessWidget {
   const MyUI({
@@ -38,26 +35,26 @@ class MyUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanCancel: () {
-        debugPrint('My_UI: onPanCancel');
-        _timer?.cancel();
-        _timer = null;
-      },
-      onPanEnd: (details) {
-        debugPrint('My_UI: onPanEnd');
-        _timer?.cancel();
-        _timer = null;
-      },
-      onPanDown: (details) async {
-        debugPrint('My_UI: onPanDown');
-        _timer?.cancel();
-        _timer = null;
-        _timer = Timer(Duration(seconds: 5), () {
-          context.goto(page: DevInfoView());
-          _timer?.cancel();
-          _timer = null;
-        });
-      },
+      // onPanCancel: () {
+      //   debugPrint('My_UI: onPanCancel');
+      //   _timer?.cancel();
+      //   _timer = null;
+      // },
+      // onPanEnd: (details) {
+      //   debugPrint('My_UI: onPanEnd');
+      //   _timer?.cancel();
+      //   _timer = null;
+      // },
+      // onPanDown: (details) async {
+      //   debugPrint('My_UI: onPanDown');
+      //   _timer?.cancel();
+      //   _timer = null;
+      //   _timer = Timer(Duration(seconds: 5), () {
+      //     context.goto(page: DevInfoView());
+      //     _timer?.cancel();
+      //     _timer = null;
+      //   });
+      // },
       // onLongPress: () {
       //   // SnackBarService.show(message: 'it is a long press');
       //   showFlutterNotification(title: 'Ini title', message: 'Ini hanya sebuah pesan !');

@@ -5,12 +5,14 @@ import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/services/api_service.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
+import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/features/auth/model/jwt_token.dart';
 import 'package:app.rynest.aasi/features/auth/model/user.dart';
 import 'package:app.rynest.aasi/features/auth/views/signin_view.dart';
 import 'package:app.rynest.aasi/localization/string_hardcoded.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
 import 'package:app.rynest.aasi/utils/router.dart';
+import 'package:app.rynest.aasi/utils/talker_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -59,22 +61,30 @@ class AuthCtrl {
   }
 
   void loadToken() {
-    final data = ref.read(sharedPrefProvider).getString(_tokenKey);
-    if (data != null) {
-      final token = JwtToken.fromJson(jsonDecode(data));
-      ref.read(authTokenProvider.notifier).state = token;
-    } else {
-      ref.read(authTokenProvider.notifier).state = null;
+    try {
+      final data = ref.read(sharedPrefProvider).getString(_tokenKey);
+      if (data != null) {
+        final token = JwtToken.fromJson(jsonDecode(data));
+        ref.read(authTokenProvider.notifier).state = token;
+      } else {
+        ref.read(authTokenProvider.notifier).state = null;
+      }
+    } catch (e) {
+      ref.read(talkerProvider).errx("Error: loadToken", exception: e, name: _kLogName);
     }
   }
 
   void setToken(JwtToken? token) {
-    if (token == null) {
-      ref.read(authTokenProvider.notifier).state = null;
-      ref.read(sharedPrefProvider).remove(_tokenKey);
-    } else {
-      ref.read(authTokenProvider.notifier).state = token;
-      ref.read(sharedPrefProvider).setString(_tokenKey, jsonEncode(token.toJson()));
+    try {
+      if (token == null) {
+        ref.read(authTokenProvider.notifier).state = null;
+        ref.read(sharedPrefProvider).remove(_tokenKey);
+      } else {
+        ref.read(authTokenProvider.notifier).state = token;
+        ref.read(sharedPrefProvider).setString(_tokenKey, jsonEncode(token.toJson()));
+      }
+    } catch (e) {
+      ref.read(talkerProvider).errx("Error: setToken", exception: e, name: _kLogName);
     }
   }
 

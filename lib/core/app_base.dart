@@ -6,10 +6,8 @@ class AppBase {
   static const animationPath = "assets/animations";
   static const iconPath = "assets/icons";
   static const placeholderPath = "assets/placeholders";
-  static String prodUrl = Env.liveApiUrl;
-  static String testUrl = Env.localApiUrl;
-  static String url = Env.envConfig == "DEVELOPMENT" ? AppBase.testUrl : AppBase.prodUrl;
-  static String liveCDNUrl = Env.liveCDNUrl;
-  static String fcmApiUrl = Env.fcmApiUrl;
-  static String fcmAccessTokenUrl = Env.fcmAccessTokenUrl;
+  static String apiUrl = Env.envConfig == "DEVELOPMENT" ? Env.devApiUrl : Env.apiUrl;
+  static String pusherUrl = Env.envConfig == "DEVELOPMENT" ? Env.devPusherUrl : Env.pusherUrl;
+  static String pusherKey = Env.envConfig == "DEVELOPMENT" ? Env.devPusherKey : Env.pusherKey;
+  static String pusherAuthUrl = Env.envConfig == "DEVELOPMENT" ? Env.devPusherAuthUrl : Env.pusherAuthUrl;
 }
