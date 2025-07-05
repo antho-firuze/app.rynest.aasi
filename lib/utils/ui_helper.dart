@@ -32,6 +32,10 @@ extension ScreenSize on BuildContext {
   double screenWidthRatio([double portrait = 1, double landscape = 1]) {
     return isLandscape() ? MediaQuery.of(this).size.width * landscape : MediaQuery.of(this).size.width * portrait;
   }
+
+  double screenHeightRatio([double portrait = 1, double landscape = 1]) {
+    return isLandscape() ? MediaQuery.of(this).size.height * landscape : MediaQuery.of(this).size.height * portrait;
+  }
 }
 
 Widget divider({

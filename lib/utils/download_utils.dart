@@ -45,7 +45,7 @@ class DownloadUtils {
         if (showLog) log('deleteImageOndisk [$fileName] : not exist !', name: _kLogName);
       }
     } catch (e) {
-      ref.read(talkerProvider).errx("Error: deleteImageOndisk", exception: e, name: _kLogName);
+      ref.read(talkerProvider).errx("Error: deleteImageOndisk", error: e, name: _kLogName);
       rethrow;
     }
   }
@@ -74,15 +74,14 @@ class DownloadUtils {
       await fo.close();
       if (showLog) log('downloadAndSaveImage [$fileName] : download complete !', name: _kLogName);
       return file.path;
-      
     } catch (e, st) {
       if (e is DioException) {
         final errCode = e.response?.statusCode;
         final errMsg = e.response?.statusMessage;
 
-        ref.read(talkerProvider).errx("[$errCode] $errMsg", exception: e, stackTrace: st, name: _kLogName);
+        ref.read(talkerProvider).errx("[$errCode] $errMsg", error: e, stackTrace: st, name: _kLogName);
       } else {
-        ref.read(talkerProvider).errx("Error: downloadAndSaveImage", exception: e, stackTrace: st, name: _kLogName);
+        ref.read(talkerProvider).errx("Error: downloadAndSaveImage", error: e, stackTrace: st, name: _kLogName);
       }
       rethrow;
     }

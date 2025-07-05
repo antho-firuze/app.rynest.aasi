@@ -1,5 +1,4 @@
 import 'package:app.rynest.aasi/common/controller/location_ctrl.dart';
-import 'package:app.rynest.aasi/common/exceptions/warning_exeption.dart';
 import 'package:app.rynest.aasi/common/exceptions/warning_layout.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/custom_card.dart';
@@ -26,10 +25,6 @@ class ExamStageStart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(profileProvider);
-    bool? photo = profile?.photo != null;
-    bool? idcard = profile?.photoIdCard != null;
-
     if (!ref.watch(isGpsEnableProvider)) {
       return MyUI(
         child: Scaffold(
@@ -70,162 +65,168 @@ class ExamStageStart extends ConsumerWidget {
       );
     }
 
+    final examSchedule = ref.watch(examScheduleProvider);
+    ref.watch(examPhotosProvider);
+    final examPreparation = ref.watch(examPreparationProvider);
     return MyUI(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Ujian'),
           actions: [
             TextButton(
-              onPressed: () async => ref.refresh(fetchExamScheduleProvider),
+              onPressed: () async {
+                // ignore: unused_result
+                ref.refresh(fetchProfileProvider);
+                // ignore: unused_result
+                ref.refresh(fetchExamPhotosProvider);
+                await Future.delayed(Duration(seconds: 2));
+                // ignore: unused_result
+                ref.refresh(checkExamPreparationProvider);
+              },
               child: Text('Refresh').clr(oWhite),
             ),
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
-          child: ref.watch(fetchExamScheduleProvider).when(
-                skipLoadingOnRefresh: false,
-                data: (data) {
-                  if (data == null) {
-                    return WarningException(
-                      title: 'Gagal memuat jadwal ujian !',
-                      onRefresh: () => ref.refresh(fetchExamScheduleProvider),
-                    );
-                  }
+          onRefresh: () async => ref.refresh(checkExamPreparationProvider),
+          child: ListView(
+            children: [
+              const LogoArtWork(child: LogoApp()),
+              ref.watch(checkExamPreparationProvider).when(
+                    skipLoadingOnRefresh: false,
+                    data: (data) {
+                      bool photo = data[0];
+                      bool idcard = data[1];
+                      bool photoExamStart = data[2];
 
-                  final examSchedule = data;
-                  bool photoExamStart = examSchedule.photoStart;
-
-                  return ListView(
-                    children: [
-                      5.height,
-                      const LogoArtWork(child: LogoApp()),
-                      5.height,
-                      if (photo == false || idcard == false || photoExamStart == false) ...[
-                        CustomCard(
-                          title: const Text('Persiapan').tsTitleL().center().clr(oWhite),
-                          subTitle: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: const Text('Mohon lengkapi terlebih dahulu point-point berikut ini:')
-                                .tsBodyM()
-                                .center(),
-                          ),
-                          child: Column(
-                            children: [
-                              if (photo == false)
+                      return Column(
+                        children: [
+                          CustomCard(
+                            title: const Text('Persiapan').tsTitleL().center().clr(oWhite),
+                            subTitle: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: const Text('Mohon lengkapi terlebih dahulu point-point berikut ini:')
+                                  .tsBodyM()
+                                  .center(),
+                            ),
+                            child: Column(
+                              children: [
                                 ListTile(
                                   leading: const Icon(SuperIcons.mg_photo_album_2_line),
                                   title: const Text('Foto Profil').bold(),
                                   subtitle: const Text('Harap Foto Profil di update terlebih dahulu.'),
-                                  trailing: Icon(photo == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
-                                      color: photo == true ? oGreen : oRed),
+                                  trailing: Icon(
+                                    photo == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
+                                    color: photo == true ? oGreen : oRed,
+                                  ),
                                   onTap: photo == true
                                       ? null
                                       : () async => await context.goto(page: const CameraSelfieView()),
                                 ),
-                              if (idcard == false)
                                 ListTile(
                                   leading: const Icon(SuperIcons.mg_IDcard_line),
                                   title: const Text('Foto KTP').bold(),
                                   subtitle: const Text('Harap Foto KTP di update terlebih dahulu.'),
-                                  trailing: Icon(idcard == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
-                                      color: idcard == true ? oGreen : oRed),
+                                  trailing: Icon(
+                                    idcard == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
+                                    color: idcard == true ? oGreen : oRed,
+                                  ),
                                   onTap: idcard == true
                                       ? null
                                       : () async => await context.goto(page: const CameraIdCardView()),
                                 ),
-                              ListTile(
-                                leading: const Icon(SuperIcons.mg_IDcard_line),
-                                title: const Text('Foto Mulai Ujian').bold(),
-                                subtitle: const Text('Silahkan anda ambil foto sebelum memulai ujian.'),
-                                trailing: Icon(
+                                ListTile(
+                                  leading: const Icon(SuperIcons.mg_IDcard_line),
+                                  title: const Text('Foto Mulai Ujian').bold(),
+                                  subtitle: const Text('Silahkan anda ambil foto sebelum memulai ujian.'),
+                                  trailing: Icon(
                                     photoExamStart == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
-                                    color: photoExamStart == true ? oGreen : oRed),
-                                onTap: photoExamStart == true
-                                    ? null
-                                    : () async => await context.goto(page: const CameraExamStartView()),
-                              ),
-                            ],
-                          ),
-                        ),
-                        20.height,
-                      ] else ...[
-                        CustomCard(
-                          title: const Text("Mekanisme / Aturan Ujian").tsTitleL().center().clr(oWhite),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              spacing: 10,
-                              children: [
-                                FieldList(
-                                  caption: const Text('Waktu Ujian'),
-                                  value: Text("${examSchedule.category?.duration} menit").bold().clr(oBlack),
-                                ),
-                                FieldList(
-                                  caption: const Text('Cek Score'),
-                                  value: const Text("2 kali kesempatan.").bold().clr(oBlack),
-                                ),
-                                FieldList(
-                                  caption: const Text('Jumlah soal'),
-                                  value: Text("${examSchedule.category?.numOfQuestion} butir.").bold().clr(oBlack),
-                                ),
-                                FieldList(
-                                  caption: const Text('Minimal Point'),
-                                  value: Text(
-                                          "${examSchedule.category?.minPoint} atau ${examSchedule.category?.passedGrade}% jawaban benar dari Jumlah Soal.")
-                                      .bold(),
+                                    color: photoExamStart == true ? oGreen : oRed,
+                                  ),
+                                  onTap: photoExamStart == true
+                                      ? null
+                                      : () async => await context.goto(page: const CameraExamStartView()),
                                 ),
                               ],
                             ),
                           ),
+                        ],
+                      );
+                    },
+                    error: (error, stackTrace) => Text("$error"),
+                    loading: () => Center(child: CircularProgressIndicator()),
+                  ),
+              20.height,
+              if (!examPreparation.contains(false))
+                CustomCard(
+                  title: const Text("Mekanisme / Aturan Ujian").tsTitleL().center().clr(oWhite),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      spacing: 10,
+                      children: [
+                        FieldList(
+                          caption: const Text('Waktu Ujian'),
+                          value: Text("${examSchedule?.category?.duration} menit").bold().clr(oBlack),
                         ),
-                        20.height,
-                        CustomCard(
-                          title: const Text("Do'a").tsTitleL().center().clr(oWhite),
-                          subTitle: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: examSchedule.state == 'IN-SCHEDULE'
-                                ? const Text(
-                                        'Sebelum memulai ujian diharapkan berdoa terlebih dahulu, dan tidak lupa membaca ')
-                                    .tsBodyM()
-                                    .center()
-                                : const Text('Sebelum melanjutkan ujian diharapkan berdoa, dan tidak lupa membaca ')
-                                    .tsBodyM()
-                                    .center(),
-                          ),
-                          child: Column(
-                            children: [
-                              10.height,
-                              const SizedBox(
-                                width: 250,
-                                child: CustomImage(src: 'assets/images/ic_bismillah.png'),
-                              ),
-                              20.height,
-                            ],
-                          ),
+                        FieldList(
+                          caption: const Text('Cek Score'),
+                          value: const Text("2 kali kesempatan.").bold().clr(oBlack),
                         ),
-                        20.height,
+                        FieldList(
+                          caption: const Text('Jumlah soal'),
+                          value: Text("${examSchedule?.category?.numOfQuestion} butir.").bold().clr(oBlack),
+                        ),
+                        FieldList(
+                          caption: const Text('Minimal Point'),
+                          value: Text(
+                                  "${examSchedule?.category?.minPoint} atau ${examSchedule?.category?.passedGrade}% jawaban benar dari Jumlah Soal.")
+                              .bold(),
+                        ),
                       ],
-                      Center(
-                        child: CustomButton(
-                          onPressed: (photo == true && idcard == true && photoExamStart == true)
-                              ? () async => await ref.read(examCtrlProvider).callStart()
-                              : null,
-                          child: examSchedule.state == 'IN-SCHEDULE'
-                              ? const Text('Mulai Ujian')
-                              : const Text('Lanjutkan Ujian'),
-                        ),
+                    ),
+                  ),
+                ),
+              20.height,
+              if (!examPreparation.contains(false))
+                CustomCard(
+                  title: const Text("Do'a").tsTitleL().center().clr(oWhite),
+                  subTitle: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: examSchedule?.state == 'IN-SCHEDULE'
+                        ? const Text('Sebelum memulai ujian diharapkan berdoa terlebih dahulu, dan tidak lupa membaca ')
+                            .tsBodyM()
+                            .center()
+                        : const Text('Sebelum melanjutkan ujian diharapkan berdoa, dan tidak lupa membaca ')
+                            .tsBodyM()
+                            .center(),
+                  ),
+                  child: Column(
+                    children: [
+                      10.height,
+                      const SizedBox(
+                        width: 250,
+                        child: CustomImage(src: 'assets/images/ic_bismillah.png'),
                       ),
-                      // Center(child: Text("${ref.read(deviceIdProvider)} - ${ref.read(deviceNameProvider)}")),
-                      // Center(child: Text(ref.watch(wifiIPv4Provider))),
-                      // Center(child: Text(ref.watch(locationProvider))),
-                      60.height,
+                      20.height,
                     ],
-                  );
-                },
-                error: (error, stackTrace) => Container(),
-                loading: () => Center(child: CircularProgressIndicator()),
-              ),
+                  ),
+                ),
+              20.height,
+              if (!examPreparation.contains(false))
+                Center(
+                  child: CustomButton(
+                    onPressed: examPreparation.contains(false)
+                        ? null
+                        : () async => await ref.read(examCtrlProvider).callStart(),
+                    child: examSchedule?.state == 'IN-SCHEDULE'
+                        ? const Text('Mulai Ujian')
+                        : const Text('Lanjutkan Ujian'),
+                  ),
+                ),
+              60.height,
+            ],
+          ),
         ),
       ),
     );

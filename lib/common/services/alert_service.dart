@@ -55,31 +55,24 @@ class AlertService {
     );
   }
 
-  static Future<bool> confirm({
+  static Future<bool?> confirm({
     required String body,
     String title = 'Konfirmasi',
-    String? noCaption,
-    String? okCaption,
     String? yesCaption,
-    VoidCallback? onNo,
-    VoidCallback? onOk,
+    String? noCaption,
     VoidCallback? onYes,
-    bool showYes = true,
-    bool showNo = true,
-    bool showOk = false,
+    VoidCallback? onNo,
   }) async {
     return await AlertService.show(
       title: title,
       body: body,
       yesCaption: yesCaption,
       noCaption: noCaption,
-      okCaption: okCaption,
       onYes: onYes,
       onNo: onNo,
-      onOk: onOk,
-      showYes: showYes,
-      showNo: showNo,
-      showOk: showOk,
+      showYes: true,
+      showNo: true,
+      showOk: false,
     );
   }
 

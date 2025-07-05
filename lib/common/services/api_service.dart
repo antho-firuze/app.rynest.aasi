@@ -11,11 +11,6 @@ import 'package:app.rynest.aasi/utils/talker_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Pembagian jenis API call
-// 1.
-
-final busyProvider = StateProvider<bool>((ref) => false);
-
 class ApiService {
   final Ref ref;
   ApiService(this.ref);
@@ -47,32 +42,29 @@ class ApiService {
       if (showBusy) LoadingService.dissmiss();
 
       return response.data;
+    } on DioException catch (e, st) {
+      if (showBusy) LoadingService.dissmiss();
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+
+      final endPoint = "\nEndpoint: $url";
+      final err = _dioErrorHandler(e);
+      final errCode = err['code'];
+      final errMsg = err['message'];
+      ref.read(talkerProvider).errx("[$errCode] $errMsg $endPoint", stackTrace: st, name: _kLogName);
+
+      if (showError) SnackBarService.show(message: "[$errCode] $errMsg");
+      throw Exception("$errMsg");
     } catch (e, st) {
       if (showBusy) LoadingService.dissmiss();
-      if (e is DioException) {
-        var errCode = e.response?.statusCode;
-        var errMsg = e.response?.statusMessage;
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+      final endPoint = "\nEndpoint: $url";
 
-        final data = e.response?.data;
-        if (data != null) {
-          errMsg = data['message'];
-          final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
-              .replace(path: reqs.path, queryParameters: reqs.queryParameters)
-              .toString();
-
-          ref.read(talkerProvider).errx("[$errCode] $errMsg \nEndpoint: $url", name: _kLogName);
-        } else {
-          ref.read(talkerProvider).errx("[$errCode] $errMsg", exception: e, stackTrace: st, name: _kLogName);
-        }
-
-        if (showError) {
-          SnackBarService.show(message: "[$errCode] $errMsg");
-        }
-        throw Exception("[$errCode] $errMsg");
-      } else {
-        ref.read(talkerProvider).errx("Error: call", exception: e, stackTrace: st, name: _kLogName);
-        rethrow;
-      }
+      ref.read(talkerProvider).errx("Error: call $endPoint", error: e, stackTrace: st, name: _kLogName);
+      rethrow;
     }
   }
 
@@ -96,28 +88,25 @@ class ApiService {
 
       final response = await dio.post(url, data: formData ?? reqs.data);
       return response.data;
+    } on DioException catch (e, st) {
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+
+      final endPoint = "\nEndpoint: $url";
+      final err = _dioErrorHandler(e);
+      final errCode = err['code'];
+      final errMsg = err['message'];
+      ref.read(talkerProvider).errx("[$errCode] $errMsg $endPoint", stackTrace: st, name: _kLogName);
+      throw Exception("$errMsg");
     } catch (e, st) {
-      if (e is DioException) {
-        var errCode = e.response?.statusCode;
-        var errMsg = e.response?.statusMessage;
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+      final endPoint = "\nEndpoint: $url";
 
-        final data = e.response?.data;
-        if (data != null) {
-          errMsg = data['message'];
-          final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
-              .replace(path: reqs.path, queryParameters: reqs.queryParameters)
-              .toString();
-
-          ref.read(talkerProvider).errx("[$errCode] $errMsg \nEndpoint: $url", name: _kLogName);
-        } else {
-          ref.read(talkerProvider).errx("[$errCode] $errMsg", exception: e, stackTrace: st, name: _kLogName);
-        }
-
-        throw Exception("[$errCode] $errMsg");
-      } else {
-        ref.read(talkerProvider).errx("Error: fetch", exception: e, stackTrace: st, name: _kLogName);
-        rethrow;
-      }
+      ref.read(talkerProvider).errx("Error: fetch $endPoint", error: e, stackTrace: st, name: _kLogName);
+      rethrow;
     }
   }
 
@@ -136,29 +125,26 @@ class ApiService {
       }
 
       return response.data;
+    } on DioException catch (e, st) {
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+
+      final endPoint = "\nEndpoint: $url";
+      final err = _dioErrorHandler(e);
+      final errCode = err['code'];
+      final errMsg = err['message'];
+      ref.read(talkerProvider).errx("[$errCode] $errMsg $endPoint", stackTrace: st, name: _kLogName);
+      SnackBarService.show(message: "[$errCode] $errMsg");
+      throw Exception("$errMsg");
     } catch (e, st) {
-      if (e is DioException) {
-        var errCode = e.response?.statusCode;
-        var errMsg = e.response?.statusMessage;
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+      final endPoint = "\nEndpoint: $url";
 
-        final data = e.response?.data;
-        if (data != null) {
-          errMsg = data['message'];
-          final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
-              .replace(path: reqs.path, queryParameters: reqs.queryParameters)
-              .toString();
-
-          ref.read(talkerProvider).errx("[$errCode] $errMsg \nEndpoint: $url", name: _kLogName);
-        } else {
-          ref.read(talkerProvider).errx("[$errCode] $errMsg", exception: e, stackTrace: st, name: _kLogName);
-        }
-
-        SnackBarService.show(message: "[$errCode] $errMsg");
-        throw Exception("[$errCode] $errMsg");
-      } else {
-        ref.read(talkerProvider).errx("Error: get", exception: e, stackTrace: st, name: _kLogName);
-        rethrow;
-      }
+      ref.read(talkerProvider).errx("Error: get $endPoint", error: e, stackTrace: st, name: _kLogName);
+      rethrow;
     }
   }
 
@@ -178,30 +164,58 @@ class ApiService {
       }
 
       return response.data;
+    } on DioException catch (e, st) {
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+
+      final endPoint = "\nEndpoint: $url";
+      final err = _dioErrorHandler(e);
+      final errCode = err['code'];
+      final errMsg = err['message'];
+      ref.read(talkerProvider).errx("[$errCode] $errMsg $endPoint", stackTrace: st, name: _kLogName);
+      SnackBarService.show(message: "[$errCode] $errMsg");
+      throw Exception("$errMsg");
     } catch (e, st) {
-      if (e is DioException) {
-        var errCode = e.response?.statusCode;
-        var errMsg = e.response?.statusMessage;
+      final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
+          .replace(path: reqs.path, queryParameters: reqs.queryParameters)
+          .toString();
+      final endPoint = "\nEndpoint: $url";
+
+      ref.read(talkerProvider).errx("Error: refreshToken $endPoint", error: e, stackTrace: st, name: _kLogName);
+      rethrow;
+    }
+  }
+
+  Map<String, dynamic> _dioErrorHandler(DioException e) {
+    Map<String, dynamic> err = {"code": 0, "message": ""};
+
+    // When not connected (RTO)
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        err["code"] = e.type.index;
+        err["message"] = "Connection Timeout !";
+      // err["message"] = e.message;
+      case DioExceptionType.connectionError:
+        err["code"] = e.type.index;
+        err["message"] = "Connection Error !";
+      // err["message"] = e.message;
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.badCertificate:
+      case DioExceptionType.badResponse:
+      case DioExceptionType.cancel:
+      case DioExceptionType.unknown:
+        err["code"] = e.response?.statusCode;
+        err["message"] = e.response?.statusMessage;
 
         final data = e.response?.data;
         if (data != null) {
-          errMsg = data['message'];
-          final url = Uri.parse(reqs.url ?? AppBase.apiUrl)
-              .replace(path: reqs.path, queryParameters: reqs.queryParameters)
-              .toString();
-
-          ref.read(talkerProvider).errx("[$errCode] $errMsg \nEndpoint: $url", name: _kLogName);
-        } else {
-          ref.read(talkerProvider).errx("[$errCode] $errMsg", exception: e, stackTrace: st, name: _kLogName);
+          err["message"] = data['message'];
         }
-
-        SnackBarService.show(message: "[$errCode] $errMsg");
-        throw Exception("[$errCode] $errMsg");
-      } else {
-        ref.read(talkerProvider).errx("Error: refreshToken", exception: e, stackTrace: st, name: _kLogName);
-        rethrow;
-      }
     }
+
+    return err;
   }
 }
 

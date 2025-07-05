@@ -11,8 +11,10 @@ import 'package:app.rynest.aasi/common/services/alert_service.dart';
 import 'package:app.rynest.aasi/common/services/api_service.dart';
 import 'package:app.rynest.aasi/common/services/camera_service.dart';
 import 'package:app.rynest.aasi/common/services/device_service.dart';
+import 'package:app.rynest.aasi/common/services/loading_service.dart';
 import 'package:app.rynest.aasi/common/services/sharedpref_service.dart';
 import 'package:app.rynest.aasi/common/services/snackbar_service.dart';
+import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/model/exam.dart';
 import 'package:app.rynest.aasi/features/examination/model/exam_photo.dart';
@@ -20,8 +22,11 @@ import 'package:app.rynest.aasi/features/examination/model/exam_schedule.dart';
 import 'package:app.rynest.aasi/features/examination/model/question.dart';
 import 'package:app.rynest.aasi/features/examination/views/exam_question_view.dart';
 import 'package:app.rynest.aasi/features/examination/views/exam_result_view.dart';
+import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
+import 'package:app.rynest.aasi/utils/dio_service.dart';
 import 'package:app.rynest.aasi/utils/page_utils.dart';
+import 'package:app.rynest.aasi/utils/talker_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,6 +42,7 @@ final autoNextQuestionProvider = StateProvider<bool>((ref) => false);
 final examProvider = StateProvider<Exam?>((ref) => null);
 final examScheduleProvider = StateProvider<ExamSchedule?>((ref) => null);
 final examPhotosProvider = StateProvider<List<ExamPhoto>>((ref) => []);
+final examPreparationProvider = StateProvider<List<bool>>((ref) => [false, false, false]);
 
 final examStillGoingProvider = StateProvider<bool>((ref) => false);
 final examInterruptionProvider = StateProvider<bool>((ref) => false);
@@ -45,97 +51,169 @@ final isRemainingTimeStillGoingProvider = StateProvider<bool?>((ref) => null);
 
 final questionNumProvider = StateProvider<int>((ref) => 1);
 
+// Output [List<bool>] = [true, true, true] / [photo, idcard, examStart]
+final checkExamPreparationProvider = FutureProvider<List<bool>>((ref) async {
+  try {
+    await Future.delayed(Duration(seconds: 1));
+
+    List<bool> result = [false, false, false];
+    final profile = ref.read(profileProvider);
+    final examPhotos = ref.read(examPhotosProvider);
+    log("checkExamPreparationProvider", name: _kLogName);
+
+    // result[0] = false;
+    // result[1] = false;
+    // result[2] = false;
+
+    // Check Profile Photo
+    if (profile?.photo?.isNotEmpty != null) {
+      result[0] = await ref.read(dioIsValidUrlProvider(profile?.photo).future);
+    } else {
+      result[0] = false;
+    }
+    // Check ID Card Photo
+    if (profile?.photoIdCard?.isNotEmpty != null) {
+      result[1] = await ref.read(dioIsValidUrlProvider(profile?.photoIdCard).future);
+    } else {
+      result[1] = false;
+    }
+    // Check Exam Start Photo
+    if (examPhotos.isNotEmpty) {
+      final examStartPhoto = examPhotos.firstWhere((element) => element.type == 'exam_start').imageUrl;
+      if (examStartPhoto?.isNotEmpty != null) {
+        result[2] = await ref.read(dioIsValidUrlProvider(examStartPhoto).future);
+      }
+    } else {
+      result[2] = false;
+    }
+
+    ref.read(examPreparationProvider.notifier).state = result;
+
+    return result;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : checkExamPreparationProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
+  }
+});
+
 final fetchExamScheduleProvider = FutureProvider<ExamSchedule?>((ref) async {
-  final reqs = Reqs(path: '/api/v1/exam/schedule', data: {
-    "datetime": DateTime.now().dbDateTime(),
-  });
-  final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
+  try {
+    if (ref.read(authUserProvider) == null) return null;
+    log("fetchExamScheduleProvider", name: _kLogName);
 
-  if (state.hasError) return null;
-  if (state.value == null) return null;
+    final reqs = Reqs(path: '/api/v1/exam/schedule', data: {
+      "datetime": DateTime.now().dbDateTime(),
+    });
+    final data = await ref.read(apiServiceProvider).fetch(reqs: reqs);
 
-  final schedule = ExamSchedule.fromJson(state.value);
-  ref.read(examScheduleProvider.notifier).state = schedule;
-  return schedule;
+    if (data == null) return null;
+
+    final schedule = ExamSchedule.fromJson(data);
+    ref.read(examScheduleProvider.notifier).state = schedule;
+    return schedule;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : fetchExamScheduleProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
+  }
 });
 
 final fetchExamResultProvider = FutureProvider<Exam?>((ref) async {
-  if (ref.read(examScheduleProvider) == null) {
-    // ignore: unused_result
-    ref.refresh(fetchExamScheduleProvider);
+  try {
+    if (ref.read(examScheduleProvider) == null) return null;
+    log("fetchExamResultProvider", name: _kLogName);
+
+    final reqs = Reqs(path: '/api/v1/exam/result', data: {
+      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+      "device_id": ref.read(deviceIdProvider),
+    });
+    final data = await ref.read(apiServiceProvider).fetch(reqs: reqs);
+
+    if (data == null) return null;
+
+    final exam = Exam.fromJson(data);
+    return exam;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : fetchExamResultProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
   }
-
-  final reqs = Reqs(path: '/api/v1/exam/result', data: {
-    "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-    "device_id": ref.read(deviceIdProvider),
-  });
-  final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
-
-  if (state.value == null) return null;
-
-  final exam = Exam.fromJson(state.value);
-  return exam;
 });
 
 final fetchExamPhotosProvider = FutureProvider<List<ExamPhoto>?>((ref) async {
-  final reqs = Reqs(path: '/api/v1/exam/photos', data: {
-    "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-  });
-  final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
+  try {
+    if (ref.read(examScheduleProvider) == null) return null;
+    log("fetchExamPhotosProvider", name: _kLogName);
 
-  if (state.hasError) return null;
-  if (state.value == null) return null;
+    final reqs = Reqs(path: '/api/v1/exam/photos', data: {
+      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+    });
+    final data = await ref.read(apiServiceProvider).fetch(reqs: reqs);
 
-  final examPhotos = (state.value as List<dynamic>)
-      .map((json) => ExamPhoto.fromJson(json))
-      .toList(); // ExamPhoto.fromJson(state.value)
-  // log("examPhotos.length: ${examPhotos.length}");
-  ref.read(examPhotosProvider.notifier).state = examPhotos;
-  return examPhotos;
+    if (data == null) return null;
+
+    final examPhotos = (data as List<dynamic>).map((json) => ExamPhoto.fromJson(json)).toList();
+    ref.read(examPhotosProvider.notifier).state = examPhotos;
+    return examPhotos;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : fetchExamPhotosProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
+  }
 });
 
 final fetchQuestionProvider = FutureProvider<Question?>((ref) async {
-  final exam = ref.read(examProvider);
-  final qid = exam?.syncQuestion;
-  final idx = exam?.qids.indexOf(qid!);
-  final opt = exam?.opts[idx!];
+  try {
+    log("fetchQuestionProvider", name: _kLogName);
 
-  final reqs = Reqs(path: '/api/v1/exam/question', data: {
-    "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-    "question_id": qid,
-    "shuffle": opt,
-    "device_id": ref.read(deviceIdProvider),
-  });
-  final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
+    final exam = ref.read(examProvider);
+    final qid = exam?.syncQuestion;
+    final idx = exam?.qids.indexOf(qid!);
+    final opt = exam?.opts[idx!];
 
-  if (state.hasError) {
-    RespError err = state.error as RespError;
-    log('question error : ${err.code} - ${err.message}', name: _kLogName);
-    if (err.code == 409) {
-      ref.read(examInterruptionProvider.notifier).state = true;
-    }
-    return null;
+    final reqs = Reqs(path: '/api/v1/exam/question', data: {
+      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+      "question_id": qid,
+      "shuffle": opt,
+      "device_id": ref.read(deviceIdProvider),
+    });
+    final data = await ref.read(apiServiceProvider).fetch(reqs: reqs);
+
+    // if (state.hasError) {
+    //   RespError err = state.error as RespError;
+    //   log('question error : ${err.code} - ${err.message}', name: _kLogName);
+    //   if (err.code == 409) {
+    //     ref.read(examInterruptionProvider.notifier).state = true;
+    //   }
+    //   return null;
+    // }
+    if (data == null) return null;
+
+    final question = Question.fromJson(data);
+    return question;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : fetchQuestionProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
   }
-  if (state.value == null) return null;
-
-  final question = Question.fromJson(state.value);
-  return question;
 });
 
 final fetchExamInfoProvider = FutureProvider<Exam?>((ref) async {
-  final reqs = Reqs(path: '/api/v1/exam/info', data: {
-    "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-    "category_id": ref.read(examScheduleProvider)?.categoryId,
-    "device_id": ref.read(deviceIdProvider),
-  });
-  final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
+  try {
+    log("fetchExamInfoProvider", name: _kLogName);
 
-  if (state.hasError) return null;
-  if (state.value == null) return null;
+    final reqs = Reqs(path: '/api/v1/exam/info', data: {
+      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+      "category_id": ref.read(examScheduleProvider)?.categoryId,
+      "device_id": ref.read(deviceIdProvider),
+    });
+    final data = await ref.read(apiServiceProvider).fetch(reqs: reqs);
 
-  final exam = Exam.fromJson(state.value);
-  ref.read(examProvider.notifier).state = exam.afterStart();
-  return exam;
+    if (data == null) return null;
+
+    final exam = Exam.fromJson(data);
+    ref.read(examProvider.notifier).state = exam.afterStart();
+    return exam;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : fetchExamInfoProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
+  }
 });
 
 class ExamCtrl {
@@ -156,19 +234,23 @@ class ExamCtrl {
 
     loadSetting();
 
+    if (ref.read(authUserProvider) != null) {
+      // ignore: unused_result
+      ref.refresh(fetchExamScheduleProvider);
+    }
+
     ref.listen(examScheduleProvider, (previous, next) {
       if (next != null) {
+        // ignore: unused_result
+        ref.refresh(fetchExamPhotosProvider);
+        ref.read(examStillGoingProvider.notifier).state = false;
+
         if (next.state == 'ON-GOING') {
           checkIfExamStillOnGoing(examSchedule: next, exam: ref.read(examProvider));
         }
         if (next.state == 'COMPLETED') {
           // ignore: unused_result
           ref.refresh(fetchExamResultProvider);
-          // ignore: unused_result
-          ref.refresh(fetchExamPhotosProvider);
-          ref.read(examStillGoingProvider.notifier).state = false;
-        } else {
-          ref.read(examStillGoingProvider.notifier).state = false;
         }
       }
     });
@@ -184,18 +266,15 @@ class ExamCtrl {
     });
 
     ref.listen(authUserProvider, (previous, next) async {
-      if (next != null) {
+      if (next == null) {
+        ref.read(examScheduleProvider.notifier).state = null;
+      } else {
         // ignore: unused_result
         ref.refresh(fetchExamScheduleProvider);
-      } else {
-        ref.read(examScheduleProvider.notifier).state = null;
+        // ignore: unused_result
+        ref.refresh(fetchExamResultProvider);
       }
     });
-
-    if (ref.read(authUserProvider) != null) {
-      // ignore: unused_result
-      ref.refresh(fetchExamScheduleProvider);
-    }
   }
 
   void loadSetting() {
@@ -295,169 +374,194 @@ class ExamCtrl {
   }
 
   Future<void> callStart({bool showLog = false}) async {
-    final reqs = Reqs(path: '/api/v1/exam/start', data: {
-      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-      "category_id": ref.read(examScheduleProvider)?.categoryId,
-      "start_at": DateTime.now().dbDateTime(),
-      "device_id": ref.read(deviceIdProvider),
-      "device_name": ref.read(deviceNameProvider),
-      "ip_address": ref.read(wifiIPv4Provider),
-      "location": ref.read(locationProvider),
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("callStart", name: _kLogName);
 
-    if (state.hasError) return;
-    if (state.value == null) return;
+      final reqs = Reqs(path: '/api/v1/exam/start', data: {
+        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+        "category_id": ref.read(examScheduleProvider)?.categoryId,
+        "start_at": DateTime.now().dbDateTime(),
+        "device_id": ref.read(deviceIdProvider),
+        "device_name": ref.read(deviceNameProvider),
+        "ip_address": ref.read(wifiIPv4Provider),
+        "location": ref.read(locationProvider),
+      });
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    final exam = Exam.fromJson(state.value);
-    if (exam.state == 'COMPLETED') {
-      // ignore: unused_result
-      ref.refresh(fetchExamScheduleProvider);
-      return;
+      if (data == null) return;
+
+      final exam = Exam.fromJson(data);
+      if (exam.state == 'COMPLETED') {
+        // ignore: unused_result
+        ref.refresh(fetchExamScheduleProvider);
+        return;
+      }
+
+      ref.read(examProvider.notifier).state = exam.afterStart();
+
+      // Set random page for getting silent picture
+      randomPages = _getRandomCount();
+      if (showLog) log("randomPages : $randomPages", name: _kLogName);
+
+      ref.read(examInterruptionProvider.notifier).state = false;
+
+      // GOTO Question Page
+      ref.read(pageUtilsProvider).goto(page: ExamQuestionView());
+      loadQuestion();
+      _startTimer();
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error : callStart", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
-
-    ref.read(examProvider.notifier).state = exam.afterStart();
-
-    // Set random page for getting silent picture
-    randomPages = _getRandomCount();
-    if (showLog) log("randomPages : $randomPages", name: _kLogName);
-
-    ref.read(examInterruptionProvider.notifier).state = false;
-
-    // GOTO Question Page
-    ref.read(pageUtilsProvider).goto(page: ExamQuestionView());
-    loadQuestion();
-    _startTimer();
   }
 
   Future<void> callFinish({bool force = false, bool showLog = true}) async {
-    if (force == false) {
-      bool result = await AlertService.confirm(
-        body: 'Anda sudah yakin ingin menyelesaikan ujian ini ?',
-      );
-      if (showLog) log('result : $result', name: _kLogName);
-      if (result == false) return;
+    try {
+      log("callFinish", name: _kLogName);
 
-      ref.read(pageUtilsProvider).popz();
-    }
+      if (force == false) {
+        final result = await AlertService.confirm(
+          body: 'Anda sudah yakin ingin menyelesaikan ujian ini ?',
+        );
+        if (result == false) return;
+      }
 
-    ref.read(examStillGoingProvider.notifier).state = false;
-    ref.read(examInterruptionProvider.notifier).state = false;
+      ref.read(examStillGoingProvider.notifier).state = false;
+      ref.read(examInterruptionProvider.notifier).state = false;
 
-    final reqs = Reqs(path: '/api/v1/exam/finish', data: {
-      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-      "finish_at": DateTime.now().dbDateTime(),
-      "device_id": ref.read(deviceIdProvider),
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
+      final reqs = Reqs(path: '/api/v1/exam/finish', data: {
+        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+        "finish_at": DateTime.now().dbDateTime(),
+        "device_id": ref.read(deviceIdProvider),
+      });
+      await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    if (state.hasError) {
+      _cancelTimer();
+      // ignore: unused_result
+      ref.refresh(fetchExamScheduleProvider);
+      // ignore: unused_result
+      ref.refresh(fetchExamResultProvider);
+
+      // Let the process all done before pop the page
+      if (force == false) {
+        LoadingService.show();
+        await Future.delayed(Duration(seconds: 2));
+        LoadingService.dissmiss();
+        ref.read(pageUtilsProvider).popz();
+      }
+    } catch (e, s) {
       // This conditionally executed if network is not connected
       if (showLog) log('callFinish : network is not connected', name: _kLogName);
       final examSchedule = ref.read(examScheduleProvider);
       ref.read(examScheduleProvider.notifier).state = examSchedule?.copyWith(state: 'COMPLETED');
       final exam = ref.read(examProvider);
       ref.read(examProvider.notifier).state = exam?.copyWith(state: 'COMPLETED');
-      return;
-    }
 
-    _cancelTimer();
-    // ignore: unused_result
-    ref.refresh(fetchExamScheduleProvider);
-    // ignore: unused_result
-    ref.refresh(fetchExamResultProvider);
+      ref.read(talkerProvider).errx("Error : callFinish", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> callAnswer(int idx, String answer, {bool showLog = true}) async {
-    final exam = ref.read(examProvider);
-    String? oldKey = exam?.keys[idx];
-    answer = answer.toUpperCase();
+    try {
+      log("callAnswer", name: _kLogName);
 
-    if (showLog) log('oldAnswer : $oldKey', name: _kLogName);
-    if (showLog) log('newAnswer : $answer', name: _kLogName);
-    if (answer == oldKey) return;
+      final exam = ref.read(examProvider);
+      String? oldKey = exam?.keys[idx];
+      answer = answer.toUpperCase();
 
-    if (showLog) log('answerKeys : ${exam?.answerKeys}', name: _kLogName);
+      if (showLog) log('oldAnswer : $oldKey', name: _kLogName);
+      if (showLog) log('newAnswer : $answer', name: _kLogName);
+      if (answer == oldKey) return;
 
-    int? qid = exam?.qids[idx];
-    String? opt = exam?.opts[idx];
-    String? qIdOpt = "$qid$opt";
-    if (showLog) log('question_id : $qIdOpt', name: _kLogName);
+      if (showLog) log('answerKeys : ${exam?.answerKeys}', name: _kLogName);
 
-    final reqs = Reqs(path: '/api/v1/exam/answer', data: {
-      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-      "question_id": qIdOpt,
-      "answered_key": answer,
-      "device_id": ref.read(deviceIdProvider),
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+      int? qid = exam?.qids[idx];
+      String? opt = exam?.opts[idx];
+      String? qIdOpt = "$qid$opt";
+      if (showLog) log('question_id : $qIdOpt', name: _kLogName);
 
-    if (state.hasError) {
-      RespError err = state.error as RespError;
+      final reqs = Reqs(path: '/api/v1/exam/answer', data: {
+        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+        "question_id": qIdOpt,
+        "answered_key": answer,
+        "device_id": ref.read(deviceIdProvider),
+      });
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs);
+
+      if (data == null) return;
+
+      final examR = exam?.afterAnswer(idx, answer);
+      if (showLog) log('answerKeys : ${examR?.answerKeys}', name: _kLogName);
+      ref.read(examProvider.notifier).state = examR;
+
+      if (ref.read(autoNextQuestionProvider) == true) {
+        loadQuestion(Go.next);
+      }
+    } catch (e, s) {
+      RespError err = e as RespError;
       if (showLog) log('answer error : ${err.code} - ${err.message}', name: _kLogName);
       if (err.code == 409) {
         ref.read(examInterruptionProvider.notifier).state = true;
       }
-      return;
-    }
-    if (state.value == null) return;
 
-    final examR = exam?.afterAnswer(idx, answer);
-    if (showLog) log('answerKeys : ${examR?.answerKeys}', name: _kLogName);
-    ref.read(examProvider.notifier).state = examR;
-
-    if (ref.read(autoNextQuestionProvider) == true) {
-      loadQuestion(Go.next);
+      ref.read(talkerProvider).errx("Error : callAnswer", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   Future<void> callCheckScore({bool showLog = true}) async {
-    final exam = ref.read(examProvider);
-    int clickScore = exam?.clickScore ?? 0;
-    int checkScore = exam?.checkScore ?? 0;
+    try {
+      log("callCheckScore", name: _kLogName);
 
-    if (checkScore >= clickScore) {
-      SnackBarService(message: Text("Cek score sudah mencapai batas maksimal (maks: $checkScore kali)"))
-          .shown(bottom: 50);
-      return;
-    }
-    bool result = await AlertService.confirm(
-      body: """Anda memiliki ${clickScore - checkScore} kali kesempatan${checkScore == 1 ? ' lagi' : ''}. \n
+      final exam = ref.read(examProvider);
+      int clickScore = exam?.clickScore ?? 0;
+      int checkScore = exam?.checkScore ?? 0;
+
+      if (checkScore >= clickScore) {
+        SnackBarService(message: Text("Cek score sudah mencapai batas maksimal (maks: $checkScore kali)"))
+            .shown(bottom: 50);
+        return;
+      }
+      final result = await AlertService.confirm(
+        body: """Anda memiliki ${clickScore - checkScore} kali kesempatan${checkScore == 1 ? ' lagi' : ''}. \n
       Apakah anda ingin menggunakannya Cek Score sekarang?""",
-    );
-    if (showLog) log('result : $result', name: _kLogName);
-    if (result == false) return;
+      );
+      if (showLog) log('result : $result', name: _kLogName);
+      if (result == false) return;
 
-    final reqs = Reqs(path: '/api/v1/exam/check_score', data: {
-      "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-      "device_id": ref.read(deviceIdProvider),
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).fetch(reqs: reqs));
+      final reqs = Reqs(path: '/api/v1/exam/check_score', data: {
+        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+        "device_id": ref.read(deviceIdProvider),
+      });
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    if (state.hasError) {
-      RespError err = state.error as RespError;
+      if (data == null) return;
+
+      final examR = Exam.fromJson(data);
+
+      ref.read(examProvider.notifier).state = exam?.copyWith(checkScore: examR.checkScore, state: examR.state);
+      if (examR.state == 'COMPLETED') {
+        // ignore: unused_result
+        ref.refresh(fetchExamScheduleProvider);
+        return;
+      }
+
+      // ignore: unused_result
+      ref.refresh(fetchExamResultProvider);
+
+      // GOTO Result Page
+      ref.read(pageUtilsProvider).goto(page: ExamResultView(type: 1));
+    } catch (e, s) {
+      RespError err = e as RespError;
       if (showLog) log('check_score error : ${err.code} - ${err.message}', name: _kLogName);
       if (err.code == 409) {
         ref.read(examInterruptionProvider.notifier).state = true;
       }
-      return;
+
+      ref.read(talkerProvider).errx("Error : callCheckScore", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
-    if (state.value == null) return;
-
-    final examR = Exam.fromJson(state.value);
-
-    ref.read(examProvider.notifier).state = exam?.copyWith(checkScore: examR.checkScore, state: examR.state);
-    if (examR.state == 'COMPLETED') {
-      // ignore: unused_result
-      ref.refresh(fetchExamScheduleProvider);
-      return;
-    }
-
-    // ignore: unused_result
-    ref.refresh(fetchExamResultProvider);
-
-    // GOTO Result Page
-    ref.read(pageUtilsProvider).goto(page: ExamResultView(type: 1));
   }
 
   void loadQuestion([Go? go, bool showLog = false]) {
@@ -520,114 +624,122 @@ class ExamCtrl {
   }
 
   Future updatePhotoExamStart(File file, {bool showLog = false}) async {
-    if (showLog) log("file : ${file.path}", name: _kLogName);
+    try {
+      log("updatePhotoExamStart", name: _kLogName);
 
-    final reqs = Reqs(
-      path: '/api/v1/exam/upload_photo',
-      filePath: file.path,
-      fileKey: 'userfile',
-      data: {
-        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-        "type": "exam_start",
-      },
-    );
-    final state =
-        await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs, showLog: true));
+      final reqs = Reqs(
+        path: '/api/v1/exam/upload_photo',
+        filePath: file.path,
+        fileKey: 'userfile',
+        data: {
+          "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+          "type": "exam_start",
+        },
+      );
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs, showLog: true);
+      if (data == null) {
+        SnackBarService.show(message: "Invalid response from AWS Server");
+        throw "Invalid response from AWS Server";
+      }
 
-    if (state.hasError) return;
-
-    if (state.value != null) {
       final dummyId = Random().nextInt(99999);
-      final url = "${state.value['url']}?v=$dummyId";
+      final url = "${data['url']}?v=$dummyId";
       if (showLog) log("url : $url", name: _kLogName);
 
       // ignore: unused_result
-      ref.refresh(fetchExamScheduleProvider);
-    } else {
-      SnackBarService.show(message: "Error : Response null from aws server");
+      ref.refresh(fetchExamPhotosProvider);
+      // ignore: unused_result
+      ref.refresh(checkExamPreparationProvider);
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error : updatePhotoExamStart", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   Future updatePhotoExamFinish(File file, {bool showLog = false}) async {
-    if (showLog) log("file : ${file.path}", name: _kLogName);
+    try {
+      log("updatePhotoExamFinish", name: _kLogName);
 
-    final reqs = Reqs(
-      path: '/api/v1/exam/upload_photo',
-      filePath: file.path,
-      fileKey: 'userfile',
-      data: {
-        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-        "type": "exam_finish",
-      },
-    );
-    final state =
-        await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs, showLog: true));
+      final reqs = Reqs(
+        path: '/api/v1/exam/upload_photo',
+        filePath: file.path,
+        fileKey: 'userfile',
+        data: {
+          "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+          "type": "exam_finish",
+        },
+      );
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs, showLog: true);
+      if (data == null) {
+        SnackBarService.show(message: "Invalid response from AWS Server");
+        throw "Invalid response from AWS Server";
+      }
 
-    if (state.hasError) return;
-
-    if (state.value != null) {
       final dummyId = Random().nextInt(99999);
-      final url = "${state.value['url']}?v=$dummyId";
+      final url = "${data['url']}?v=$dummyId";
       if (showLog) log("url : $url", name: _kLogName);
 
+      // ignore: unused_result
+      ref.refresh(fetchExamPhotosProvider);
       // ignore: unused_result
       ref.refresh(fetchExamResultProvider);
       // ignore: unused_result
       ref.refresh(fetchExamScheduleProvider);
-    } else {
-      SnackBarService.show(message: "Error : Response null from aws server");
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error : updatePhotoExamFinish", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   Future updatePhotoExamRandom1(File file, {bool showLog = false}) async {
-    if (showLog) log("file : ${file.path}", name: _kLogName);
+    try {
+      log("updatePhotoExamRandom1", name: _kLogName);
 
-    final reqs = Reqs(
-      path: '/api/v1/exam/upload_photo',
-      filePath: file.path,
-      fileKey: 'userfile',
-      data: {
-        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-        "type": "exam_rnd_1",
-      },
-    );
-    final state = await AsyncValue.guard(
-        () async => await ref.read(apiServiceProvider).call(reqs: reqs, showBusy: false, showLog: true));
+      final reqs = Reqs(
+        path: '/api/v1/exam/upload_photo',
+        filePath: file.path,
+        fileKey: 'userfile',
+        data: {
+          "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+          "type": "exam_rnd_1",
+        },
+      );
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs, showBusy: false, showLog: true);
+      if (data == null) {
+        throw "Invalid response from AWS Server";
+      }
 
-    if (state.hasError) return;
-
-    if (state.value != null) {
       final dummyId = Random().nextInt(99999);
-      final url = "${state.value['url']}?v=$dummyId";
+      final url = "${data['url']}?v=$dummyId";
       if (showLog) log("url : $url", name: _kLogName);
-    } else {
-      if (showLog) log("Error : Response null from aws server", name: _kLogName);
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error : updatePhotoExamRandom1", error: e, stackTrace: s, name: _kLogName);
     }
   }
 
   Future updatePhotoExamRandom2(File file, {bool showLog = false}) async {
-    if (showLog) log("file : ${file.path}", name: _kLogName);
+    try {
+      log("updatePhotoExamRandom2", name: _kLogName);
 
-    final reqs = Reqs(
-      path: '/api/v1/exam/upload_photo',
-      filePath: file.path,
-      fileKey: 'userfile',
-      data: {
-        "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
-        "type": "exam_rnd_2",
-      },
-    );
-    final state = await AsyncValue.guard(
-        () async => await ref.read(apiServiceProvider).call(reqs: reqs, showBusy: false, showLog: true));
+      final reqs = Reqs(
+        path: '/api/v1/exam/upload_photo',
+        filePath: file.path,
+        fileKey: 'userfile',
+        data: {
+          "schedule_request_id": ref.read(examScheduleProvider)?.scheduleRequestId,
+          "type": "exam_rnd_2",
+        },
+      );
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs, showBusy: false, showLog: true);
+      if (data == null) {
+        throw "Invalid response from AWS Server";
+      }
 
-    if (state.hasError) return;
-
-    if (state.value != null) {
       final dummyId = Random().nextInt(99999);
-      final url = "${state.value['url']}?v=$dummyId";
+      final url = "${data['url']}?v=$dummyId";
       if (showLog) log("url : $url", name: _kLogName);
-    } else {
-      if (showLog) log("Error : Response null from aws server", name: _kLogName);
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error : updatePhotoExamRandom2", error: e, stackTrace: s, name: _kLogName);
     }
   }
 

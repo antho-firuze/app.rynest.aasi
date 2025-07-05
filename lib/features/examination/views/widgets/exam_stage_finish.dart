@@ -81,7 +81,6 @@ class ExamStageFinish extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
                             children: [
-                              Text('Note: Untuk melihat hasil ujian silahkan anda cek di Menu Hasil Ujian').center(),
                               20.height,
                               const Text(
                                       'Apabila ada pertanyaan mengenai Ujian Lisensi ini silahkan hubungi Customer Service AASI.')

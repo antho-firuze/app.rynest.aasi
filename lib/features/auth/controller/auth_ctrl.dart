@@ -62,6 +62,8 @@ class AuthCtrl {
 
   void loadToken() {
     try {
+      log("loadToken", name: _kLogName);
+
       final data = ref.read(sharedPrefProvider).getString(_tokenKey);
       if (data != null) {
         final token = JwtToken.fromJson(jsonDecode(data));
@@ -69,13 +71,16 @@ class AuthCtrl {
       } else {
         ref.read(authTokenProvider.notifier).state = null;
       }
-    } catch (e) {
-      ref.read(talkerProvider).errx("Error: loadToken", exception: e, name: _kLogName);
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: loadToken", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   void setToken(JwtToken? token) {
     try {
+      log("setToken", name: _kLogName);
+
       if (token == null) {
         ref.read(authTokenProvider.notifier).state = null;
         ref.read(sharedPrefProvider).remove(_tokenKey);
@@ -83,47 +88,70 @@ class AuthCtrl {
         ref.read(authTokenProvider.notifier).state = token;
         ref.read(sharedPrefProvider).setString(_tokenKey, jsonEncode(token.toJson()));
       }
-    } catch (e) {
-      ref.read(talkerProvider).errx("Error: setToken", exception: e, name: _kLogName);
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: setToken", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   Future<JwtToken?> refreshToken() async {
-    final reqs = Reqs(path: '/api/v1/auth/refresh_token', data: {});
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).refreshToken(
-          reqs: reqs,
-          refreshToken: ref.read(authTokenProvider)?.refreshToken,
-        ));
+    try {
+      log("refreshToken", name: _kLogName);
 
-    if (state.hasError) return null;
+      final refreshToken = ref.read(authTokenProvider)?.refreshToken;
 
-    final jwtToken = JwtToken.fromJson(state.value);
-    setToken(jwtToken);
+      final reqs = Reqs(path: '/api/v1/auth/refresh_token', data: {});
+      final data = await ref.read(apiServiceProvider).refreshToken(reqs: reqs, refreshToken: refreshToken);
 
-    return jwtToken;
+      if (data == null) return null;
+
+      final jwtToken = JwtToken.fromJson(data);
+      setToken(jwtToken);
+
+      return jwtToken;
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: refreshToken", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   void loadUser() {
-    final data = ref.read(sharedPrefProvider).getString(_userKey);
-    if (data != null) {
-      final user = User.fromJson(jsonDecode(data));
-      ref.read(authUserProvider.notifier).state = user;
-    } else {
-      ref.read(authUserProvider.notifier).state = null;
+    try {
+      log("loadUser", name: _kLogName);
+
+      final data = ref.read(sharedPrefProvider).getString(_userKey);
+      if (data != null) {
+        final user = User.fromJson(jsonDecode(data));
+        ref.read(authUserProvider.notifier).state = user;
+      } else {
+        ref.read(authUserProvider.notifier).state = null;
+      }
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: loadUser", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   void setUser(User? user) {
-    if (user == null) {
-      ref.read(authUserProvider.notifier).state = null;
-      ref.read(sharedPrefProvider).remove(_userKey);
-    } else {
-      ref.read(authUserProvider.notifier).state = user;
-      ref.read(sharedPrefProvider).setString(_userKey, jsonEncode(user.toJson()));
+    try {
+      log("setUser", name: _kLogName);
+
+      if (user == null) {
+        ref.read(authUserProvider.notifier).state = null;
+        ref.read(sharedPrefProvider).remove(_userKey);
+      } else {
+        ref.read(authUserProvider.notifier).state = user;
+        ref.read(sharedPrefProvider).setString(_userKey, jsonEncode(user.toJson()));
+      }
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: setUser", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
     }
   }
 
   void loadRemember() {
+    log("loadRemember", name: _kLogName);
+
     final data = ref.read(sharedPrefProvider).getString(_rememberKey);
     if (data != null) {
       final remember = jsonDecode(data);
@@ -138,6 +166,8 @@ class AuthCtrl {
   }
 
   void setRemember(bool value) {
+    log("setRemember", name: _kLogName);
+
     if (value) {
       ref.read(isRememberProvider.notifier).state = true;
       final remember = {"identifier": ref.read(textIdentifierProvider), "password": ref.read(textPasswordProvider)};
@@ -151,122 +181,153 @@ class AuthCtrl {
   }
 
   Future<bool> signIn() async {
-    final reqs = Reqs(path: '/api/v1/auth/signin', data: {
-      "identifier": ref.read(textIdentifierProvider),
-      "password": ref.read(textPasswordProvider),
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("signIn", name: _kLogName);
 
-    if (state.hasError) return false;
+      final reqs = Reqs(path: '/api/v1/auth/signin', data: {
+        "identifier": ref.read(textIdentifierProvider),
+        "password": ref.read(textPasswordProvider),
+      });
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    final jwtToken = JwtToken.fromJson(state.value);
-    final user = User.fromJson(state.value['user']);
+      final jwtToken = JwtToken.fromJson(data);
+      final user = User.fromJson(data['user']);
 
-    setToken(jwtToken);
-    setUser(user);
-    setRemember(ref.read(isRememberProvider));
+      setToken(jwtToken);
+      setUser(user);
+      setRemember(ref.read(isRememberProvider));
 
-    return true;
+      return true;
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: signIn", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<bool> signUp() async {
-    final reqs = Reqs(path: '/api/v1/auth/signup', data: {
-      "identifier": ref.read(textIdentifierProvider),
-      "email": ref.read(textEmailProvider),
-      "password": ref.read(textPasswordProvider),
-      "name": ref.read(textNameProvider),
-      "fullname": ref.read(textFullNameProvider),
-      "phone": ref.read(textPhoneProvider),
-      "need_verify": false,
-      "is_testing": false,
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("signUp", name: _kLogName);
 
-    if (state.hasError) return false;
+      final reqs = Reqs(path: '/api/v1/auth/signup', data: {
+        "identifier": ref.read(textIdentifierProvider),
+        "email": ref.read(textEmailProvider),
+        "password": ref.read(textPasswordProvider),
+        "name": ref.read(textNameProvider),
+        "fullname": ref.read(textFullNameProvider),
+        "phone": ref.read(textPhoneProvider),
+        "need_verify": false,
+        "is_testing": false,
+      });
+      await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    return true;
+      return true;
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: signUp", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> sendForgotCode({SendVia sendVia = SendVia.email}) async {
-    final reqs = Reqs(path: '/api/v1/auth/send_forgot_code', data: {
-      "email": ref.read(textEmailProvider),
-      "phone": ref.read(textPhoneProvider),
-      "send_via": sendVia.name,
-      "is_testing": false,
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("sendForgotCode", name: _kLogName);
 
-    if (state.hasError) return;
+      final reqs = Reqs(path: '/api/v1/auth/send_forgot_code', data: {
+        "email": ref.read(textEmailProvider),
+        "phone": ref.read(textPhoneProvider),
+        "send_via": sendVia.name,
+        "is_testing": false,
+      });
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    // log(state.value['verification_code']);
-    ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
-    ref.read(verifyTypeProvider.notifier).state = 'forgot_password';
-    ref.read(isCountdownExpiredProvider.notifier).state = false;
-    ref.read(countdownTimerProvider.notifier).state = countDownExpired;
+      // log(state.value['verification_code']);
+      ref.read(verifyCodeProvider.notifier).state = data['verification_code'];
+      ref.read(verifyTypeProvider.notifier).state = 'forgot_password';
+      ref.read(isCountdownExpiredProvider.notifier).state = false;
+      ref.read(countdownTimerProvider.notifier).state = countDownExpired;
 
-    await AlertService.showOk(
-      body: 'Kode verifikasi telah dikirimkan silahkan anda cek !',
-    );
+      await AlertService.showOk(
+        body: 'Kode verifikasi telah dikirimkan silahkan anda cek !',
+      );
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: sendForgotCode", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> sendVerificationCode() async {
-    final reqs = Reqs(path: '/api/v1/auth/send_verification_code', data: {
-      "type": ref.read(verifyTypeProvider),
-      "is_testing": false,
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("sendVerificationCode", name: _kLogName);
 
-    if (state.hasError) return;
+      final reqs = Reqs(path: '/api/v1/auth/send_verification_code', data: {
+        "type": ref.read(verifyTypeProvider),
+        "is_testing": false,
+      });
+      final data = await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    // log("resendCode => verification_code : ${state.value['verification_code']}", name: 'AUTH-CTRL');
-    ref.read(verifyCodeProvider.notifier).state = state.value['verification_code'];
-    ref.read(isCountdownExpiredProvider.notifier).state = false;
-    ref.read(countdownTimerProvider.notifier).state = countDownExpired;
+      ref.read(verifyCodeProvider.notifier).state = data['verification_code'];
+      ref.read(isCountdownExpiredProvider.notifier).state = false;
+      ref.read(countdownTimerProvider.notifier).state = countDownExpired;
 
-    await AlertService.showOk(
-      body: 'Kode verifikasi telah dikirimkan silahkan anda cek !',
-    );
+      await AlertService.showOk(
+        body: 'Kode verifikasi telah dikirimkan silahkan anda cek !',
+      );
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: sendVerificationCode", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> resetPwd() async {
-    final reqs = Reqs(path: '/api/v1/auth/reset_pwd', data: {
-      "email": ref.read(textEmailProvider),
-      "password": ref.read(textPasswordProvider),
-      "need_confirm": true,
-      "is_testing": false,
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("resetPwd", name: _kLogName);
 
-    if (state.hasError) return;
+      final reqs = Reqs(path: '/api/v1/auth/reset_pwd', data: {
+        "email": ref.read(textEmailProvider),
+        "password": ref.read(textPasswordProvider),
+        "need_confirm": true,
+        "is_testing": false,
+      });
+      await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    await AlertService.showOk(
-      body: 'Berhasil, silahkan anda coba masuk dengan kode sandi terbaru !'.hardcoded,
-      onOk: () {
-        ref.read(goRouterProvider).pop(true);
-      },
-    );
+      await AlertService.showOk(
+        body: 'Berhasil, silahkan anda coba masuk dengan kode sandi terbaru !'.hardcoded,
+        onOk: () {
+          ref.read(goRouterProvider).pop(true);
+        },
+      );
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: sendVerificationCode", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> changePwd() async {
-    final reqs = Reqs(path: '/api/v1/auth/change_pwd', data: {
-      "old_password": ref.read(textPasswordOldProvider),
-      "new_password": ref.read(textPasswordProvider),
-      "need_confirm": false,
-      "is_testing": false,
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("changePwd", name: _kLogName);
 
-    if (state.hasError) return;
+      final reqs = Reqs(path: '/api/v1/auth/change_pwd', data: {
+        "old_password": ref.read(textPasswordOldProvider),
+        "new_password": ref.read(textPasswordProvider),
+        "need_confirm": false,
+        "is_testing": false,
+      });
+      await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    await AlertService.showOk(
-      body: 'Berhasil, kode sandi sudah berubah !'.hardcoded,
-      onOk: () {
-        ref.read(goRouterProvider).pop(true);
-      },
-    );
+      await AlertService.showOk(
+        body: 'Berhasil, kode sandi sudah berubah !'.hardcoded,
+        onOk: () {
+          ref.read(goRouterProvider).pop(true);
+        },
+      );
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: changePwd", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> signOut({bool silence = false}) async {
+    log("signOut", name: _kLogName);
+
     if (silence) {
       setUser(null);
       setToken(null);
@@ -283,33 +344,45 @@ class AuthCtrl {
   }
 
   Future<void> closingAccount() async {
-    final reqs = Reqs(path: '/api/v1/auth/closing_account', data: {
-      "is_send_email_info": true,
-      "is_testing": false,
-    });
-    final state = await AsyncValue.guard(() async => await ref.read(apiServiceProvider).call(reqs: reqs));
+    try {
+      log("closingAccount", name: _kLogName);
 
-    if (state.hasError) return;
+      final reqs = Reqs(path: '/api/v1/auth/closing_account', data: {
+        "is_send_email_info": true,
+        "is_testing": false,
+      });
+      await ref.read(apiServiceProvider).call(reqs: reqs);
 
-    await AlertService.showOk(
-      body:
-          'Akun Anda telah berhasil di non-aktifkan, silahkan cek email anda untuk informasi lebih lanjut !'.hardcoded,
-      onOk: () {
-        setUser(null);
-        setToken(null);
-        ref.read(pageUtilsProvider).popz();
-      },
-    );
+      await AlertService.showOk(
+        body: 'Akun Anda telah berhasil di non-aktifkan, silahkan cek email anda untuk informasi lebih lanjut !'
+            .hardcoded,
+        onOk: () {
+          setUser(null);
+          setToken(null);
+          ref.read(pageUtilsProvider).popz();
+        },
+      );
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: closingAccount", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future<void> removeAccount() async {
-    await AlertService.confirm(
-      body: "Anda yakin ingin menon-aktifkan Akun Anda ?",
-      onYes: () async {
-        ref.read(verifyTypeProvider.notifier).state = 'unregister';
-        await sendVerificationCode();
-      },
-    );
+    try {
+      log("removeAccount", name: _kLogName);
+
+      await AlertService.confirm(
+        body: "Anda yakin ingin menon-aktifkan Akun Anda ?",
+        onYes: () async {
+          ref.read(verifyTypeProvider.notifier).state = 'unregister';
+          await sendVerificationCode();
+        },
+      );
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: removeAccount", error: e, stackTrace: s, name: _kLogName);
+      rethrow;
+    }
   }
 
   Future signInCallback({required VoidCallback next}) async {

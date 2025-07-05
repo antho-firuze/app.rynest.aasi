@@ -69,11 +69,11 @@ class ExamScheduleView extends ConsumerWidget {
                   child: Column(
                     spacing: 10,
                     children: [
-                      FieldList(caption: Text('Nama Lengkap'), value: Text(profile?.fullName ?? '').bold().clr(oBlack)),
-                      FieldList(caption: Text('No Identitas'), value: Text(profile?.cardNo ?? '').bold().clr(oBlack)),
-                      FieldList(caption: Text('Code'), value: Text(profile?.memberId ?? '').bold().clr(oBlack)),
+                      FieldList(caption: Text('Nama Lengkap'), value: Text("${profile?.fullName}").bold().clr(oBlack)),
+                      FieldList(caption: Text('No Identitas'), value: Text("${profile?.cardNo}").bold().clr(oBlack)),
+                      FieldList(caption: Text('Code'), value: Text("${profile?.memberId}").bold().clr(oBlack)),
                       FieldList(
-                          caption: Text('Perusahaan'), value: Text(profile?.company?.name ?? '').bold().clr(oBlack)),
+                          caption: Text('Perusahaan'), value: Text("${profile?.company?.name}").bold().clr(oBlack)),
                     ],
                   ),
                 ),
@@ -100,8 +100,8 @@ class ExamScheduleView extends ConsumerWidget {
                             spacing: 10,
                             children: [
                               FieldList(
-                                  caption: Text('Kategori'), value: Text(examCategory?.name ?? '').bold().clr(oBlack)),
-                              FieldList(caption: Text('Sesi'), value: Text(examSchedule.name ?? '').bold().clr(oBlack)),
+                                  caption: Text('Kategori'), value: Text("${examCategory?.name}").bold().clr(oBlack)),
+                              FieldList(caption: Text('Sesi'), value: Text("${examSchedule.name}").bold().clr(oBlack)),
                               FieldList(
                                   caption: Text('Durasi'),
                                   value: Text("${examCategory?.duration} menit").bold().clr(oBlack)),
@@ -111,12 +111,12 @@ class ExamScheduleView extends ConsumerWidget {
                               5.height,
                               FieldList(
                                   caption: Text('Tanggal Mulai'),
-                                  value: Text(examSchedule.openRegistration!.custom('EEEE, d MMM yyyy - HH:mm'))
+                                  value: Text("${examSchedule.openRegistration?.custom('EEEE, d MMM yyyy - HH:mm')}")
                                       .bold()
                                       .clr(oBlack)),
                               FieldList(
                                   caption: Text('Tanggal Berakhir'),
-                                  value: Text(examSchedule.closeRegistration!.custom('EEEE, d MMM yyyy - HH:mm'))
+                                  value: Text("${examSchedule.closeRegistration?.custom('EEEE, d MMM yyyy - HH:mm')}")
                                       .bold()
                                       .clr(oBlack)),
                               5.height,

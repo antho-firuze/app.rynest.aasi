@@ -42,7 +42,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
     log("SplashView => Build");
 
     return MyUI(
-      enabledSafeArea: false,
+      safeAreaTop: false,
       showConnectivityInfo: false,
       child: Scaffold(
         body: Stack(

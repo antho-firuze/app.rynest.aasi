@@ -1,4 +1,3 @@
-
 import 'package:app.rynest.aasi/common/views/connectivity_wrapper.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/utils/system_ui_overlay.dart';
@@ -13,7 +12,8 @@ class MyUI extends StatelessWidget {
     super.key,
     required this.child,
     this.isDark = false,
-    this.enabledSafeArea = true,
+    this.safeAreaTop = true,
+    this.safeAreaBottom = true,
     this.customUiOverlayStyle,
     this.showScreenInfo = false,
     this.showConnectivityInfo = true,
@@ -24,7 +24,8 @@ class MyUI extends StatelessWidget {
 
   final Widget child;
   final bool isDark;
-  final bool enabledSafeArea;
+  final bool safeAreaTop;
+  final bool safeAreaBottom;
   final SystemUiOverlayStyle? customUiOverlayStyle;
   final bool showScreenInfo;
   final bool showConnectivityInfo;
@@ -89,8 +90,8 @@ class MyUI extends StatelessWidget {
                     child: customAppBarBackground!,
                   ),
                 SafeArea(
-                  top: enabledSafeArea,
-                  bottom: false,
+                  top: safeAreaTop,
+                  bottom: safeAreaBottom,
                   child: child,
                 ),
                 if (showScreenInfo)

@@ -27,16 +27,16 @@ class BackCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            Positioned(
-              top: 13,
-              left: 10,
-              child: Logo(width: width * .2, src: 'assets/images/logo_aasi.png', color: oWhite),
-            ),
-            Positioned(
-              bottom: 13,
-              right: 10,
-              child: Logo(width: width * .1, src: 'assets/images/logo_mari_berasuransi.png'),
-            ),
+            // Positioned(
+            //   top: 13,
+            //   left: 10,
+            //   child: Logo(width: width * .2, src: 'assets/images/logo_aasi.png', color: oWhite),
+            // ),
+            // Positioned(
+            //   bottom: 13,
+            //   right: 10,
+            //   child: Logo(width: width * .1, src: 'assets/images/logo_mari_berasuransi.png'),
+            // ),
           ],
         ),
       ),

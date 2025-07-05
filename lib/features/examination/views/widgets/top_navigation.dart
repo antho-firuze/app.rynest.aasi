@@ -18,6 +18,7 @@ class TopNavigation extends ConsumerWidget {
     final exam = ref.watch(examProvider);
 
     int checkScore = exam?.checkScore ?? 0;
+    int clickScore = exam?.clickScore ?? 0;
 
     return Center(
       child: SizedBox(
@@ -31,7 +32,7 @@ class TopNavigation extends ConsumerWidget {
               tooltip: "Lihat score/nilai sementara",
               color: secondaryLight,
               onPressed: () async => await examCtrl.callCheckScore(),
-              child: Text(checkScore == 0 ? "Cek Score" : "Cek Score ( $checkScore )"),
+              child: Text("Cek Score $checkScore/$clickScore"),
             ),
             5.width,
             CustomIcon(

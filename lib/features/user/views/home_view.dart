@@ -37,7 +37,7 @@ class _HomeViewState extends ConsumerState<HomeView> with WidgetsBindingObserver
       if (!ref.read(allowNotificationProvider)) {
         final result = await ref.read(permissionServiceProvider).requestNotificationPermission();
         if (result == true) {
-          debugPrint('yes');
+          // debugPrint('yes');
         }
       }
     });
@@ -65,7 +65,7 @@ class _HomeViewState extends ConsumerState<HomeView> with WidgetsBindingObserver
   @override
   Widget build(BuildContext context) {
     return MyUI(
-      enabledSafeArea: false,
+      safeAreaTop: false,
       child: ExamWrapper(
         onTap: () async => await context.goto(page: const ExamView()),
         child: Scaffold(

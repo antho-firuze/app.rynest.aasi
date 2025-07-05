@@ -36,13 +36,19 @@ class ExamResultView extends ConsumerWidget {
           title: Text(type == 1 ? 'Hasil Ujian Sementara' : 'Hasil Ujian'),
           actions: [
             TextButton(
-              onPressed: () async => ref.refresh(fetchExamResultProvider),
+              onPressed: () async {
+                await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
+                return ref.refresh(fetchExamResultProvider);
+              },
               child: Text('Refresh').clr(oWhite),
             ),
           ],
         ),
         body: RefreshIndicator(
-          onRefresh: () async => ref.refresh(fetchExamResultProvider),
+          onRefresh: () async {
+            await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
+            return ref.refresh(fetchExamResultProvider);
+          },
           child: ref.watch(fetchExamResultProvider).when(
                 skipLoadingOnRefresh: false,
                 data: (data) {

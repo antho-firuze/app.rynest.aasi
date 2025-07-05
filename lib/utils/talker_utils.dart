@@ -7,10 +7,10 @@ extension CustomTalker on Talker {
         pen: AnsiPen()..xterm(121),
       ));
 
-  void errx(dynamic message, {String name = '', Object? exception, StackTrace? stackTrace}) => logCustom(TalkerLog(
+  void errx(dynamic message, {String name = '', Object? error, StackTrace? stackTrace}) => logCustom(TalkerLog(
         message,
         title: name,
-        exception: exception,
+        exception: error,
         stackTrace: stackTrace,
         pen: AnsiPen()..red(),
       ));

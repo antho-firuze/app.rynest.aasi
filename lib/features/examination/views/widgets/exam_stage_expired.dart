@@ -30,10 +30,7 @@ class ExamStageExpired extends ConsumerWidget {
                 title: const Text('Ujian Kadaluarsa').tsTitleL().center().clr(oWhite),
                 subTitle: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: const Text(
-                          'Mohon maaf, jadwal yang telah ditentukan untuk Anda dalam mengikuti Ujian Lisensi AASI telah kadaluarsa. Sedangkan anda belum melakukan Ujian Lisensi tersebut.')
-                      .tsBodyM()
-                      .center(),
+                  child: const Text('Mohon maaf, jadwal Ujian Anda telah berlalu.').tsBodyM().center(),
                 ),
                 child: Column(
                   children: [

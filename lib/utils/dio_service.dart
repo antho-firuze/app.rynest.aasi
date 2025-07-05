@@ -1,9 +1,12 @@
 import 'package:app.rynest.aasi/common/services/talker_service.dart';
 import 'package:app.rynest.aasi/utils/dio_auth_interceptor.dart';
 import 'package:app.rynest.aasi/utils/dio_busy_interceptor.dart';
+import 'package:app.rynest.aasi/utils/talker_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
+
+final _kLogName = 'DIO-SERVICE';
 
 // DIO WITHOUT TOKEN
 // =======================
@@ -11,7 +14,7 @@ final dioProvider = Provider.autoDispose((ref) {
   final dio = Dio();
 
   // ref.onDispose(dio.close);
-  dio.options.connectTimeout = const Duration(seconds: 60);
+  dio.options.connectTimeout = const Duration(seconds: 30);
   dio.interceptors.add(
     TalkerDioLogger(
       talker: ref.read(talkerProvider),
@@ -30,7 +33,7 @@ final dioJWTTokenProvider = Provider.family.autoDispose<Dio, bool>((ref, showLog
   final dio = Dio();
 
   // ref.onDispose(dio.close);
-  dio.options.connectTimeout = const Duration(seconds: 60);
+  dio.options.connectTimeout = const Duration(seconds: 30);
   dio.interceptors.add(DioAuthInterceptor(ref));
   if (showLog) {
     dio.interceptors.add(
@@ -102,6 +105,7 @@ final dioJWTTokenStreamProvider = Provider.autoDispose((ref) {
   final dio = Dio();
 
   // ref.onDispose(dio.close);
+  dio.options.connectTimeout = const Duration(seconds: 30);
   dio.interceptors.add(
     TalkerDioLogger(
       talker: ref.read(talkerProvider),
@@ -124,18 +128,20 @@ final dioJWTTokenStreamProvider = Provider.autoDispose((ref) {
 // DIO FOR CHECK LINK/URL VALIDITY
 // ======================================
 final dioIsValidUrlProvider = FutureProvider.autoDispose.family<bool, String?>((ref, url) async {
-  final dio = Dio();
+  try {
+    final dio = Dio();
 
-  if (url == null) {
-    return false;
+    if (url == null) return false;
+
+    var type = url.substring(0, 4).toLowerCase();
+    if (type != 'http') return false;
+
+    final response = await dio.get(url);
+    if (response.statusCode != 200) return false;
+
+    return true;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : dioIsValidUrlProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
   }
-
-  var type = url.substring(0, 4).toLowerCase();
-  if (type != 'http') {
-    return false;
-  }
-
-  final state = await AsyncValue.guard(() async => await dio.get(url));
-
-  return !state.hasError;
 });

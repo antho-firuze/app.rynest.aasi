@@ -90,27 +90,27 @@ class FrontCard extends ConsumerWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 80.whenLandscape(120),
+                        width: 70.whenLandscape(120),
                         child: isLandscape
-                            ? const Text('Diterbitkan').tsButton().family('Roboto').clr(oWhite)
-                            : const Text('Diterbitkan').tsCaption().family('Roboto').clr(oWhite),
+                            ? const Text('Diterbitkan').size(14).family('Roboto').clr(oWhite)
+                            : const Text('Diterbitkan').size(11).family('Roboto').clr(oWhite),
                       ),
                       isLandscape
-                          ? Text(": $releaseDate").tsButton().clr(oWhite).family('Roboto')
-                          : Text(": $releaseDate").tsCaption().clr(oWhite).family('Roboto'),
+                          ? Text(": $releaseDate").size(14).clr(oWhite).family('Roboto')
+                          : Text(": $releaseDate").size(11).clr(oWhite).family('Roboto'),
                     ],
                   ),
                   Row(
                     children: [
                       SizedBox(
-                        width: 80.whenLandscape(120),
+                        width: 70.whenLandscape(120),
                         child: isLandscape
-                            ? const Text('Berlaku sampai').tsButton().family('Roboto').clr(oWhite)
-                            : const Text('Berlaku sampai').tsCaption().family('Roboto').clr(oWhite),
+                            ? const Text('Berlaku sampai').size(14).family('Roboto').clr(oWhite)
+                            : const Text('Berlaku sampai').size(11).family('Roboto').clr(oWhite),
                       ),
                       isLandscape
-                          ? Text(": $expiredDate").tsButton().clr(oWhite).family('Roboto')
-                          : Text(": $expiredDate").tsCaption().clr(oWhite).family('Roboto'),
+                          ? Text(": $expiredDate").size(14).clr(oWhite).family('Roboto')
+                          : Text(": $expiredDate").size(11).clr(oWhite).family('Roboto'),
                     ],
                   ),
                 ],
