@@ -43,6 +43,7 @@ final examProvider = StateProvider<Exam?>((ref) => null);
 final examScheduleProvider = StateProvider<ExamSchedule?>((ref) => null);
 final examPhotosProvider = StateProvider<List<ExamPhoto>>((ref) => []);
 final examPreparationProvider = StateProvider<List<bool>>((ref) => [false, false, false]);
+final examAfterExamFinishProvider = StateProvider<List<bool>>((ref) => [false]);
 
 final examStillGoingProvider = StateProvider<bool>((ref) => false);
 final examInterruptionProvider = StateProvider<bool>((ref) => false);
@@ -51,7 +52,7 @@ final isRemainingTimeStillGoingProvider = StateProvider<bool?>((ref) => null);
 
 final questionNumProvider = StateProvider<int>((ref) => 1);
 
-// Output [List<bool>] = [true, true, true] / [photo, idcard, examStart]
+// Output [List<bool>] = [true, true, true] / [selfie_photo, idcard_photo, examStart_photo]
 final checkExamPreparationProvider = FutureProvider<List<bool>>((ref) async {
   try {
     await Future.delayed(Duration(seconds: 1));
@@ -61,30 +62,20 @@ final checkExamPreparationProvider = FutureProvider<List<bool>>((ref) async {
     final examPhotos = ref.read(examPhotosProvider);
     log("checkExamPreparationProvider", name: _kLogName);
 
-    // result[0] = false;
-    // result[1] = false;
-    // result[2] = false;
-
     // Check Profile Photo
     if (profile?.photo?.isNotEmpty != null) {
       result[0] = await ref.read(dioIsValidUrlProvider(profile?.photo).future);
-    } else {
-      result[0] = false;
     }
     // Check ID Card Photo
     if (profile?.photoIdCard?.isNotEmpty != null) {
       result[1] = await ref.read(dioIsValidUrlProvider(profile?.photoIdCard).future);
-    } else {
-      result[1] = false;
     }
     // Check Exam Start Photo
     if (examPhotos.isNotEmpty) {
-      final examStartPhoto = examPhotos.firstWhere((element) => element.type == 'exam_start').imageUrl;
+      final examStartPhoto = examPhotos.firstWhere((element) => element.type == 'exam_start', orElse: () => ExamPhoto()).imageUrl;
       if (examStartPhoto?.isNotEmpty != null) {
         result[2] = await ref.read(dioIsValidUrlProvider(examStartPhoto).future);
       }
-    } else {
-      result[2] = false;
     }
 
     ref.read(examPreparationProvider.notifier).state = result;
@@ -92,6 +83,33 @@ final checkExamPreparationProvider = FutureProvider<List<bool>>((ref) async {
     return result;
   } catch (e, s) {
     ref.read(talkerProvider).errx("Error : checkExamPreparationProvider", error: e, stackTrace: s, name: _kLogName);
+    rethrow;
+  }
+});
+
+// Output [List<bool>] = [true] / [examFinish_photo]
+final checkAfterExamFinishProvider = FutureProvider<List<bool>>((ref) async {
+  try {
+    await Future.delayed(Duration(seconds: 2));
+
+    List<bool> result = [false];
+    final examPhotos = ref.read(examPhotosProvider);
+    log("checkAfterExamFinishProvider", name: _kLogName);
+
+    // Check Exam Finish Photo
+    if (examPhotos.isNotEmpty) {
+      final examFinishPhoto =
+          examPhotos.firstWhere((element) => element.type == 'exam_finish', orElse: () => ExamPhoto()).imageUrl;
+      if (examFinishPhoto?.isNotEmpty != null) {
+        result[0] = await ref.read(dioIsValidUrlProvider(examFinishPhoto).future);
+      }
+    }
+
+    ref.read(examAfterExamFinishProvider.notifier).state = result;
+
+    return result;
+  } catch (e, s) {
+    ref.read(talkerProvider).errx("Error : checkAfterExamFinishProvider", error: e, stackTrace: s, name: _kLogName);
     rethrow;
   }
 });
@@ -420,6 +438,18 @@ class ExamCtrl {
       log("callFinish", name: _kLogName);
 
       if (force == false) {
+        // Check exam if has been answered minimal 42 questions
+        final answeredCount = ref.read(examProvider)?.countAnswered() ?? 0;
+        log("Answered Count : $answeredCount", name: _kLogName);
+        if (answeredCount < 42) {
+          await AlertService.showOk(
+            title: "Peringatan",
+            body: "Tidak dapat menyelesaikan Ujian. Sebelum menjawab minimal 42 soal pertanyaan !",
+          );
+          return;
+        }
+
+        // One more confirmation
         final result = await AlertService.confirm(
           body: 'Anda sudah yakin ingin menyelesaikan ujian ini ?',
         );
@@ -642,9 +672,8 @@ class ExamCtrl {
         throw "Invalid response from AWS Server";
       }
 
-      final dummyId = Random().nextInt(99999);
-      final url = "${data['url']}?v=$dummyId";
-      if (showLog) log("url : $url", name: _kLogName);
+      final url = data['url'];
+      if (showLog) log("updatePhotoExamStart : $url", name: _kLogName);
 
       // ignore: unused_result
       ref.refresh(fetchExamPhotosProvider);
@@ -675,9 +704,8 @@ class ExamCtrl {
         throw "Invalid response from AWS Server";
       }
 
-      final dummyId = Random().nextInt(99999);
-      final url = "${data['url']}?v=$dummyId";
-      if (showLog) log("url : $url", name: _kLogName);
+      final url = data['url'];
+      if (showLog) log("updatePhotoExamFinish : $url", name: _kLogName);
 
       // ignore: unused_result
       ref.refresh(fetchExamPhotosProvider);
@@ -685,6 +713,8 @@ class ExamCtrl {
       ref.refresh(fetchExamResultProvider);
       // ignore: unused_result
       ref.refresh(fetchExamScheduleProvider);
+      // ignore: unused_result
+      ref.refresh(checkAfterExamFinishProvider);
     } catch (e, s) {
       ref.read(talkerProvider).errx("Error : updatePhotoExamFinish", error: e, stackTrace: s, name: _kLogName);
       rethrow;
@@ -709,9 +739,8 @@ class ExamCtrl {
         throw "Invalid response from AWS Server";
       }
 
-      final dummyId = Random().nextInt(99999);
-      final url = "${data['url']}?v=$dummyId";
-      if (showLog) log("url : $url", name: _kLogName);
+      final url = data['url'];
+      if (showLog) log("updatePhotoExamRandom1 : $url", name: _kLogName);
     } catch (e, s) {
       ref.read(talkerProvider).errx("Error : updatePhotoExamRandom1", error: e, stackTrace: s, name: _kLogName);
     }
@@ -735,9 +764,8 @@ class ExamCtrl {
         throw "Invalid response from AWS Server";
       }
 
-      final dummyId = Random().nextInt(99999);
-      final url = "${data['url']}?v=$dummyId";
-      if (showLog) log("url : $url", name: _kLogName);
+      final url = data['url'];
+      if (showLog) log("updatePhotoExamRandom2 : $url", name: _kLogName);
     } catch (e, s) {
       ref.read(talkerProvider).errx("Error : updatePhotoExamRandom2", error: e, stackTrace: s, name: _kLogName);
     }

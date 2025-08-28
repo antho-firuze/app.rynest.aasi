@@ -15,33 +15,31 @@ class ExamStageFinish extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(examPhotosProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ujian'),
         actions: [
           TextButton(
-            onPressed: () async => ref.refresh(fetchExamScheduleProvider),
+            onPressed: () async => ref.refresh(checkAfterExamFinishProvider),
             child: Text('Refresh').clr(oWhite),
           ),
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () async => ref.refresh(fetchExamScheduleProvider),
-        child: ref.watch(fetchExamScheduleProvider).when(
+        onRefresh: () async => ref.refresh(checkAfterExamFinishProvider),
+        child: ref.watch(checkAfterExamFinishProvider).when(
               skipLoadingOnRefresh: false,
               data: (data) {
-                if (data == null) {
-                  return Container();
-                }
-
-                final examSchedule = data;
+                bool photoExamFinish = data[0];
 
                 return ListView(
                   children: [
                     5.height,
                     const LogoArtWork(child: LogoApp()),
                     5.height,
-                    if (examSchedule.photoFinish == false) ...[
+                    if (photoExamFinish == false) ...[
                       CustomCard(
                         title: const Text('Pasca Ujian').tsTitleL().center().clr(oWhite),
                         subTitle: Padding(
@@ -57,10 +55,9 @@ class ExamStageFinish extends ConsumerWidget {
                               leading: const Icon(SuperIcons.mg_IDcard_line),
                               title: const Text('Foto Selesai Ujian').bold(),
                               subtitle: const Text('Silahkan anda ambil foto setelah ujian.'),
-                              trailing: Icon(
-                                  examSchedule.photoFinish == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
-                                  color: examSchedule.photoFinish == true ? oGreen : oRed),
-                              onTap: examSchedule.photoFinish == true
+                              trailing: Icon(photoExamFinish == true ? SuperIcons.bx_check : SuperIcons.cl_warning_line,
+                                  color: photoExamFinish == true ? oGreen : oRed),
+                              onTap: photoExamFinish == true
                                   ? null
                                   : () async => await context.goto(page: const CameraExamFinishView()),
                             ),
@@ -95,7 +92,7 @@ class ExamStageFinish extends ConsumerWidget {
                   ],
                 );
               },
-              error: (error, stackTrace) => Container(),
+              error: (error, stackTrace) => Text("$error"),
               loading: () => Center(child: CircularProgressIndicator()),
             ),
       ),

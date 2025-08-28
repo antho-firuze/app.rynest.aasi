@@ -8,87 +8,68 @@ import 'package:app.rynest.aasi/common/widgets/custom_panel.dart';
 import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/utils/datetime_utils.dart';
 import 'package:app.rynest.aasi/utils/download_utils.dart';
-import 'package:app.rynest.aasi/utils/router.dart';
 import 'package:app.rynest.aasi/utils/ui_helper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:super_icons/super_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:html/parser.dart' show parse;
 
-class VersionService {
-  final Ref ref;
-  VersionService(this.ref);
+class CheckVersion {
+  final bool showLog;
 
-  final _kLogName = 'VERSION-SERVICE';
+  CheckVersion({this.showLog = false});
 
-  Future<bool> newVersionAvailable({
-    String? iOSId,
-    String? androidId,
-    String? iOSAppStoreCountry,
-    String? forceAppVersion,
-  }) async {
-    log('Check new version ?', name: _kLogName);
+  final _kLogName = 'CHECK-VERSION';
 
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    VersionInfo? versionInfo;
-    if (Platform.isIOS) {
-      versionInfo = await _getiOSStoreVersion(
-        packageInfo,
-        iOSId: iOSId,
-        iOSAppStoreCountry: iOSAppStoreCountry,
-        forceAppVersion: forceAppVersion,
-      );
-    } else if (Platform.isAndroid) {
-      versionInfo = await _getAndroidStoreVersion(
-        packageInfo,
-        androidId: androidId,
-        forceAppVersion: forceAppVersion,
-      );
-    } else {
-      throw Exception('The target platform "${Platform.operatingSystem}" is not yet supported by this package.');
-    }
+  /// Running the check version process
+  ///
+  /// [iOSId] Apps ID on iOS. Default is null
+  /// [androidId] Apps ID on Android. Default is null
+  /// [iOSAppStoreCountry] Set specific for Store Country only for iOS. Default is null
+  /// [forceAppVersion] Used for testing the code, set this higher from current Apps. Default is null
+  ///
+  /// return [bool] True if New Version Available, False if Apps is Uptodate.
+  ///
+  Future<bool> run({String? iOSId, String? androidId, String? iOSAppStoreCountry, String? forceAppVersion}) async {
+    try {
+      if (showLog) log('Check new version ?', name: _kLogName);
 
-    // SHOW DIALOG
-    if (versionInfo != null && versionInfo.canUpdate == true) {
-      log("New Apps available [ver.${versionInfo.storeVersion}]!", name: _kLogName);
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      VersionInfo? versionInfo;
       if (Platform.isIOS) {
-        _showDialogIos(packageInfo: packageInfo, versionInfo: versionInfo);
+        versionInfo = await _getiOSStoreVersion(
+          packageInfo,
+          iOSId: iOSId,
+          iOSAppStoreCountry: iOSAppStoreCountry,
+          forceAppVersion: forceAppVersion,
+        );
+      } else if (Platform.isAndroid) {
+        versionInfo = await _getAndroidStoreVersion(
+          packageInfo,
+          androidId: androidId,
+          forceAppVersion: forceAppVersion,
+        );
       } else {
-        _showDialogAndroid(packageInfo: packageInfo, versionInfo: versionInfo);
+        throw Exception('The target platform "${Platform.operatingSystem}" is not yet supported.');
       }
-      return true;
-    } else {
-      log("Your Apps is uptodate !", name: _kLogName);
-    }
-    return false;
-  }
 
-  Future<VersionInfo?> fetchVersionInfo({
-    String? iOSId,
-    String? androidId,
-    String? iOSAppStoreCountry,
-    String? forceAppVersion,
-  }) async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    // log("packageInfo : $packageInfo");
-    if (Platform.isIOS) {
-      return await _getiOSStoreVersion(
-        packageInfo,
-        iOSId: iOSId,
-        iOSAppStoreCountry: iOSAppStoreCountry,
-        forceAppVersion: forceAppVersion,
-      );
-    } else if (Platform.isAndroid) {
-      return await _getAndroidStoreVersion(
-        packageInfo,
-        androidId: androidId,
-        forceAppVersion: forceAppVersion,
-      );
-    } else {
-      throw Exception('The target platform "${Platform.operatingSystem}" is not yet supported by this package.');
+      // SHOW DIALOG
+      if (versionInfo != null && versionInfo.canUpdate == true) {
+        if (showLog) log("New Apps available [ver.${versionInfo.storeVersion}]!", name: _kLogName);
+        if (Platform.isIOS) {
+          _showDialogIos(packageInfo: packageInfo, versionInfo: versionInfo);
+        } else {
+          _showDialogAndroid(packageInfo: packageInfo, versionInfo: versionInfo);
+        }
+        return true;
+      } else {
+        if (showLog) log("Your Apps is uptodate !", name: _kLogName);
+      }
+      return false;
+    } catch (e, s) {
+      log("Error: Check Version", error: e, stackTrace: s, name: _kLogName);
+      return false;
     }
   }
 
@@ -99,31 +80,32 @@ class VersionService {
     String? iOSAppStoreCountry,
     String? forceAppVersion,
   }) async {
-    final id = iOSId ?? packageInfo.packageName;
-    // final parameters = {"bundleId": id};
-    Map<String, dynamic> parameters = {};
+    try {
+      final id = iOSId ?? packageInfo.packageName;
+      // final parameters = {"bundleId": id};
+      Map<String, dynamic> parameters = {};
 
-    /// programmermager:fix/issue-35-ios-failed-host-lookup
-    if (id.contains('.')) {
-      parameters['bundleId'] = id;
-    } else {
-      parameters['id'] = id;
-    }
-
-    parameters['timestamp'] = DateTime.now().millisecondsSinceEpoch.toString();
-
-    if (iOSAppStoreCountry != null) {
-      parameters.addAll({"country": iOSAppStoreCountry});
-    }
-    var uri = Uri.https("itunes.apple.com", "/lookup", parameters);
-
-    final dio = Dio();
-    return await dio.getUri(uri).then((res) {
-      if (res.statusCode != 200) {
-        throw Exception('[${res.statusCode}] Failed to query iOS App Store');
+      /// programmermager:fix/issue-35-ios-failed-host-lookup
+      if (id.contains('.')) {
+        parameters['bundleId'] = id;
+      } else {
+        parameters['id'] = id;
       }
 
-      final jsonObj = jsonDecode(res.data);
+      parameters['timestamp'] = DateTime.now().millisecondsSinceEpoch.toString();
+
+      if (iOSAppStoreCountry != null) {
+        parameters.addAll({"country": iOSAppStoreCountry});
+      }
+      var uri = Uri.https("itunes.apple.com", "/lookup", parameters);
+
+      final dio = Dio();
+      final response = await dio.getUri(uri);
+      if (response.statusCode != 200) {
+        throw Exception('[${response.statusCode}] Failed to query iOS App Store');
+      }
+
+      final jsonObj = jsonDecode(response.data);
       final List results = jsonObj['results'];
       if (results.isEmpty) {
         throw Exception('Can\'t find an app in the App Store with the id: $id');
@@ -140,10 +122,9 @@ class VersionService {
         rating: double.tryParse(jsonObj['results'][0]['averageUserRating'].toString()),
         size: fileSize(jsonObj['results'][0]['fileSizeBytes']),
       );
-    }).onError((error, stackTrace) {
-      log('[Error]', error: error);
-      throw Exception(error.toString());
-    });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   /// Android info is fetched by parsing the html of the app store page.
@@ -152,20 +133,21 @@ class VersionService {
     String? androidId,
     String? forceAppVersion,
   }) async {
-    final id = androidId ?? packageInfo.packageName;
-    final uri = Uri.https("play.google.com", "/store/apps/details", {
-      "id": id,
-      "hl": "en_US",
-      "timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
-    });
+    try {
+      final id = androidId ?? packageInfo.packageName;
+      final uri = Uri.https("play.google.com", "/store/apps/details", {
+        "id": id,
+        "hl": "en_US",
+        "timestamp": DateTime.now().millisecondsSinceEpoch.toString(),
+      });
 
-    final dio = Dio();
-    return await dio.getUri(uri).then((res) {
-      if (res.statusCode != 200) {
-        throw Exception('[${res.statusCode}] Can\'t find an app in the Play Store with the id: $id');
+      final dio = Dio();
+      final response = await dio.getUri(uri);
+      if (response.statusCode != 200) {
+        throw Exception('[${response.statusCode}] Can\'t find an app in the Play Store with the id: $id');
       }
 
-      final doc = parse(res.data);
+      final doc = parse(response.data);
 
       // Title
       final title = doc.getElementsByTagName('span').firstWhere((e) => e.attributes['itemprop'] == 'name').text;
@@ -175,23 +157,23 @@ class VersionService {
 
       // Supports 1.2.3 (most of the apps) and 1.2.prod.3 (e.g. Google Cloud)
       final regexp = RegExp(r'\[\[\[\"(\d+\.\d+(\.[a-z]+)?(\.([^"]|\\")*)?)\"\]\]');
-      final storeVersion = regexp.firstMatch(res.data)?.group(1);
+      final storeVersion = regexp.firstMatch(response.data)?.group(1);
 
       // Rating
       final regexRating = RegExp(r'starRating\S+\s\S+\s\S+\s\d.\d');
       final expCleanRating = RegExp(r'\d.\d');
-      var rating = regexRating.firstMatch(res.data)?[0];
+      var rating = regexRating.firstMatch(response.data)?[0];
       rating = rating != null ? (expCleanRating.firstMatch(rating)?[0]) : null;
 
       // Download
       final regexDownload = RegExp(r'>\d+([B,K,M])?\+<');
       final expCleanDownload = RegExp(r'\d+([B,K,M])?\+');
-      var download = regexDownload.firstMatch(res.data)?[0];
+      var download = regexDownload.firstMatch(response.data)?[0];
       download = download != null ? (expCleanDownload.firstMatch(download)?[0]) : null;
 
       // Size
       final regexSize = RegExp(r'\d+\s[KB,MB,GB]{2}');
-      var size = regexSize.firstMatch(res.data)?[0];
+      var size = regexSize.firstMatch(response.data)?[0];
 
       // Release Note
       final regexpRelease = RegExp(r'\[(null,)\[(null,)\"((\.[a-z]+)?(([^"]|\\")*)?)\"\]\]');
@@ -200,7 +182,7 @@ class VersionService {
       final expRemoveSingleQuote = RegExp(r"\\u0026#39;", multiLine: true, caseSensitive: true);
       final expRemoveAmp = RegExp(r"\\u0026amp;", multiLine: true, caseSensitive: true);
 
-      var releaseNotes = regexpRelease.firstMatch(res.data)?.group(3);
+      var releaseNotes = regexpRelease.firstMatch(response.data)?.group(3);
       releaseNotes = releaseNotes!
           .replaceAll(expRemoveSc, '\n')
           .replaceAll(expRemoveQuote, '"')
@@ -211,7 +193,7 @@ class VersionService {
       final regexReleaseDate = RegExp(r'\[\["[A-Za-z]+\s\d+,\s\d+",\[');
       final extCleanDate = RegExp(r'[A-Za-z]+\s\d+,\s\d+');
 
-      var releaseDate = regexReleaseDate.firstMatch(res.data)?[0];
+      var releaseDate = regexReleaseDate.firstMatch(response.data)?[0];
       releaseDate = extCleanDate.firstMatch(releaseDate!)?[0];
 
       return VersionInfo._(
@@ -226,7 +208,9 @@ class VersionService {
         download: download,
         size: size ?? '10 MB',
       );
-    }).onError((error, stackTrace) => throw Exception(error.toString()));
+    } catch (e) {
+      rethrow;
+    }
   }
 
   /// This function attempts to clean local version strings so they match the MAJOR.MINOR.PATCH
@@ -235,39 +219,37 @@ class VersionService {
 
   /// Function for convert text
   /// _parseUnicodeToString
-  String? _parseUnicodeToString(String? release) {
-    try {
-      if (release == null || release.isEmpty) return release;
+  // String? _parseUnicodeToString(String? release) {
+  //   try {
+  //     if (release == null || release.isEmpty) return release;
 
-      final re = RegExp(
-        r'(%(?<asciiValue>[0-9A-Fa-f]{2}))'
-        r'|(\\u(?<codePoint>[0-9A-Fa-f]{4}))'
-        r'|.',
-      );
+  //     final re = RegExp(
+  //       r'(%(?<asciiValue>[0-9A-Fa-f]{2}))'
+  //       r'|(\\u(?<codePoint>[0-9A-Fa-f]{4}))'
+  //       r'|.',
+  //     );
 
-      var matches = re.allMatches(release);
-      var codePoints = <int>[];
-      for (var match in matches) {
-        var codePoint = match.namedGroup('asciiValue') ?? match.namedGroup('codePoint');
-        if (codePoint != null) {
-          codePoints.add(int.parse(codePoint, radix: 16));
-        } else {
-          codePoints += match.group(0)!.runes.toList();
-        }
-      }
-      var decoded = String.fromCharCodes(codePoints);
-      return decoded;
-    } catch (e) {
-      return release;
-    }
-  }
+  //     var matches = re.allMatches(release);
+  //     var codePoints = <int>[];
+  //     for (var match in matches) {
+  //       var codePoint = match.namedGroup('asciiValue') ?? match.namedGroup('codePoint');
+  //       if (codePoint != null) {
+  //         codePoints.add(int.parse(codePoint, radix: 16));
+  //       } else {
+  //         codePoints += match.group(0)!.runes.toList();
+  //       }
+  //     }
+  //     var decoded = String.fromCharCodes(codePoints);
+  //     return decoded;
+  //   } catch (e) {
+  //     return release;
+  //   }
+  // }
 
   // Dialog Promt
-  void _showDialogIos({
-    required PackageInfo packageInfo,
-    required VersionInfo versionInfo,
-  }) {
-    final icon = Platform.isIOS ? Icon(SuperIcons.mg_appstore_line) : Icon(SuperIcons.bs_google_play);
+  void _showDialogIos({required PackageInfo packageInfo, required VersionInfo versionInfo}) {
+    final icon = Image.asset('assets/icons/ic-appstore.png', width: 40, height: 40);
+    // final icon = Icon(SuperIcons.mg_appstore_line);
     // debugPrint(packageInfo.toString());
     debugPrint("storeVersion : ${versionInfo.storeVersion}");
     debugPrint("localVersion: ${versionInfo.localVersion}");
@@ -343,20 +325,20 @@ class VersionService {
         ],
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: CustomButton(
-            flat: true,
-            onPressed: () async {
-              if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
-                await launchUrl(Uri.parse(versionInfo.appStoreLink));
-              } else {
-                throw Exception('Could not launch appStoreLink');
-              }
-            },
-            child: Text('Learn more'),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 20),
+        //   child: CustomButton(
+        //     flat: true,
+        //     onPressed: () async {
+        //       if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
+        //         await launchUrl(Uri.parse(versionInfo.appStoreLink));
+        //       } else {
+        //         throw Exception('Could not launch appStoreLink');
+        //       }
+        //     },
+        //     child: Text('Learn more'),
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: CustomButton(
@@ -367,7 +349,7 @@ class VersionService {
               if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
                 await launchUrl(Uri.parse(versionInfo.appStoreLink));
               } else {
-                throw Exception('Could not launch appStoreLink');
+                throw Exception('Could not launch AppStore');
               }
             },
           ),
@@ -378,11 +360,10 @@ class VersionService {
     ).show();
   }
 
-  void _showDialogAndroid({
-    required PackageInfo packageInfo,
-    required VersionInfo versionInfo,
-  }) {
-    final icon = Platform.isIOS ? Icon(SuperIcons.mg_appstore_line) : Icon(SuperIcons.bs_google_play);
+  // Dialog Promt
+  void _showDialogAndroid({required PackageInfo packageInfo, required VersionInfo versionInfo}) {
+    final icon = Image.asset('assets/icons/ic-playstore.png', width: 40, height: 40);
+    // final icon = Icon(SuperIcons.bs_google_play);
     // debugPrint(packageInfo.toString());
     debugPrint("storeVersion : ${versionInfo.storeVersion}");
     debugPrint("localVersion: ${versionInfo.localVersion}");
@@ -405,57 +386,45 @@ class VersionService {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('A new version is available!. Please update with the latest version.').tsBodyL(),
-          // CustomRichText(
-          //   text: TextSpan(
-          //     text: 'A new version of ',
-          //     style: tsBodyL(),
-          //     children: [
-          //       TextSpan(text: '${versionInfo.title}', style: tsBodyL().bold()),
-          //       TextSpan(text: ' is available!. Please update with the latest version.', style: tsBodyL()),
-          //     ],
-          //   ),
-          // ),
           10.height,
-          if (Platform.isAndroid)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading:
-                  ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/icons/app-icon.png')),
-              title: Text('${versionInfo.title}').tsTitleM().bold(),
-              subtitle: Row(
-                children: [
-                  if (versionInfo.rating != null)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('${versionInfo.rating}').tsBodyL(),
-                        5.width,
-                        Icon(Icons.star, size: 15, color: oGrey70),
-                      ],
-                    ),
-                  if (versionInfo.download != null) ...[
-                    20.width,
-                    Row(
-                      children: [
-                        Text('${versionInfo.download}').tsBodyL(),
-                        5.width,
-                        Icon(Icons.arrow_downward, size: 15, color: oGrey70),
-                      ],
-                    ),
-                  ],
-                  if (versionInfo.size != null) ...[
-                    20.width,
-                    Row(
-                      children: [
-                        Text('${versionInfo.size}').tsBodyL(),
-                        5.width,
-                        Icon(Icons.download, size: 15, color: oGrey70),
-                      ],
-                    ),
-                  ],
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/icons/app-icon.png')),
+            title: Text('${versionInfo.title}').tsTitleM().bold(),
+            subtitle: Row(
+              children: [
+                if (versionInfo.rating != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('${versionInfo.rating}').tsBodyL(),
+                      5.width,
+                      Icon(Icons.star, size: 15, color: oGrey70),
+                    ],
+                  ),
+                if (versionInfo.download != null) ...[
+                  20.width,
+                  Row(
+                    children: [
+                      Text('${versionInfo.download}').tsBodyL(),
+                      5.width,
+                      Icon(Icons.arrow_downward, size: 15, color: oGrey70),
+                    ],
+                  ),
                 ],
-              ),
+                if (versionInfo.size != null) ...[
+                  20.width,
+                  Row(
+                    children: [
+                      Text('${versionInfo.size}').tsBodyL(),
+                      5.width,
+                      Icon(Icons.download, size: 15, color: oGrey70),
+                    ],
+                  ),
+                ],
+              ],
             ),
+          ),
           10.height,
           Text('New Version :').tsBodyL().bold(),
           Text(versionInfo.storeVersion),
@@ -469,27 +438,27 @@ class VersionService {
         ],
       ),
       actions: [
-        CustomButton(
-          flat: true,
-          onPressed: () async {
-            if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
-              await launchUrl(Uri.parse(versionInfo.appStoreLink));
-            } else {
-              throw Exception('Could not launch appStoreLink');
-            }
-          },
-          child: Text('Learn more'),
-        ),
+        // CustomButton(
+        //   flat: true,
+        //   onPressed: () async {
+        //     if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
+        //       await launchUrl(Uri.parse(versionInfo.appStoreLink));
+        //     } else {
+        //       throw Exception('Could not launch appStoreLink');
+        //     }
+        //   },
+        //   child: Text('Update'),
+        // ),
         CustomButton(
           child: Text('Update'),
           onPressed: () async {
-            Navigator.of(rootNavigatorKey.currentContext!).pop();
-            await newVersionAvailable(forceAppVersion: '2.0.4');
-            // if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
-            //   await launchUrl(Uri.parse(versionInfo.appStoreLink));
-            // } else {
-            //   throw Exception('Could not launch appStoreLink');
-            // }
+            // Navigator.of(rootNavigatorKey.currentContext!).pop();
+            // await run(forceAppVersion: '2.0.4');
+            if (await canLaunchUrl(Uri.parse(versionInfo.appStoreLink))) {
+              await launchUrl(Uri.parse(versionInfo.appStoreLink));
+            } else {
+              throw Exception('Could not launch PlayStore');
+            }
           },
         ),
       ],
@@ -497,8 +466,6 @@ class VersionService {
     ).show();
   }
 }
-
-final versionServiceProvider = Provider(VersionService.new);
 
 class VersionInfo {
   VersionInfo._({

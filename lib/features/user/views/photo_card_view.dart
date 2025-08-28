@@ -2,6 +2,7 @@ import 'package:app.rynest.aasi/common/model/reqs.dart';
 import 'package:app.rynest.aasi/common/widgets/button/custom_button.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_app.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
+import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/user/controller/profile_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/views/widgets/image_card.dart';
 import 'package:app.rynest.aasi/features/user/views/camera_idcard_view.dart';
@@ -18,17 +19,26 @@ class PhotoCardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
+    final idCardNameCache = ref.read(profileCtrlProvider).getIDCardNameCache();
+    final fetchPhotoIDCard = ref.watch(fetchImageProvider(Reqs(url: profile?.photoIdCard, fileKey: idCardNameCache)));
 
     return MyUI(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Foto KTP')),
+        appBar: AppBar(
+          title: const Text('Foto KTP'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await ref.read(downloadUtilsProvider).deleteImageOndisk(idCardNameCache);
+                return ref.refresh(fetchImageProvider(Reqs(url: profile?.photoIdCard, fileKey: idCardNameCache)));
+              },
+              child: Text('Refresh').clr(oWhite),
+            ),
+          ],
+        ),
         body: RefreshIndicator(
-          onRefresh: () async {
-            await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-idCard");
-            return ref.refresh(
-              fetchImageProvider(Reqs(url: profile?.photoIdCard, fileKey: "${profile?.id}-idCard")),
-            );
-          },
+          onRefresh: () async =>
+              ref.refresh(fetchImageProvider(Reqs(url: profile?.photoIdCard, fileKey: idCardNameCache))),
           child: ListView(
             children: [
               5.height,
@@ -41,16 +51,12 @@ class PhotoCardView extends ConsumerWidget {
                     child: SizedBox(
                       width: double.infinity,
                       height: 250,
-                      child: ref
-                          .watch(fetchImageProvider(
-                            Reqs(url: profile?.photoIdCard, fileKey: "${profile?.id}-idCard"),
-                          ))
-                          .when(
-                            skipLoadingOnRefresh: false,
-                            data: (data) => ImageCard(image: data),
-                            error: (error, stackTrace) => ImageCard(),
-                            loading: () => Center(child: CircularProgressIndicator()),
-                          ),
+                      child: fetchPhotoIDCard.when(
+                        skipLoadingOnRefresh: false,
+                        data: (data) => ImageCard(image: data),
+                        error: (error, stackTrace) => ImageCard(),
+                        loading: () => Center(child: CircularProgressIndicator()),
+                      ),
                     ),
                   ),
                   20.height,

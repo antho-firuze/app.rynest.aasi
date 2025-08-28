@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 
+final _kLogName = 'CAMERA-VIEW';
+
 class CameraView extends StatefulWidget {
   const CameraView({
     super.key,
@@ -82,12 +84,13 @@ class _CameraViewState extends State<CameraView> {
 
   @override
   void didUpdateWidget(covariant CameraView oldWidget) {
-    // log("widget.triggerShoot => ${widget.triggerShoot}", name: "CAMERA-VIEW");
-    if (widget.triggerShoot) {
-      _captureImage();
-    }
-
     super.didUpdateWidget(oldWidget);
+
+    // if (widget.enabled != oldWidget.enabled && widget.triggerShoot) {
+    //   _captureImage();
+    // }
+
+    log("widget.enabled : ${widget.enabled}", name: _kLogName);
   }
 
   @override
@@ -194,7 +197,7 @@ class _CameraViewState extends State<CameraView> {
     }
     _controller!.setFlashMode(flashMode!);
 
-    log('flashMode => $flashMode', name: 'CAMERA');
+    log('flashMode => $flashMode', name: _kLogName);
     setState(() {});
   }
 
@@ -218,7 +221,7 @@ class _CameraViewState extends State<CameraView> {
     await _stopLiveFeed();
     await _startLiveFeed();
 
-    log('switchCamera => ${_cameraIndex == 0 ? 'BACK' : 'FRONT'}', name: 'CAMERA');
+    log('switchCamera => ${_cameraIndex == 0 ? 'BACK' : 'FRONT'}', name: _kLogName);
     setState(() => _changingCameraLens = false);
   }
 
@@ -240,18 +243,17 @@ class _CameraViewState extends State<CameraView> {
     XFile xFile = await _controller!.takePicture();
 
     _file = File(xFile.path);
-    log('_originalImage => ${fileSize(_file?.lengthSync())}', name: "CAMERA-VIEW");
+    log('_originalImage => ${fileSize(_file?.lengthSync())}', name: _kLogName);
 
     _file = await _flipImage(_file!);
     _file = await _compressImage(_file!);
-    log('_finalImage => ${fileSize(_file!.lengthSync())}', name: "CAMERA-VIEW");
+    log('_finalImage => ${fileSize(_file!.lengthSync())}', name: _kLogName);
 
     LoadingService.dissmiss();
     setState(() {});
 
-    if (widget.onTakeShoot != null) {
-      widget.onTakeShoot!(_file!);
-    }
+    widget.onTakeShoot?.call(_file!);
+
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -262,7 +264,7 @@ class _CameraViewState extends State<CameraView> {
       Uint8List imageBytes = await file.readAsBytes();
       img.Image? originalImage = img.decodeImage(imageBytes);
       img.Image fixedImage = img.flipHorizontal(originalImage!);
-      log('_flipImage => ${fileSize(fixedImage.lengthInBytes)}', name: "CAMERA-VIEW");
+      log('_flipImage => ${fileSize(fixedImage.lengthInBytes)}', name: _kLogName);
 
       return await file.writeAsBytes(img.encodeJpg(fixedImage), flush: true);
     }
@@ -281,7 +283,7 @@ class _CameraViewState extends State<CameraView> {
     );
     File fille = File(compressedFile!.path);
 
-    log('_compressImage => ${fileSize(fille.lengthSync())}', name: "CAMERA-VIEW");
+    log('_compressImage => ${fileSize(fille.lengthSync())}', name: _kLogName);
 
     return fille;
   }
@@ -305,14 +307,11 @@ class _CameraViewState extends State<CameraView> {
       }
 
       if (widget.onImage != null) {
-        // log("_startLiveFeed => with stream", name: "CAMERA-VIEW");
+        // log("_startLiveFeed => with stream", name: _kLogName);
         _controller?.startImageStream(_processCameraImage).then((value) {
-          if (widget.onCameraFeedReady != null) {
-            widget.onCameraFeedReady!();
-          }
-          if (widget.onCameraLensDirectionChanged != null) {
-            widget.onCameraLensDirectionChanged!(camera.lensDirection);
-          }
+          widget.onCameraFeedReady?.call();
+
+          widget.onCameraLensDirectionChanged?.call(camera.lensDirection);
         });
       }
       setState(() {});
@@ -321,9 +320,9 @@ class _CameraViewState extends State<CameraView> {
 
   void _processCameraImage(CameraImage image) {
     final inputImage = _inputImageFromCameraImage(image);
-    // log("_processCameraImage : $inputImage", name: "CAMERA-VIEW");
+    // log("_processCameraImage : $inputImage", name: _kLogName);
     if (inputImage == null) return;
-    widget.onImage!(inputImage);
+    widget.onImage?.call(inputImage);
   }
 
   final _orientations = {
@@ -372,7 +371,7 @@ class _CameraViewState extends State<CameraView> {
     // only supported formats:
     // * nv21 for Android
     // * bgra8888 for iOS
-    // log("image.format: $format", name: "CAMERA-VIEW");
+    // log("image.format: $format", name: _kLogName);
     if (format == null ||
         (Platform.isAndroid && format != InputImageFormat.nv21) ||
         (Platform.isIOS && format != InputImageFormat.bgra8888)) {
@@ -380,7 +379,7 @@ class _CameraViewState extends State<CameraView> {
     }
 
     // since format is constraint to nv21 or bgra8888, both only have one plane
-    // log("image.planes.length: ${image.planes.length}", name: "CAMERA-VIEW");
+    // log("image.planes.length: ${image.planes.length}", name: _kLogName);
     if (image.planes.length != 1) return null;
     final plane = image.planes.first;
 
@@ -423,7 +422,7 @@ class _CameraViewState extends State<CameraView> {
   //                     icon: const Icon(Icons.save, color: Colors.white54),
   //                     color: Colors.black54,
   //                     onPressed: () async {
-  //                       log("filepath : ${_file!.path}", name: "CAMERA-VIEW");
+  //                       log("filepath : ${_file!.path}", name: _kLogName);
   //                       if (widget.onTakeShoot != null) {
   //                         widget.onTakeShoot!(_file!);
   //                       }

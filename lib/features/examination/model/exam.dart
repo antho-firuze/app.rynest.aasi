@@ -71,4 +71,9 @@ extension ExamExt on Exam {
 
     return copyWith(answerKeys: arrAnswerKeys.join(','), keys: arrAnswerKeys);
   }
+
+  int countAnswered() {
+    final arrAnswerKeys = answerKeys?.split(',') ?? [];
+    return arrAnswerKeys.where((e) => e.toUpperCase() != 'X').length;
+  }
 }

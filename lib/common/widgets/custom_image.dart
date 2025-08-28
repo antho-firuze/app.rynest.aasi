@@ -73,10 +73,16 @@ class CustomImage extends StatelessWidget {
     );
   }
 
-  Widget imageFile() => Container(
+  Widget imageFile() {
+    final imageFile = File(src);
+    final bytes = imageFile.readAsBytesSync();
+    final imageMem = MemoryImage(bytes);
+    // final image = Image.memory(bytes);
+
+    return Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: FileImage(File(src)),
+            image: imageMem,
             fit: fit,
             onError: (exception, stackTrace) => ImageFailed(
               title: errorTitle,
@@ -84,6 +90,19 @@ class CustomImage extends StatelessWidget {
           ),
         ),
       );
+  }
+
+  // Widget imageFile() => Container(
+  //       decoration: BoxDecoration(
+  //         image: DecorationImage(
+  //           image: FileImage(File(src)),
+  //           fit: fit,
+  //           onError: (exception, stackTrace) => ImageFailed(
+  //             title: errorTitle,
+  //           ),
+  //         ),
+  //       ),
+  //     );
 
   Widget imageAsset() => Image.asset(
         src,

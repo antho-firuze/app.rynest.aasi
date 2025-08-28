@@ -17,6 +17,9 @@ class ExamQuestionsList extends ConsumerWidget {
     final keys = exam?.answerKeys?.split(',');
     final cIdx = ref.read(questionNumProvider) - 1;
 
+    final answered = keys?.where((e) => e.toUpperCase() != 'X').length ?? 0;
+    final notAnswered = (keys?.length ?? 0) - answered;
+
     return MyUI(
       child: Scaffold(
         appBar: AppBar(title: const Text('List Pertanyaan')),
@@ -50,7 +53,7 @@ class ExamQuestionsList extends ConsumerWidget {
                           ref.read(examCtrlProvider).loadQuestion();
                         },
                         child: Card(
-                          color: key != 'X' ? secondaryLight : null,
+                          color: key?.toUpperCase() != 'X' ? secondaryLight : null,
                           shape: index == cIdx
                               ? RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -79,7 +82,7 @@ class ExamQuestionsList extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 45, height: 45, child: Card(color: null)),
-                        Text('Pertanyaan belum dijawab'),
+                        Text('$notAnswered Pertanyaan belum dijawab'),
                       ],
                     ),
                     Row(
@@ -87,7 +90,7 @@ class ExamQuestionsList extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 45, height: 45, child: Card(color: secondaryLight)),
-                        Text('Pertanyaan sudah dijawab'),
+                        Text('$answered Pertanyaan sudah dijawab'),
                       ],
                     ),
                     Row(

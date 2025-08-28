@@ -37,15 +37,16 @@ class DownloadUtils {
     try {
       var directory = await ref.read(pathServiceProvider).getAppFileDirectory();
       var file = File('$directory/$fileName');
+      if (showLog) log('deleteImageOndisk [file.path] : ${file.path}', name: _kLogName);
 
       if (await file.exists()) {
-        if (showLog) log('deleteImageOndisk [file.path] : ${file.path}', name: _kLogName);
         await file.delete();
+        if (showLog) log('deleteImageOndisk : success', name: _kLogName);
       } else {
-        if (showLog) log('deleteImageOndisk [$fileName] : not exist !', name: _kLogName);
+        if (showLog) log('deleteImageOndisk : not exist !', name: _kLogName);
       }
-    } catch (e) {
-      ref.read(talkerProvider).errx("Error: deleteImageOndisk", error: e, name: _kLogName);
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: deleteImageOndisk", error: e, stackTrace: s, name: _kLogName);
       rethrow;
     }
   }
@@ -74,15 +75,14 @@ class DownloadUtils {
       await fo.close();
       if (showLog) log('downloadAndSaveImage [$fileName] : download complete !', name: _kLogName);
       return file.path;
-    } catch (e, st) {
-      if (e is DioException) {
-        final errCode = e.response?.statusCode;
-        final errMsg = e.response?.statusMessage;
+    } on DioException catch (e, s) {
+      final errCode = e.response?.statusCode;
+      final errMsg = e.response?.statusMessage;
 
-        ref.read(talkerProvider).errx("[$errCode] $errMsg", error: e, stackTrace: st, name: _kLogName);
-      } else {
-        ref.read(talkerProvider).errx("Error: downloadAndSaveImage", error: e, stackTrace: st, name: _kLogName);
-      }
+      ref.read(talkerProvider).errx("[$errCode] $errMsg", error: e, stackTrace: s, name: _kLogName);
+      throw Exception("$errMsg");
+    } catch (e, s) {
+      ref.read(talkerProvider).errx("Error: downloadAndSaveImage", error: e, stackTrace: s, name: _kLogName);
       rethrow;
     }
 

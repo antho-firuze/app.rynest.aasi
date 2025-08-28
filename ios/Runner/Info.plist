@@ -32,6 +32,8 @@
 	<string>This app needs access camera to capture Selfie, ID Card and Closeup image for Online Exam</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access location service to calculate prayer times and to calculate the Indonesia's time zones</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access location service to calculate prayer times and to calculate the Indonesia's time zones</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access microphone to support camera ability</string>
 	<key>NSPhotoLibraryUsageDescription</key>

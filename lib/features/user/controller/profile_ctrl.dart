@@ -10,6 +10,7 @@ import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/examination/controller/exam_ctrl.dart';
 import 'package:app.rynest.aasi/features/user/model/certificate.dart';
 import 'package:app.rynest.aasi/features/user/model/profile.dart';
+import 'package:app.rynest.aasi/utils/download_utils.dart';
 import 'package:app.rynest.aasi/utils/talker_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -93,7 +94,17 @@ class ProfileCtrl {
     });
   }
 
-  Future updatePhotoSelfie(File file, {bool showLog = false}) async {
+  String getSelfieNameCache() {
+    final profile = ref.read(profileProvider);
+    return "${profile?.id}-selfie";
+  }
+
+  String getIDCardNameCache() {
+    final profile = ref.read(profileProvider);
+    return "${profile?.id}-idCard";
+  }
+
+  Future updatePhotoSelfie(File file, {bool showLog = true}) async {
     try {
       log("updatePhotoSelfie", name: _kLogName);
 
@@ -111,9 +122,16 @@ class ProfileCtrl {
         throw "Invalid response from AWS Server";
       }
 
-      final dummyId = Random().nextInt(99999);
-      final url = "${data['url']}?v=$dummyId";
-      if (showLog) log("url : $url", name: _kLogName);
+      final url = data['url'];
+      if (showLog) log("updatePhotoSelfie : $url", name: _kLogName);
+
+      // Delete image on cache first
+      await ref.read(downloadUtilsProvider).deleteImageOndisk(getSelfieNameCache());
+
+      // Download & Save image on disk
+      await ref.read(downloadUtilsProvider).downloadAndSaveImage(url, getSelfieNameCache());
+
+      // Update image url
       final profile = ref.read(profileProvider)?.copyWith(photo: url);
       ref.read(profileProvider.notifier).state = profile;
 
@@ -143,9 +161,16 @@ class ProfileCtrl {
         throw "Invalid response from AWS Server";
       }
 
-      final dummyId = Random().nextInt(99999);
-      final url = "${data['url']}?v=$dummyId";
-      if (showLog) log("url : $url", name: _kLogName);
+      final url = data['url'];
+      if (showLog) log("updatePhotoIdCard : $url", name: _kLogName);
+
+      // Delete image on cache first
+      await ref.read(downloadUtilsProvider).deleteImageOndisk(getIDCardNameCache());
+
+      // Download & Save image on disk
+      await ref.read(downloadUtilsProvider).downloadAndSaveImage(url, getIDCardNameCache());
+
+      // Update image url
       final profile = ref.read(profileProvider)?.copyWith(photoIdCard: url);
       ref.read(profileProvider.notifier).state = profile;
 

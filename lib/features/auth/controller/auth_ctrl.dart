@@ -53,11 +53,14 @@ class AuthCtrl {
   final _kLogName = 'AUTH-CTRL';
 
   void initialize() {
-    log('Initialize User & Token !');
+    log('Initialize Token !');
 
+    // Load this first, because the Token & Remember are not related to anywhere
     loadToken();
-    loadUser();
     loadRemember();
+
+    // Load this after the token is validate in Initial Controller
+    // loadUser();
   }
 
   void loadToken() {
@@ -111,7 +114,7 @@ class AuthCtrl {
       return jwtToken;
     } catch (e, s) {
       ref.read(talkerProvider).errx("Error: refreshToken", error: e, stackTrace: s, name: _kLogName);
-      rethrow;
+      return null;
     }
   }
 

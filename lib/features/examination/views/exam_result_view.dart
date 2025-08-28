@@ -37,7 +37,7 @@ class ExamResultView extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () async {
-                await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
+                // await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
                 return ref.refresh(fetchExamResultProvider);
               },
               child: Text('Refresh').clr(oWhite),
@@ -46,7 +46,7 @@ class ExamResultView extends ConsumerWidget {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
+            // await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
             return ref.refresh(fetchExamResultProvider);
           },
           child: ref.watch(fetchExamResultProvider).when(

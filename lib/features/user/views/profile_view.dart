@@ -6,6 +6,7 @@ import 'package:app.rynest.aasi/common/widgets/custom_avatar.dart';
 import 'package:app.rynest.aasi/common/widgets/forms/group_list.dart';
 import 'package:app.rynest.aasi/common/widgets/logo/logo_art_work.dart';
 import 'package:app.rynest.aasi/common/widgets/version_info.dart';
+import 'package:app.rynest.aasi/core/app_color.dart';
 import 'package:app.rynest.aasi/features/auth/controller/auth_ctrl.dart';
 import 'package:app.rynest.aasi/features/auth/views/pwd_change_view.dart';
 import 'package:app.rynest.aasi/features/auth/views/signin_view.dart';
@@ -32,17 +33,24 @@ class ProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
-    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: "${profile?.id}-selfie")));
+    final selfieNameCache = ref.read(profileCtrlProvider).getSelfieNameCache();
+    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: selfieNameCache)));
 
     return MyUI(
       child: ExamWrapper(
         child: Scaffold(
-          appBar: AppBar(title: const Text("Akun Saya"), centerTitle: true),
+          appBar: AppBar(
+            title: const Text("Akun Saya"),
+            centerTitle: true,
+            actions: [
+              TextButton(
+                onPressed: () async => ref.refresh(fetchProfileProvider),
+                child: Text('Refresh').clr(oWhite),
+              ),
+            ],
+          ),
           body: RefreshIndicator(
-            onRefresh: () async {
-              await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
-              return ref.refresh(fetchProfileProvider);
-            },
+            onRefresh: () async => ref.refresh(fetchProfileProvider),
             child: ListView(
               shrinkWrap: true,
               children: [

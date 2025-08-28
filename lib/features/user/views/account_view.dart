@@ -25,7 +25,8 @@ class AccountView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileProvider);
-    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: "${profile?.id}-selfie")));
+    final selfieNameCache = ref.read(profileCtrlProvider).getSelfieNameCache();
+    final fetchPhotoSelfie = ref.watch(fetchImageProvider(Reqs(url: profile?.photo, fileKey: selfieNameCache)));
 
     if (ref.watch(verifyCodeProvider).isNotEmpty) {
       return CodeVerify();
@@ -33,12 +34,17 @@ class AccountView extends ConsumerWidget {
 
     return MyUI(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Profil Member')),
+        appBar: AppBar(
+          title: const Text('Profil Member'),
+          actions: [
+            TextButton(
+              onPressed: () async => ref.refresh(fetchProfileProvider),
+              child: Text('Refresh').clr(oWhite),
+            ),
+          ],
+        ),
         body: RefreshIndicator(
-          onRefresh: () async {
-            await ref.read(downloadUtilsProvider).deleteImageOndisk("${profile?.id}-selfie");
-            return ref.refresh(fetchProfileProvider);
-          },
+          onRefresh: () async => ref.refresh(fetchProfileProvider),
           child: ListView(
             shrinkWrap: true,
             children: [

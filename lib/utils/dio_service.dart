@@ -142,6 +142,6 @@ final dioIsValidUrlProvider = FutureProvider.autoDispose.family<bool, String?>((
     return true;
   } catch (e, s) {
     ref.read(talkerProvider).errx("Error : dioIsValidUrlProvider", error: e, stackTrace: s, name: _kLogName);
-    rethrow;
+    return false;
   }
 });
