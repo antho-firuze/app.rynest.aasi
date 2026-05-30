@@ -71,7 +71,9 @@ class _CameraIdCardViewState extends ConsumerState<CameraIdCardView> {
               customClipperRear: CardClip(),
               onTakeShoot: (file) async => await ref.read(profileCtrlProvider).updatePhotoIdCard(file),
               canSwitch: false,
-              enabled: _enabled,
+              // To enable ID-Card Recognition, just enable this bottom line
+              // ===========================================================
+              // enabled: _enabled,
               // triggerShoot: true,
             ),
             Align(
@@ -96,7 +98,7 @@ class _CameraIdCardViewState extends ConsumerState<CameraIdCardView> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Tombol shutter akan aktif apabila posisi KTP sudah pas.').tsTitleL().center(),
+                      // Text('Tombol shutter akan aktif apabila posisi KTP sudah pas.').tsTitleL().center(),
                       5.height,
                       Text('* Hanya KTP yang diperbolehkan.').tsBodyL().center(),
                     ],
